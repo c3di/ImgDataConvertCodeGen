@@ -16,8 +16,8 @@ nodes = [
         "channel_order": "channel last",
         "minibatch_input": False,
         "data_type": "uint8",
-        "intensity_range": "0-255",
-        "device": "cpu",
+        "intensity_range": "0to255",
+        "device": "cpu"
     },
     {
         "data_representation": "numpy.ndarray",
@@ -25,8 +25,8 @@ nodes = [
         "channel_order": "channel last",
         "minibatch_input": False,
         "data_type": "uint8",
-        "intensity_range": "0-255",
-        "device": "cpu",
+        "intensity_range": "0to255",
+        "device": "cpu"
     },
     {
     #...
