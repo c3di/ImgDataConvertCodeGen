@@ -1,6 +1,8 @@
 import sys
-from knowledgeconstruction import *
-from codegeneration import *
+from .init import knowledge_graph, code_generator, get_covert_code
+from .metadata_differ import *
+from .function_util import *
+
 
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
@@ -16,4 +18,3 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
-

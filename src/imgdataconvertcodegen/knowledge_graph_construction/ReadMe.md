@@ -1,4 +1,4 @@
-## Conversion Grahp
+## Conversion Graph
 ### Node structure
 ```python
 image_data = {
@@ -11,9 +11,11 @@ image_data = {
     "device": "cpu"                         # Options: cpu, gpu
 }
 ```
-### Edge factory
-```
-def factory(source, target):
+
+More examples can be found in the `knowledge_graph_construction/default_nodes.py`.
+### Edge numpy_bgr_to_rgb
+```python
+def numpy_bgr_to_rgb(source, target):
     def version_match():
         pass
         
@@ -21,7 +23,12 @@ def factory(source, target):
         pass
         
     if version_match() and metadata_match(source, target):
-        return "def convert(value):\n  return ...."
+        return """
+        def convert(value):
+            return ....
+        """
         
     return None
 ```
+
+More examples can be found in the `knowledge_graph_construction/default_edge_factories.py`.
