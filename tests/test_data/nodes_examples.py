@@ -44,5 +44,4 @@ node_examples = [
         "intensity_range": "0to255",
         "device": "cpu"
     },
-    # Todo... add more nodes from the table
 ]
