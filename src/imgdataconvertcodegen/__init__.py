@@ -1,5 +1,5 @@
 import sys
-from .init import knowledge_graph, code_generator, get_covert_code
+from .init import get_covert_code, get_convert_path
 from .metadata_differ import *
 from .function_util import *
 

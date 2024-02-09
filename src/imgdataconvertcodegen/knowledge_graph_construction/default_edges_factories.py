@@ -1,5 +1,7 @@
 from ..metadata_differ import is_only_this_key_differ, are_both_same_data_repr
 
+# NOTE: the source and target metadata are only different in one attribute
+
 
 def numpy_between_rgb_bgr(source, target):
     def version_match():
@@ -7,9 +9,6 @@ def numpy_between_rgb_bgr(source, target):
 
     def metadata_match(source_metadata, target_metadata):
         if not are_both_same_data_repr(source, target, 'numpy.ndarray'):
-            return False
-
-        if not is_only_this_key_differ(source_metadata, target_metadata, 'color_channel'):
             return False
 
         if (source_metadata.get('color_channel') == 'bgr' and
@@ -30,9 +29,6 @@ def numpy_to_torch(source, target):
         return True
 
     def metadata_check(source_metadata, target_metadata):
-        if not is_only_this_key_differ(source_metadata, target_metadata, 'data_representation'):
-            return False
-
         return (source.get('data_representation') == 'numpy.ndarray' and
                 target.get('data_representation') == 'torch.tensor')
 
@@ -49,13 +45,12 @@ def torch_channel_order_last_to_first(source, target):
         if not are_both_same_data_repr(source, target, 'torch.tensor'):
             return False
 
-        if not is_only_this_key_differ(source_metadata, target_metadata, 'channel_order'):
-            return False
-
         return (source_metadata.get('channel_order') == 'channel last' and
                 target_metadata.get('channel_order') == 'channel first')
 
     if version_match() and metadata_check(source, target):
+        if source.get('minibatch_input') and target.get('minibatch_input'):
+            return "def convert(var):\n  return var.permute(0, 3, 1, 2)"
         return "def convert(var):\n  return var.permute(2, 0, 1)"
     return None
 

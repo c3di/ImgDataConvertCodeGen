@@ -21,7 +21,8 @@ class ConvertCodeGenerator:
             functions.append(edge['conversion'])
         return functions
 
-    def generate_code(self, source_var_name: str, source_metadata, target_var_name: str, target_metadata) -> str | None:
+    def generate_code_using_metadata(self, source_var_name, source_metadata,
+                                     target_var_name: str, target_metadata) -> str | None:
         """
         Generates Python code as a string that performs data conversion from a source variable to a target variable
          based on the provided metadata.
@@ -43,7 +44,8 @@ class ConvertCodeGenerator:
             >>> target_var_name = "target_image"
             >>> target_metadata = {"color_channel": "rgb", "channel_order": "channel first", ...}
             >>> convert_code_generator = ConvertCodeGenerator()
-            >>> code = convert_code_generator.generate_code(source_var_name, source_metadata, target_var_name, target_metadata)
+            >>> code = convert_code_generator.generate_code_using_metadata(source_var_name, source_metadata,
+            >>> target_var_name, target_metadata)
             >>> print(code)
             def convert_1(var):
                 # Convert BGR to RGB
@@ -68,3 +70,13 @@ class ConvertCodeGenerator:
             definitions.append(unique_func['function_definition'])
             code = f"{unique_func['function_name']}({code})"
         return f'{"\n".join(definitions)}\n{target_var_name} = {code}'
+
+    def generate_code(self, source_var_name: str, source_spec, target_var_name: str, target_spec) -> str | None:
+
+        return self.generate_code_using_metadata(source_var_name, self._get_metadata(source_spec),
+                                                 target_var_name, self._get_metadata(target_spec))
+
+    def _get_metadata(self, spec):
+        if isinstance(spec, dict):
+            return spec
+        return self.knowledge_graph.get_metadata_by_lib_name(spec)
