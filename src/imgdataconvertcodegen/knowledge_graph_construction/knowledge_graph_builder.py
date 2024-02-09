@@ -57,6 +57,3 @@ class KnowledgeGraphBuilder:
         self._edge_factories.append(factory)
         self.build_from_scratch()
 
-    def __str__(self):
-        # todo: print the graph
-        return "KnowledgeGraphBuilder"
