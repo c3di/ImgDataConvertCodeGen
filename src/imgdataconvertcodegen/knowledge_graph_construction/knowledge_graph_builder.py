@@ -1,9 +1,10 @@
 import itertools
 import os.path
-import warnings
 from datetime import datetime
+from typing import Callable
 
 from .knowledge_graph import KnowledgeGraph
+from .metadata_values import check_metadata_valid
 from ..metadata_differ import is_same_metadata
 from ..measure import get_execution_time
 
@@ -61,6 +62,14 @@ class KnowledgeGraphBuilder:
                 return function
         return None
 
-    def add_new_edge_factory(self, factory):
+    def add_new_edge_factory(self, factory: Callable):
         self._edge_factories.append(factory)
         self.build_from_scratch()
+
+    def add_new_metadata(self, new_metadata: dict):
+        check_metadata_valid(new_metadata)
+        self.knowledge_graph.add_node(new_metadata)
+        self.build_from_scratch()
+
+    def add_lib_preset(self, lib_name: str, metadata: dict):
+        self.knowledge_graph.add_lib_preset(lib_name, metadata)

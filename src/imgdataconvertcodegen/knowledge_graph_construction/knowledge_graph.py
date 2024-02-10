@@ -1,5 +1,7 @@
 import networkx as nx
+
 from ..io import save_graph, load_graph
+from .metadata_values import check_metadata_valid
 
 
 class KnowledgeGraph:
@@ -33,6 +35,13 @@ class KnowledgeGraph:
     def get_edge(self, source_id, target_id):
         return self._graph.get_edge_data(source_id, target_id)
 
+    def add_lib_preset(self, lib_name, metadata):
+        if lib_name in self._lib_presets:
+            raise ValueError(f"{lib_name} already in the lib_presets. "
+                             f"We support {list(self._lib_presets.keys())}")
+        check_metadata_valid(metadata)
+        self._lib_presets[lib_name] = metadata
+
     def save_to_file(self, path):
         save_graph(self._graph, path)
         print(f"Knowledge Graph has been saved to {path}")
@@ -46,6 +55,10 @@ class KnowledgeGraph:
         return 0
 
     def get_shortest_path(self, source_metadata, target_metadata) -> list[str] | None:
+        """
+        Returns: the id list of the shortest path
+
+        """
         return self._get_shortest_path_using_id(self.get_node_id(source_metadata), self.get_node_id(target_metadata))
 
     def get_metadata_by_lib_name(self, lib_name):
@@ -61,29 +74,6 @@ class KnowledgeGraph:
         except nx.NetworkXNoPath:
             return None
         return path
-
-    # def _build_graph(self, metadata_values):
-    #     keys = list(metadata_values.keys())
-    #     values_lists = list(metadata_values.values())
-    #     i = 0
-    #     for source_value in itertools.product(*values_lists):
-    #         source_metadata = dict(zip(keys, source_value))
-    #         for target_value in itertools.product(*values_lists):
-    #             target_metadata = dict(zip(keys, target_value))
-    #             allow_edge_exist = is_single_metadata_differ(source_metadata, target_metadata)
-    #             if allow_edge_exist:
-    #                 convert_function = self._create_conversion_function(source_metadata, target_metadata)
-    #                 if convert_function is not None:
-    #                     source_id = self.add_node(source_metadata)
-    #                     target_id = self.add_node(target_metadata)
-    #                     self.add_edge(source_id, target_id, conversion=convert_function)
-    #
-    # def _create_conversion_function(self, source, target):
-    #     for factory in self._edge_factories:
-    #         function = factory(source, target)
-    #         if function is not None:
-    #             return function
-    #     return None
 
     def __str__(self):
         return f"Knowledge Graph with {len(self._graph)} nodes and {len(self._graph.edges)} edges."

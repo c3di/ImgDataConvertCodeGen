@@ -7,3 +7,9 @@ metadata_values = {
     "intensity_range": ['0to255', '0to1', '-1to1'],
     "device": ['cpu', 'gpu']
 }
+
+
+def check_metadata_valid(metadata: dict):
+    for key, value_list in metadata_values.items():
+        if not metadata.get(key) in value_list:
+            raise f'Invalid metadata: {metadata} at key: {key}. expected value list: {value_list}'

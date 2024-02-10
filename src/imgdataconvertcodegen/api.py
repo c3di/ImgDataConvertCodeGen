@@ -1,8 +1,11 @@
-from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction.get_knowledge_graph import get_knowledge_graph
+from typing import Callable
 
-knowledge_graph = get_knowledge_graph()
-code_generator = ConvertCodeGenerator(knowledge_graph)
+from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
+from src.imgdataconvertcodegen.knowledge_graph_construction.get_knowledge_graph_builder import (
+    get_knowledge_graph_builder)
+
+builder = get_knowledge_graph_builder()
+code_generator = ConvertCodeGenerator(builder.knowledge_graph)
 
 
 def get_covert_code(source_var_name: str, source_spec: str | dict, target_var_name: str, target_spec: str | dict):
@@ -30,8 +33,19 @@ def get_convert_path(source_spec: str | dict, target_spec: str | dict):
     Returns: A list of metadata
 
     """
-    path = knowledge_graph.get_shortest_path(source_spec, target_spec)
-    metadata_list = []
-    for node_id in path:
-        metadata_list.append(knowledge_graph.get_node(node_id))
-    return metadata_list
+    return code_generator.get_convert_path(source_spec, target_spec)
+
+
+def add_image_metadata(new_metadata):
+    builder.add_new_metadata(new_metadata)
+    code_generator.knowledge_graph = builder.knowledge_graph
+
+
+def add_convert_code_factory(new_factory: Callable | str):
+    builder.add_new_edge_factory(new_factory)
+    code_generator.knowledge_graph = builder.knowledge_graph
+
+
+def add_new_lib_preset(lib_name, metadata):
+    builder.add_lib_preset(lib_name, metadata)
+    code_generator.knowledge_graph = builder.knowledge_graph

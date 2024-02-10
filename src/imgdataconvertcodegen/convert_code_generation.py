@@ -11,6 +11,17 @@ class ConvertCodeGenerator:
     def knowledge_graph(self):
         return self._knowledge_graph
 
+    @knowledge_graph.setter
+    def knowledge_graph(self, value):
+        self._knowledge_graph = value
+
+    def get_convert_path(self, source_spec: str | dict, target_spec: str | dict):
+        path = self.knowledge_graph.get_shortest_path(self._get_metadata(source_spec), self._get_metadata(target_spec))
+        metadata_list = []
+        for node_id in path:
+            metadata_list.append(self.knowledge_graph.get_node(node_id))
+        return metadata_list
+
     def conversion_functions(self, source_metadata, target_metadata) -> list[str] | None:
         path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
         if path is None:
