@@ -3,9 +3,12 @@ from src.imgdataconvertcodegen.function_util import create_unique_function
 
 class ConvertCodeGenerator:
     _knowledge_graph = None
+    _cache = {}
 
     def __init__(self, knowledge_graph):
         self._knowledge_graph = knowledge_graph
+        self._cache = {}
+
 
     @property
     def knowledge_graph(self):
@@ -23,6 +26,8 @@ class ConvertCodeGenerator:
         return metadata_list
 
     def conversion_functions(self, source_metadata, target_metadata) -> list[str] | None:
+        if (source_metadata, target_metadata) in self._cache:
+            return self._cache[(source_metadata, target_metadata)]
         path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
         if path is None:
             return None
@@ -30,6 +35,7 @@ class ConvertCodeGenerator:
         for i in range(len(path) - 1):
             edge = self.knowledge_graph.get_edge(path[i], path[i + 1])
             functions.append(edge['conversion'])
+        self._cache[(source_metadata, target_metadata)] = functions
         return functions
 
     def generate_code_using_metadata(self, source_var_name, source_metadata,
