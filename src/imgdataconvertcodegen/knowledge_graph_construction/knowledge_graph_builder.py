@@ -78,7 +78,7 @@ class KnowledgeGraphBuilder:
         assert_metadata_valid(new_metadata)
         if self.knowledge_graph.is_node_exist(new_metadata):
             return
-        self._build_for_metadata(new_metadata)
+        self._build_for_metadata(new_metadata, self._edge_factories)
         self.save_knowledge_graph()
 
     def add_lib_preset(self, lib_name: str, metadata: dict):
