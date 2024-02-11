@@ -9,6 +9,12 @@ metadata_values = {
 }
 
 
+def assert_metadata_valid(metadata: dict):
+    for key, value_list in metadata_values.items():
+        if not metadata.get(key) in value_list:
+            assert f'Invalid metadata: {metadata} at key: {key}. expected value list: {value_list}'
+
+
 def encode_to_string(metadata: dict) -> str:
     return '-'.join([str(v) for v in metadata.values()])
 

@@ -1,7 +1,7 @@
 import networkx as nx
 
 from ..io import save_graph, load_graph
-from .metadata_values import check_metadata_valid
+from .metadata_values import assert_metadata_valid
 
 
 class KnowledgeGraph:
@@ -19,6 +19,9 @@ class KnowledgeGraph:
         self._uuid += 1
         self._graph.add_node(self._uuid, **node)
         return self._uuid
+
+    def is_node_exist(self, node):
+        return self.get_node_id(node) is not None
 
     def get_node_id(self, node):
         for node_id in self._graph.nodes:
@@ -39,7 +42,7 @@ class KnowledgeGraph:
         if lib_name in self._lib_presets:
             raise ValueError(f"{lib_name} already in the lib_presets. "
                              f"We support {list(self._lib_presets.keys())}")
-        check_metadata_valid(metadata)
+        assert_metadata_valid(metadata)
         self._lib_presets[lib_name] = metadata
 
     def save_to_file(self, path):
