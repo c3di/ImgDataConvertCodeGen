@@ -47,11 +47,9 @@ class KnowledgeGraph:
 
     def save_to_file(self, path):
         save_graph(self._graph, path)
-        print(f"Knowledge Graph has been saved to {path}")
 
     def load_from_file(self, path):
         self._graph = load_graph(path)
-        print(f"Knowledge Graph has been loaded from {path}")
 
     def heuristic(self, u, v):
         # todo: how to design the cost function for edge and the heuristic function for each node

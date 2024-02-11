@@ -4,8 +4,8 @@ from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerat
 from src.imgdataconvertcodegen.knowledge_graph_construction.get_knowledge_graph_builder import (
     get_knowledge_graph_builder)
 
-builder = get_knowledge_graph_builder()
-code_generator = ConvertCodeGenerator(builder.knowledge_graph)
+_builder = get_knowledge_graph_builder()
+_code_generator = ConvertCodeGenerator(_builder.knowledge_graph)
 
 
 def get_covert_code(source_var_name: str, source_spec: str | dict, target_var_name: str, target_spec: str | dict):
@@ -20,7 +20,7 @@ def get_covert_code(source_var_name: str, source_spec: str | dict, target_var_na
     Returns: A string containing the Python code necessary to perform the conversion.
 
     """
-    return code_generator.generate_code(source_var_name, source_spec, target_var_name, target_spec)
+    return _code_generator.generate_code(source_var_name, source_spec, target_var_name, target_spec)
 
 
 def get_convert_path(source_spec: str | dict, target_spec: str | dict):
@@ -33,19 +33,19 @@ def get_convert_path(source_spec: str | dict, target_spec: str | dict):
     Returns: A list of metadata
 
     """
-    return code_generator.get_convert_path(source_spec, target_spec)
+    return _code_generator.get_convert_path(source_spec, target_spec)
 
 
 def add_image_metadata(new_metadata):
-    builder.add_new_metadata(new_metadata)
-    code_generator.knowledge_graph = builder.knowledge_graph
+    _builder.add_new_metadata(new_metadata)
+    _code_generator.knowledge_graph = _builder.knowledge_graph
 
 
 def add_convert_code_factory(new_factory: Callable | str):
-    builder.add_new_edge_factory(new_factory)
-    code_generator.knowledge_graph = builder.knowledge_graph
+    _builder.add_new_edge_factory(new_factory)
+    _code_generator.knowledge_graph = _builder.knowledge_graph
 
 
 def add_new_lib_preset(lib_name, metadata):
-    builder.add_lib_preset(lib_name, metadata)
-    code_generator.knowledge_graph = builder.knowledge_graph
+    _builder.add_lib_preset(lib_name, metadata)
+    _code_generator.knowledge_graph = _builder.knowledge_graph

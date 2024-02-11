@@ -1,12 +1,10 @@
 import itertools
 import os.path
-from datetime import datetime
 from typing import Callable
 
 from .knowledge_graph import KnowledgeGraph
 from .metadata_values import assert_metadata_valid
 from ..metadata_differ import is_same_metadata
-from ..measure import get_execution_time
 
 
 class KnowledgeGraphBuilder:
@@ -23,29 +21,22 @@ class KnowledgeGraphBuilder:
     def save_knowledge_graph(self):
         self.knowledge_graph.save_to_file(self._know_graph_file_path)
 
-    def build(self, force_to_rebuild=False) -> KnowledgeGraph:
-        if not force_to_rebuild and os.path.exists(self._know_graph_file_path):
+    def build(self) -> KnowledgeGraph:
+        if os.path.exists(self._know_graph_file_path):
             self.build_from_file(self._know_graph_file_path)
         else:
             self.build_from_scratch(self._edge_factories)
-        print(self.knowledge_graph)
         return self.knowledge_graph
 
     def build_from_file(self, path):
-        start_time = datetime.now()
         self.knowledge_graph.load_from_file(path)
-        end_time = datetime.now()
-        print(get_execution_time(start_time, end_time))
 
     def build_from_scratch(self, factories_to_use: list[Callable]):
-        start_time = datetime.now()
         keys = list(self._metadata_values.keys())
         values_lists = list(self._metadata_values.values())
         for source_value in itertools.product(*values_lists):
             source_metadata = dict(zip(keys, source_value))
             self._build_for_metadata(source_metadata, factories_to_use)
-        end_time = datetime.now()
-        print(get_execution_time(start_time, end_time))
         self.save_knowledge_graph()
 
     def _build_for_metadata(self, source_metadata, factories_to_use: list[Callable]):
