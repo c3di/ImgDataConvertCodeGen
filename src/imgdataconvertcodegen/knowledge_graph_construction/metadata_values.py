@@ -9,7 +9,10 @@ metadata_values = {
 }
 
 
-def check_metadata_valid(metadata: dict):
-    for key, value_list in metadata_values.items():
-        if not metadata.get(key) in value_list:
-            raise f'Invalid metadata: {metadata} at key: {key}. expected value list: {value_list}'
+def encode_to_string(metadata: dict) -> str:
+    return '-'.join([str(v) for v in metadata.values()])
+
+
+def decode_to_dict(metadata_str: str) -> dict:
+    metadata_list = metadata_str.split('-')
+    return {k: v for k, v in zip(metadata_values.keys(), metadata_list)}

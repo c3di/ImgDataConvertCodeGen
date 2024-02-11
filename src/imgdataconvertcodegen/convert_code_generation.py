@@ -1,4 +1,5 @@
 from src.imgdataconvertcodegen.function_util import create_unique_function
+from src.imgdataconvertcodegen.knowledge_graph_construction import encode_to_string
 
 
 class ConvertCodeGenerator:
@@ -26,8 +27,10 @@ class ConvertCodeGenerator:
         return metadata_list
 
     def conversion_functions(self, source_metadata, target_metadata) -> list[str] | None:
-        if (source_metadata, target_metadata) in self._cache:
-            return self._cache[(source_metadata, target_metadata)]
+        source_encode_str = encode_to_string(source_metadata)
+        target_encode_str = encode_to_string(target_metadata)
+        if (source_encode_str, target_encode_str) in self._cache:
+            return self._cache[(source_encode_str, target_encode_str)]
         path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
         if path is None:
             return None
@@ -35,7 +38,7 @@ class ConvertCodeGenerator:
         for i in range(len(path) - 1):
             edge = self.knowledge_graph.get_edge(path[i], path[i + 1])
             functions.append(edge['conversion'])
-        self._cache[(source_metadata, target_metadata)] = functions
+        self._cache[(source_encode_str, target_encode_str)] = functions
         return functions
 
     def generate_code_using_metadata(self, source_var_name, source_metadata,
