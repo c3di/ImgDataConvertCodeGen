@@ -1,4 +1,6 @@
-from src.imgdataconvertcodegen.function_util import create_unique_function
+import uuid
+
+from src.imgdataconvertcodegen.function_util import create_unique_function, extract_func_body
 from src.imgdataconvertcodegen.knowledge_graph_construction import encode_to_string
 
 
@@ -53,11 +55,6 @@ class ConvertCodeGenerator:
             target_var_name (str): The name of the variable that will store the result of the conversion.
             target_metadata (dict): A dictionary containing metadata about the target data.
 
-        Returns:
-            str: A string containing the Python code necessary to perform the conversion. This code includes
-             the definitions of one or more conversion functions and a final line that applies these functions
-             in sequence to achieve the desired transformation.
-
         Examples:
             >>> source_var_name = "source_image"
             >>> source_metadata = {"color_channel": "bgr", "channel_order": "channel last", ...}
@@ -67,29 +64,23 @@ class ConvertCodeGenerator:
             >>> code = convert_code_generator.generate_code_using_metadata(source_var_name, source_metadata,
             >>> target_var_name, target_metadata)
             >>> print(code)
-            def convert_1(var):
-                # Convert BGR to RGB
-                return var[:, :, ::-1]
-            def convert_2(var):
-                # Change data format from HWC to CHW
-                return np.transpose(var, (2, 0, 1))
-            target_image = convert_2(convert_1(source_image))
-
-        Note:
-            The actual implementation of the conversion functions (`convert_1`, `convert_2`, etc.) and their sequence
-             will vary depending on the specifics of the `source_metadata` and `target_metadata`.
-
+            # Convert BGR to RGB
+            var1 = source_image[:, :, ::-1]
+            # Change data format from HWC to CHW
+            var2 = np.transpose(var1, (2, 0, 1))
+            target_image = var2
         """
         functions = self.conversion_functions(source_metadata, target_metadata)
         if functions is None:
             return None
-        definitions = []
-        code = source_var_name
+        code_snippets = []
+        arg = source_var_name
         for function in functions:
-            unique_func = create_unique_function(function)
-            definitions.append(unique_func['function_definition'])
-            code = f"{unique_func['function_name']}({code})"
-        return f'{"\n".join(definitions)}\n{target_var_name} = {code}'
+            return_name = f"var_{uuid.uuid4().hex}"
+            code_snippets.append(extract_func_body(function, arg, return_name))
+            arg = return_name
+        code_snippets.append(f"{target_var_name} = {arg}")
+        return '\n'.join(code_snippets)
 
     def generate_code(self, source_var_name: str, source_spec, target_var_name: str, target_spec) -> str | None:
 
