@@ -2,13 +2,24 @@ import numpy as np
 import torch
 import pytest
 
-from src.imgdataconvertcodegen import code_generator
+from src.imgdataconvertcodegen import _code_generator
 
 
 @pytest.fixture
 def image_data():
     source_image = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
     expected_image = torch.from_numpy(source_image).permute(2, 0, 1).unsqueeze(0)
+
+    return {
+        "source_image": source_image,
+        "expected_image": expected_image
+    }
+
+
+def test_code_generation_using_metadata(image_data):
+    source_image = image_data['source_image']
+    target_var = 'target_result'
+
     source_metadata = {
         "data_representation": "numpy.ndarray",
         "color_channel": "rgb",
@@ -27,15 +38,24 @@ def image_data():
         "intensity_range": "0to255",
         "device": "cpu"
     }
-    return {
-        "source_image": source_image,
-        "expected_image": expected_image,
-        "source_metadata": source_metadata,
-        "target_metadata": target_metadata
-    }
+
+    # Prepare a custom scope that includes both global and local variables to ensure that the dynamically executed code
+    # has access to necessary pre-defined variables and can also store new variables such as 'target_result'.
+    # This is crucial in the pytest environment where test function scopes are isolated, and dynamically defined
+    # variables might not be directly accessible due to Python's scoping rules.
+    scope = globals().copy()
+    scope.update(locals())
+
+    convert_code = _code_generator.generate_code('source_image', source_metadata, target_var, target_metadata)
+    exec(convert_code, scope)
+
+    # Retrieve 'target_result' from the custom scope, ensuring accessibility despite the isolated test function scope
+    target_result = scope.get(target_var)
+
+    assert torch.equal(target_result, image_data['expected_image']), 'expected and actual images are not equal'
 
 
-def test_code_generation(image_data):
+def test_code_generation_using_lib_names(image_data):
     source_image = image_data['source_image']
     target_var = 'target_result'
 
@@ -46,8 +66,7 @@ def test_code_generation(image_data):
     scope = globals().copy()
     scope.update(locals())
 
-    convert_code = code_generator.generate_code('source_image', image_data['source_metadata'],
-                                                target_var, image_data['target_metadata'])
+    convert_code = _code_generator.generate_code('source_image', 'numpy', target_var, 'torch')
     exec(convert_code, scope)
 
     # Retrieve 'target_result' from the custom scope, ensuring accessibility despite the isolated test function scope
