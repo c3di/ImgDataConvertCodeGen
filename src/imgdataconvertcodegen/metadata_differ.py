@@ -38,3 +38,6 @@ def is_only_this_key_differ(metadata_a, metadata_b, key):
     if metadata_a[key] != metadata_b[key]:
         return is_same_metadata(metadata_a, metadata_b, [key])
     return False
+
+def are_same_data_type(metadata_a, metadata_b):
+    return metadata_a.get('data_type') == metadata_b.get('data_type')
