@@ -18,6 +18,7 @@ More values for each key can be found in the `metadata_values.py`.
 from ..metadata_differ import are_both_same_data_repr
 
 # NOTE: the source and target metadata are only different in one attribute
+# When call the function from some libaries, please start from the library name, like torch.tensor
 def torch_channel_order_last_to_first(source_metadata, target_metadata):
     if not are_both_same_data_repr(source_metadata, target_metadata, 'torch.tensor'):
         return None
