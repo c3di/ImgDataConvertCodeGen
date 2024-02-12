@@ -1,4 +1,4 @@
-# when data type is float, the data range is 0-1
+# when data type is float, the data range is 0-1 #ToDo: Is this true ???? Issue#24
 metadata_values = {
     "data_representation": ["torch.tensor", "numpy.ndarray", "PIL.Image", "tf.tensor"],
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
