@@ -1,7 +1,8 @@
 import uuid
 
-from src.imgdataconvertcodegen.function_util import create_unique_function, extract_func_body
+from src.imgdataconvertcodegen.function_util import extract_func_body
 from src.imgdataconvertcodegen.knowledge_graph_construction import encode_to_string
+from src.imgdataconvertcodegen.knowledge_graph_construction import conversion
 
 
 class ConvertCodeGenerator:
@@ -28,7 +29,7 @@ class ConvertCodeGenerator:
             metadata_list.append(self.knowledge_graph.get_node(node_id))
         return metadata_list
 
-    def conversion_functions(self, source_metadata, target_metadata) -> list[str] | None:
+    def get_conversions(self, source_metadata, target_metadata) -> list[conversion] | None:
         source_encode_str = encode_to_string(source_metadata)
         target_encode_str = encode_to_string(target_metadata)
         if (source_encode_str, target_encode_str) in self._cache:
@@ -36,15 +37,15 @@ class ConvertCodeGenerator:
         path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
         if path is None:
             return None
-        functions = []
+        conversions = []
         for i in range(len(path) - 1):
             edge = self.knowledge_graph.get_edge(path[i], path[i + 1])
-            functions.append(edge['conversion'])
-        self._cache[(source_encode_str, target_encode_str)] = functions
-        return functions
+            conversions.append(edge['conversion'])
+        self._cache[(source_encode_str, target_encode_str)] = conversions
+        return conversions
 
     def generate_code_using_metadata(self, source_var_name, source_metadata,
-                                     target_var_name: str, target_metadata) -> str | None:
+                                     target_var_name: str, target_metadata) -> conversion:
         """
         Generates Python code as a string that performs data conversion from a source variable to a target variable
          based on the provided metadata.
@@ -63,26 +64,25 @@ class ConvertCodeGenerator:
             >>> convert_code_generator = ConvertCodeGenerator()
             >>> code = convert_code_generator.generate_code_using_metadata(source_var_name, source_metadata,
             >>> target_var_name, target_metadata)
-            >>> print(code)
-            # Convert BGR to RGB
-            var1 = source_image[:, :, ::-1]
-            # Change data format from HWC to CHW
-            var2 = np.transpose(var1, (2, 0, 1))
-            target_image = var2
+            >>> code
+            ('', '# Convert BGR to RGB\nvar1 = source_image[:, :, ::-1]\n# Change data format from HWC to CHW\nvar2 = np.transpose(var1, (2, 0, 1))\ntarget_image = var2')
         """
-        functions = self.conversion_functions(source_metadata, target_metadata)
-        if functions is None:
+        conversions = self.get_conversions(source_metadata, target_metadata)
+        if conversions is None:
             return None
-        code_snippets = []
+        imports = set()
+        main_body = []
         arg = source_var_name
-        for function in functions:
+        for cvt in conversions:
+            if cvt[0]:
+                imports.add(cvt[0])
             return_name = f"var_{uuid.uuid4().hex}"
-            code_snippets.append(extract_func_body(function, arg, return_name))
+            main_body.append(extract_func_body(cvt[1], arg, return_name))
             arg = return_name
-        code_snippets.append(f"{target_var_name} = {arg}")
-        return '\n'.join(code_snippets)
+        main_body.append(f"{target_var_name} = {arg}")
+        return '\n'.join(imports), '\n'.join(main_body)
 
-    def generate_code(self, source_var_name: str, source_spec, target_var_name: str, target_spec) -> str | None:
+    def generate_code(self, source_var_name: str, source_spec, target_var_name: str, target_spec) -> conversion:
 
         return self.generate_code_using_metadata(source_var_name, self._get_metadata(source_spec),
                                                  target_var_name, self._get_metadata(target_spec))
