@@ -1,4 +1,3 @@
-# when data type is float, the data range is 0-1 #ToDo: Is this true ???? Issue#24
 metadata_values = {
     "data_representation": ["torch.tensor", "numpy.ndarray", "PIL.Image", "tf.tensor"],
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
@@ -6,6 +5,8 @@ metadata_values = {
     "minibatch_input": [True, False],
     "data_type": ['uint8', 'uint16', 'uint32', 'uint64', 'float32', 'int8',
                   'float64', 'double', 'int16', 'int32', 'int64'],
+    # normalized_unsigned: 0-1, normalized_signed: -1 to 1
+    "intensity_range": ['full', 'normalized_unsigned', 'normalized_signed'],
     "device": ['cpu', 'gpu']
 }
 
