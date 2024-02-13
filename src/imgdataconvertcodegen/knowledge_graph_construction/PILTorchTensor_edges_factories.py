@@ -144,8 +144,7 @@ def torch_convert_dtype(source_metadata, target_metadata):
         target_dtype_str = target_metadata.get("data_type")
         dtype_mapping = {
             "uint8": "torch.uint8",
-            "float32": "torch.float",
-            "float64": "torch.float",
+            "float": "torch.float",
             "double": "torch.double",
             "int8": "torch.int8",
             "int16": "torch.int16",
