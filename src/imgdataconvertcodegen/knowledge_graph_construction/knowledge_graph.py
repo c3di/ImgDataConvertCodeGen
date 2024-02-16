@@ -32,6 +32,10 @@ class KnowledgeGraph:
     def get_node(self, node_id):
         return self._graph.nodes[node_id]
 
+    @property
+    def edges(self):
+        return self._graph.edges
+
     def add_edge(self, source_id, target_id, conversion):
         self._graph.add_edge(source_id, target_id, conversion=conversion)
 
