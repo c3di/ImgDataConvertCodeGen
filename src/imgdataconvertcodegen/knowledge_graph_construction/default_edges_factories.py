@@ -57,6 +57,7 @@ def torch_minibatch_input_false_to_true(source_metadata, target_metadata) -> con
 
 # Todo... add more factories from the table
 default_factories = [
+    between_float64_double,
     numpy_between_rgb_bgr,
     numpy_to_torch,
     torch_channel_order_last_to_first,
