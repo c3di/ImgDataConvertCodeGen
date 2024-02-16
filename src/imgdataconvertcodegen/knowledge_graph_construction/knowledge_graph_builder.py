@@ -72,5 +72,5 @@ class KnowledgeGraphBuilder:
         self._build_for_metadata(new_metadata, self._edge_factories)
         self.save_knowledge_graph()
 
-    def add_lib_preset(self, lib_name: str, metadata: dict):
-        self.knowledge_graph.add_lib_preset(lib_name, metadata)
+    def add_lib_preset(self, lib_name: str, color_channel: str, metadata: dict):
+        self.knowledge_graph.add_lib_preset(lib_name, color_channel, metadata)

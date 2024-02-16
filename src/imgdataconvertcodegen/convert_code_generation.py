@@ -44,8 +44,8 @@ class ConvertCodeGenerator:
         self._cache[(source_encode_str, target_encode_str)] = conversions
         return conversions
 
-    def generate_code_using_metadata(self, source_var_name, source_metadata,
-                                     target_var_name: str, target_metadata) -> conversion:
+    def generate_conversion_using_metadata(self, source_var_name, source_metadata,
+                                           target_var_name: str, target_metadata) -> conversion:
         """
         Generates Python code as a string that performs data conversion from a source variable to a target variable
          based on the provided metadata.
@@ -62,32 +62,39 @@ class ConvertCodeGenerator:
             >>> target_var_name = "target_image"
             >>> target_metadata = {"color_channel": "rgb", "channel_order": "channel first", ...}
             >>> convert_code_generator = ConvertCodeGenerator()
-            >>> code = convert_code_generator.generate_code_using_metadata(source_var_name, source_metadata,
+            >>> conversion = convert_code_generator.generate_conversion_using_metadata(source_var_name, source_metadata,
             >>> target_var_name, target_metadata)
-            >>> code
+            >>> conversion
             ('', '# Convert BGR to RGB\nvar1 = source_image[:, :, ::-1]\n# Change data format from HWC to CHW\nvar2 = np.transpose(var1, (2, 0, 1))\ntarget_image = var2')
         """
         conversions = self.get_conversions(source_metadata, target_metadata)
         if conversions is None:
             return None
+        if len(conversions) == 0:
+            return f"{target_var_name} = {source_var_name}"
+
         imports = set()
         main_body = []
         arg = source_var_name
-        for cvt in conversions:
+        for cvt in conversions[:-1]:
             if cvt[0]:
                 imports.add(cvt[0])
             return_name = f"var_{uuid.uuid4().hex}"
             main_body.append(extract_func_body(cvt[1], arg, return_name))
             arg = return_name
-        main_body.append(f"{target_var_name} = {arg}")
+        if conversions[-1][0]:
+            imports.add(conversions[-1][0])
+        main_body.append(extract_func_body(conversions[-1][1], arg, target_var_name))
+
         return '\n'.join(imports), '\n'.join(main_body)
 
-    def generate_code(self, source_var_name: str, source_spec, target_var_name: str, target_spec) -> conversion:
+    def generate_conversion(self, source_var_name: str, source_spec, source_color_channel,
+                            target_var_name: str, target_spec, target_color_channel) -> conversion:
 
-        return self.generate_code_using_metadata(source_var_name, self._get_metadata(source_spec),
-                                                 target_var_name, self._get_metadata(target_spec))
+        return self.generate_conversion_using_metadata(source_var_name, self._get_metadata(source_spec, source_color_channel),
+                                                       target_var_name, self._get_metadata(target_spec, target_color_channel))
 
-    def _get_metadata(self, spec):
+    def _get_metadata(self, spec, color_channel='color'):
         if isinstance(spec, dict):
             return spec
-        return self.knowledge_graph.get_metadata_by_lib_name(spec)
+        return self.knowledge_graph.get_metadata_by_lib_name(spec, color_channel)
