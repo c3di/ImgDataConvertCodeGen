@@ -9,6 +9,14 @@ conversion = Tuple[import_code, convert_code] | None
 # NOTE: the source and target metadata are only different in one attribute
 
 
+def between_float64_double(source_metadata, target_metadata) -> conversion:
+    if ((source_metadata.get('data_type') == 'float64' and
+            target_metadata.get('data_type') == 'double') or
+        (source_metadata.get('data_type') == 'double' and
+            target_metadata.get('data_type') == 'float64')):
+        return "", "def convert(var):\n  var"
+    return None
+
 def numpy_between_rgb_bgr(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, 'numpy.ndarray'):
         return None
