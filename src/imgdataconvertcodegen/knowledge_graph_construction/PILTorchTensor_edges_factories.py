@@ -1,9 +1,5 @@
-from typing import Tuple
 from ..metadata_differ import are_both_same_data_repr, is_only_this_key_differ
-
-import_code = str
-convert_code = str
-conversion = Tuple[import_code, convert_code] | None
+from default_edges_factories import conversion
 
 
 def pil_to_torch(source_metadata, target_metadata) -> conversion:
