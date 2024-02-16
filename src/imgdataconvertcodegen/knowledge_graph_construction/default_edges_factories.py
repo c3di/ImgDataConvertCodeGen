@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from ..metadata_differ import are_both_same_data_repr
+from ..metadata_differ import are_both_same_data_repr, is_only_this_key_differ
 
 import_code = str
 convert_code = str
@@ -9,12 +9,30 @@ conversion = Tuple[import_code, convert_code] | None
 # NOTE: the source and target metadata are only different in one attribute
 
 
+# float64 and double same for "full" intensity_range:
+# numpy.ndarray:
+# https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double
+# https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64 :
+# numpy.float64 alias of double
+# ---
+# torch.tensor:
+# https://pytorch.org/docs/stable/tensors.html :
+# 64-bit floating point: torch.float64 or torch.double
+# ---
+# tf.tensor:
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/framework/dtypes.py#L387C1-L387C17
+# (16.02.2024) line 387: double = float64
+# ===
+# but intensity_range can be also -1 to 1 or 0 to 1, because of scikit-image:
+# https://scikit-image.org/docs/stable/user_guide/data_types.html
+# For scikit-image, it is unconventional to call it double, but we leave that possibility.
 def between_float64_double(source_metadata, target_metadata) -> conversion:
-    if ((source_metadata.get('data_type') == 'float64' and
-            target_metadata.get('data_type') == 'double') or
-        (source_metadata.get('data_type') == 'double' and
-            target_metadata.get('data_type') == 'float64')):
-        return "", "def convert(var):\n  var"
+    if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+        if ((source_metadata.get('data_type') == 'float64' and
+                target_metadata.get('data_type') == 'double') or
+            (source_metadata.get('data_type') == 'double' and
+                target_metadata.get('data_type') == 'float64')):
+            return "", "def convert(var):\n  var"
     return None
 
 def numpy_between_rgb_bgr(source_metadata, target_metadata) -> conversion:
