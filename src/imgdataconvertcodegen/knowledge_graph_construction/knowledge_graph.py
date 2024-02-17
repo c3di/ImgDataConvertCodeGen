@@ -49,6 +49,12 @@ class KnowledgeGraph:
         assert_metadata_valid(metadata)
         self._lib_presets[color_channel][lib_name] = metadata
 
+    def get_metadata_by_lib_name(self, lib_name, color_channel='color'):
+        if lib_name not in self._lib_presets[color_channel]:
+            raise ValueError(f"{lib_name} not in the lib_presets. "
+                             f"We support {list(self._lib_presets[color_channel].keys())}")
+        return self._lib_presets[color_channel][lib_name]
+
     def save_to_file(self, path):
         save_graph(self._graph, path)
 
@@ -66,11 +72,6 @@ class KnowledgeGraph:
         """
         return self._get_shortest_path_using_id(self.get_node_id(source_metadata), self.get_node_id(target_metadata))
 
-    def get_metadata_by_lib_name(self, lib_name, color_channel='color'):
-        if lib_name not in self._lib_presets[color_channel]:
-            raise ValueError(f"{lib_name} not in the lib_presets. "
-                             f"We support {list(self._lib_presets[color_channel].keys())}")
-        return self._lib_presets[color_channel][lib_name]
 
     def _get_shortest_path_using_id(self, source_id, target_id) -> list[str] | None:
         try:
