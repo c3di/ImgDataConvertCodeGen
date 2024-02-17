@@ -81,14 +81,14 @@ def tf_to_torch(source_metadata, target_metadata) -> conversion:
 def pil_rgba_to_rgb(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, "PIL.Image"):
         return None
-    if is_only_this_key_differ(source_metadata, target_metadata, "color_channel"):
-        if (
-            source_metadata.get("color_channel") == "rgba"
-            and target_metadata.get("color_channel") == "rgb"
-        ) or (
-            source_metadata.get("color_channel") == "graya"
-            and target_metadata.get("color_channel") == "gray"
-        ):
+    if (
+        source_metadata.get("color_channel") == "rgba"
+        and target_metadata.get("color_channel") == "rgb"
+    ) or (
+        source_metadata.get("color_channel") == "graya"
+        and target_metadata.get("color_channel") == "gray"
+    ):
+        if is_only_this_key_differ(source_metadata, target_metadata, "color_channel"):
             return (
                 "",
                 """def convert(var):
@@ -124,16 +124,18 @@ def pil_convert_dtype(source_metadata, target_metadata) -> conversion:
 def torch_gpu_cpu(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor"):
         return None
-    if is_only_this_key_differ(source_metadata, target_metadata, "device"):
-        if (
-            source_metadata.get("device") == "gpu"
-            and target_metadata.get("device") == "cpu"
-        ):
+    if (
+        source_metadata.get("device") == "gpu"
+        and target_metadata.get("device") == "cpu"
+    ):
+        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
             return "import torch", "def convert(var):\n  return var.cpu()"
-        if (
-            source_metadata.get("device") == "cpu"
-            and target_metadata.get("device") == "gpu"
-        ):
+
+    if (
+        source_metadata.get("device") == "cpu"
+        and target_metadata.get("device") == "gpu"
+    ):
+        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
             return "import torch", "def convert(var):\n  return var.cuda()"
     return None
 
@@ -175,6 +177,7 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
             "int16": "torch.int16",
             "int32": "torch.int32",
             "int64": "torch.int64",
+            "float64": "torch.double",
         }
         target_dtype = dtype_mapping.get(target_dtype_str, None)
         if target_dtype is None:
@@ -197,16 +200,17 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
 def tf_gpu_cpu(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor"):
         return None
-    if is_only_this_key_differ(source_metadata, target_metadata, "device"):
-        if (
-            source_metadata.get("device") == "gpu"
-            and target_metadata.get("device") == "cpu"
-        ):
+    if (
+        source_metadata.get("device") == "gpu"
+        and target_metadata.get("device") == "cpu"
+    ):
+        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
             return "def convert(var):\n  return tensorflow.device('/cpu:0')(var)"
-        if (
-            source_metadata.get("device") == "cpu"
-            and target_metadata.get("device") == "gpu"
-        ):
+    if (
+        source_metadata.get("device") == "cpu"
+        and target_metadata.get("device") == "gpu"
+    ):
+        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
             return (
                 "import tensorflow as tf",
                 """def convert(var):
@@ -258,6 +262,7 @@ def tf_convert_dtype(source_metadata, target_metadata) -> conversion:
             "int16": "tf.int16",
             "int32": "tf.int32",
             "int64": "tf.int64",
+            "double": "tf.float64",
         }
         target_dtype = dtype_mapping.get(target_dtype_str, None)
         if target_dtype is None:
