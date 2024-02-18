@@ -1,10 +1,6 @@
-from typing import Tuple
+from src.imgdataconvertcodegen.knowledge_graph_construction.edge_factories import conversion
+from src.imgdataconvertcodegen.metadata_differ import are_both_same_data_repr, is_only_this_key_differ
 
-from ..metadata_differ import are_both_same_data_repr, is_only_this_key_differ
-
-import_code = str
-convert_code = str
-conversion = Tuple[import_code, convert_code] | None
 
 # NOTE: the source and target metadata are only different in one attribute
 

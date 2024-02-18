@@ -1,5 +1,5 @@
-from ..metadata_differ import are_both_same_data_repr, is_only_this_key_differ
-from default_edges_factories import conversion
+from src.imgdataconvertcodegen.metadata_differ import are_both_same_data_repr, is_only_this_key_differ
+from src.imgdataconvertcodegen.knowledge_graph_construction.edge_factories import conversion
 
 
 def pil_to_torch(source_metadata, target_metadata) -> conversion:
@@ -282,3 +282,12 @@ def tf_convert_dtype(source_metadata, target_metadata) -> conversion:
                         return tf.cast(var, {target_dtype})""",
         )
     return None
+
+
+pil_factories = [
+    pil_to_torch,
+    pil_to_tf,
+    pil_rgba_to_rgb,
+    pil_convert_dtype,
+    # todo: add more factories
+]

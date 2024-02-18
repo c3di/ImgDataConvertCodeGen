@@ -1,8 +1,7 @@
 import uuid
 
 from src.imgdataconvertcodegen.function_util import extract_func_body
-from src.imgdataconvertcodegen.knowledge_graph_construction import encode_to_string
-from src.imgdataconvertcodegen.knowledge_graph_construction import conversion
+from src.imgdataconvertcodegen.knowledge_graph_construction import encode_to_string, conversion
 
 
 class ConvertCodeGenerator:
