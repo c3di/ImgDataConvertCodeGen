@@ -5,7 +5,7 @@ import networkx as nx
 import pytest
 
 from src.imgdataconvertcodegen.knowledge_graph_construction import lib_presets, KnowledgeGraph
-from test_data.test_nodes_edges_for_kg import test_nodes, test_edges, new_node, new_edge
+from test_data.test_nodes_edges_presets_for_kg import test_nodes, test_edges, new_node, new_edge
 
 
 @pytest.fixture
@@ -71,13 +71,6 @@ def test_save_to_file(kg):
         expected_file_path = os.path.join('test_data', 'knowledge_graph_example.json')
         kg.save_to_file(expected_file_path)
         mock_save_graph.assert_called_once_with(kg._graph, expected_file_path)
-
-
-def test_load_from_file(kg):
-    with patch('src.imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.load_graph') as mock_load_graph:
-        expected_file_path = os.path.join('test_data', 'knowledge_graph_example.json')
-        kg.load_from_file(expected_file_path)
-        mock_load_graph.assert_called_once_with(expected_file_path)
 
 
 def test_update_uuid_after_load_from_file(kg):

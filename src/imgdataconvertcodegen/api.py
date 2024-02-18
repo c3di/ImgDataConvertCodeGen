@@ -16,18 +16,17 @@ def get_conversion(source_var_name: str, source_spec: str | dict,
     Args:
         source_var_name: the name of the variable holding the source data.
         source_spec: the name of library or a dictionary containing metadata about the source data.
-        source_color_channel: the color channel of the source data if the source_spec is a library name. the value could
-            be 'gray' | 'color' | None
         target_var_name:  the name of the variable that will store the result of the conversion.
         target_spec: the same as source_spec
-        target_color_channel: the color channel of the target data if the target_spec is a library name. The value could
-            be 'gray' | 'color' | None
+        source_color_channel: the color channel of the source data if the source_spec is a library name. the value could
+            be 'gray' | 'color'
+        target_color_channel: same as source_color_channel
 
     Returns: A string containing the Python code necessary to perform the conversion.
 
     """
-    return _code_generator.generate_conversion(source_var_name, source_spec, source_color_channel,
-                                               target_var_name, target_spec, target_color_channel)
+    return _code_generator.get_conversion(source_var_name, source_spec, source_color_channel,
+                                          target_var_name, target_spec, target_color_channel)
 
 
 def get_convert_path(source_spec: str | dict, target_spec: str | dict):

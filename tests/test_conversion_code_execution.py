@@ -1,0 +1,35 @@
+import numpy as np
+import torch
+import pytest
+
+from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
+from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+
+
+@pytest.fixture
+def code_generator():
+    kg = KnowledgeGraph()
+    kg.load_from_file('test_data/test_kg_5nodes_4edges.json')
+    return ConvertCodeGenerator(kg)
+
+
+def test_code_generation_using_metadata(code_generator):
+    kg = code_generator.knowledge_graph
+    source_image = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
+    expected_image = torch.from_numpy(source_image).permute(2, 0, 1).unsqueeze(0)
+
+    # Prepare a custom scope that includes both global and local variables to ensure that the dynamically executed code
+    # has access to necessary pre-defined variables and can also store new variables such as 'target_result'.
+    # This is crucial in the pytest environment where test function scopes are isolated, and dynamically defined
+    # variables might not be directly accessible due to Python's scoping rules.
+    scope = globals().copy()
+    scope.update(locals())
+
+    convert_code = code_generator.get_conversion('source_image', kg.get_node(1),
+                                                 'target_image', kg.get_node(5))
+    exec(convert_code, scope)
+
+    # Retrieve 'target_image' from the custom scope, ensuring accessibility despite the isolated test function scope
+    actual_image = scope.get('target_image')
+
+    assert torch.equal(expected_image, actual_image), 'expected and actual images are not equal'

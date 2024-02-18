@@ -33,6 +33,10 @@ class KnowledgeGraph:
         return self._graph.nodes[node_id]
 
     @property
+    def nodes(self):
+        return self._graph.nodes
+
+    @property
     def edges(self):
         return self._graph.edges
 
@@ -72,7 +76,6 @@ class KnowledgeGraph:
 
         """
         return self._get_shortest_path_using_id(self.get_node_id(source_metadata), self.get_node_id(target_metadata))
-
 
     def _get_shortest_path_using_id(self, source_id, target_id) -> list[str] | None:
         try:
