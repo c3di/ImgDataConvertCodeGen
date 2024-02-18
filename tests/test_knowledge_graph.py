@@ -80,6 +80,12 @@ def test_load_from_file(kg):
         mock_load_graph.assert_called_once_with(expected_file_path)
 
 
+def test_update_uuid_after_load_from_file(kg):
+    file_path = os.path.join('test_data', 'test_kg_5nodes_4edges.json')
+    kg.load_from_file(file_path)
+    assert kg._uuid == 5, f"Expected 5, got {kg._uuid}"
+
+
 def test_add_lib_preset(kg):
     lib_name = 'new_lib'
     color_channel = 'color'

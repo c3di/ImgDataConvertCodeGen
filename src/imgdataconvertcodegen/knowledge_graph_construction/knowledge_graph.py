@@ -60,6 +60,7 @@ class KnowledgeGraph:
 
     def load_from_file(self, path):
         self._graph = load_graph(path)
+        self._uuid = max(self._graph.nodes)
 
     def heuristic(self, u, v):
         # todo: how to design the cost function for edge and the heuristic function for each node
