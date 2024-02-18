@@ -7,15 +7,14 @@ from src.imgdataconvertcodegen.io import save_graph, load_graph
 
 def test_load_graph_from_file():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_file_path = os.path.join(current_dir, 'test_data', 'knowledge_graph_example.json')
+    json_file_path = os.path.join(current_dir, 'test_data', 'test_kg_5nodes_4edges.json')
 
     graph = load_graph(json_file_path)
 
     assert isinstance(graph, nx.DiGraph)
     assert len(graph.nodes) == 5, "Graph should have 5 nodes, but it has " + str(len(graph.nodes))
-    assert len(graph.edges) == 5, "Graph should have 5 edges, but it has " + str(len(graph.edges))
+    assert len(graph.edges) == 4, "Graph should have 4 edges, but it has " + str(len(graph.edges))
     assert (1, 2) in graph.edges
-    assert (2, 1) in graph.edges
     assert (1, 3) in graph.edges
     assert (3, 4) in graph.edges
     assert (4, 5) in graph.edges
