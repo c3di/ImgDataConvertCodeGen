@@ -53,17 +53,17 @@ def test_get_node(kg):
 def test_add_edge(kg):
     kg.add_node(new_node)
     kg.add_edge(new_edge[0], new_edge[1], new_edge[2])
-    assert kg.get_edge(new_edge[0], new_edge[1])['conversion'] == new_edge[2], \
-        f"Expected {new_edge[2]}, got {kg.get_edge(new_edge[0], new_edge[1])['conversion']}"
+    assert kg.get_edge_data(new_edge[0], new_edge[1])['conversion'] == new_edge[2], \
+        f"Expected {new_edge[2]}, got {kg.get_edge_data(new_edge[0], new_edge[1])['conversion']}"
 
 
 def test_get_edge(kg):
     expected_edge = test_edges[0]
-    assert kg.get_edge(1, 2)['conversion'] == expected_edge[2], f"Expected {expected_edge[2]}, got {kg.get_edge(1, 2)}"
+    assert kg.get_edge_data(1, 2)['conversion'] == expected_edge[2], f"Expected {expected_edge[2]}, got {kg.get_edge_data(1, 2)}"
 
 
 def test_edge_failure(kg):
-    assert kg.get_edge(2, 3) is None, f"Expected None, got {kg.get_edge(1, 3)}"
+    assert kg.get_edge_data(2, 3) is None, f"Expected None, got {kg.get_edge_data(1, 3)}"
 
 
 def test_save_to_file(kg):

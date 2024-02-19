@@ -28,8 +28,9 @@ def between_float64_double(source_metadata, target_metadata) -> conversion:
                 target_metadata.get('data_type') == 'double') or
             (source_metadata.get('data_type') == 'double' and
                 target_metadata.get('data_type') == 'float64')):
-            return "", "def convert(var):\n  var"
+            return "", "def convert(var):\n  return var"
     return None
+
 
 def numpy_between_rgb_bgr(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, 'numpy.ndarray'):

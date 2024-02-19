@@ -14,6 +14,7 @@ def get_test_image(metadata):
     elif metadata["data_representation"] == "torch.tensor":
         return get_torch_image(metadata)
     else:
+        # todo add other data representations
         raise ValueError(f"Unsupported data representation: {metadata['data_representation']}")
 
 
@@ -38,6 +39,7 @@ def get_torch_image(metadata):
         img = torch.stack([torch.from_numpy(b), torch.from_numpy(g), torch.from_numpy(r)], dim=-1)
     elif metadata["color_channel"] == "gray":
         img = torch.from_numpy(gray)
+        img = img.unsqueeze(-1)
 
     if metadata["channel_order"] == "channel first":
         img = img.permute(2, 0, 1)

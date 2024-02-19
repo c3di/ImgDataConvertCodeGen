@@ -105,7 +105,7 @@ class ConvertCodeGenerator:
         return '\n'.join(main_body) if len(imports) == 0 else '\n'.join(imports) + '\n' + '\n'.join(main_body)
 
     def _get_conversion_per_step(self, source_id, target_id, arg, return_name):
-        conversion_on_edge = self.knowledge_graph.get_edge(source_id, target_id)['conversion']
+        conversion_on_edge = self.knowledge_graph.get_edge_data(source_id, target_id)['conversion']
         imports = conversion_on_edge[0]
         main_body = extract_func_body(conversion_on_edge[1], arg, return_name)
         return imports, main_body

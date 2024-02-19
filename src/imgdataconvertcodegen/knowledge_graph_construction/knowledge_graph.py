@@ -1,7 +1,7 @@
 import networkx as nx
 
 from ..io import save_graph, load_graph
-from .metadata_values import assert_metadata_valid
+from .metadata_values import assert_metadata_value_valid
 
 
 class KnowledgeGraph:
@@ -40,17 +40,17 @@ class KnowledgeGraph:
     def edges(self):
         return self._graph.edges
 
-    def add_edge(self, source_id, target_id, conversion):
-        self._graph.add_edge(source_id, target_id, conversion=conversion)
+    def add_edge(self, source_id, target_id, conversion, factory=None):
+        self._graph.add_edge(source_id, target_id, conversion=conversion, factory=factory)
 
-    def get_edge(self, source_id, target_id):
+    def get_edge_data(self, source_id, target_id):
         return self._graph.get_edge_data(source_id, target_id)
 
     def add_lib_preset(self, lib_name, color_channel, metadata):
         if lib_name in self._lib_presets[color_channel]:
             raise ValueError(f"{lib_name} already in the lib_presets. "
                              f"We support {list(self._lib_presets[color_channel].keys())}")
-        assert_metadata_valid(metadata)
+        assert_metadata_value_valid(metadata)
         self._lib_presets[color_channel][lib_name] = metadata
 
     def get_metadata_by_lib_name(self, lib_name, color_channel='color'):

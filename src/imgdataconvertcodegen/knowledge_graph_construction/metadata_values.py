@@ -1,3 +1,5 @@
+from ..metadata_differ import is_same_metadata
+
 metadata_values = {
     "data_representation": ["torch.tensor", "numpy.ndarray", "PIL.Image", "tf.tensor"],
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
@@ -11,7 +13,17 @@ metadata_values = {
 }
 
 
-def assert_metadata_valid(metadata: dict):
+def is_valid_metadata(metadata: dict):
+    if metadata['color_channel'] == 'rgba' or metadata['color_channel'] == 'graya':
+        return metadata['data_representation'] == 'PIL.Image'
+    return True
+
+
+def is_valid_metadata_pair(source_metadata: dict, target_metadata: dict):
+    return not is_same_metadata(source_metadata, target_metadata)
+
+
+def assert_metadata_value_valid(metadata: dict):
     for key, value_list in metadata_values.items():
         if not metadata.get(key) in value_list:
             assert f'Invalid metadata: {metadata} at key: {key}. expected value list: {value_list}'
