@@ -1,61 +1,109 @@
-ImgDataConvertCodeGen
-=====================
+=====================================================
+Knowledge Graph-Driven Image Data Conversion Code Generation
+=====================================================
 
-Image Data Conversion Code Generation Across Python Libraries for Semantic Interoperability.
+Introduction
+------------
 
-Issue
+#todo - Provide a brief description of the tool, its purpose, key features, and any unique benefits or innovative aspects it offers.
 
-* version of image processing libraries
 
+Installation
+------------
+
+Install the tool directly using pip:
+
+.. code-block:: bash
+
+    pip install imgdataconvertcodegen
+
+Or for a more manual installation:
+
+.. code-block:: bash
+
+    git clone git@github.com:c3di/ImgDataConvertCodeGen.git
+    cd imgdataconvertcodegen
+    python setup.py install
 
 Usage
 -----
-.. code-block:: python
 
-    source_image = ...
-    # target variable name. This will be used to store the result of the conversion.
-    target_var = 'target_result'
+.. code-block:: bash
 
-    # Conversion code generation
-    convert_code = code_generator.generate_code('source_image', source_metadata,
-                                                target_var, target_metadata)
+   imgdataconvertcodegen  --help
 
-    # Image data conversion and store the result in the target variable
-    exec(convert_code)
+Example:
+
+.. code-block:: bash
+
+    #todo imgdataconvertcodegen example_command -option1 -option2
 
 
-Usage
------
-.. code-block:: python
+Develop
+-------
+
+Setting Up Development Environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Clone the repository
+
+.. code-block:: bash
+
+    git clone git@github.com:c3di/ImgDataConvertCodeGen.git
+
+Use the ``requirements_dev.txt`` file to install all necessary development dependencies.
+
+.. code-block:: bash
+
+    pip install -r requirements_dev.txt
+
+Tests
+~~~~~
+
+There are two ways to run the unit tests for this project.
+
+1. Using ``tox`` from the command line:
+
+   .. code-block:: bash
+
+       tox
+
+   ``tox`` will download the dependencies from ``requirements_tests.txt``, build the package, install it in a virtual environment and run the tests using ``pytest``. For detailed configuration options, please go to `tox documentation <https://tox.wiki/en/stable/>`__.
 
 
-source_image = ...
-# define the target variable name. This will be used to store the result of the conversion.
-target_var = 'target_result'
 
-# conversion code generator
-convert_code = code_generator.generate_code('source_image', image_data['source_metadata'],
-                                            target_var, image_data['target_metadata'])
-# image data conversion and store the result in the target variable
-exec(convert_code)
+2. Using ``pytest`` within the testing framework of an IDE like PyCharm:
 
+   * Install all dependencies for tests:
 
+     .. code-block:: bash
 
+        pip install -r requirements_tests.txt
 
+   * To run tests in the IDE, the project must be installed in editable mode.
 
+     .. code-block:: bash
 
+         pip install -e .
 
+   * Set ``Dev`` environment variable to ``True`` in the IDE's run configuration.
 
+     .. code-block:: none
 
-API
-addnodes,
-addedge,
-addEdgefactory,
-build_knowledge
-add preset for libraries.
+         Dev=True
 
+   * Run the tests through test runner interface of IDE.
 
-code generator
+Build
+~~~~~
+#todo
 
-image data convert
-API two interfaces
+publish
+~~~~~
+
+#todo
+License
+-------
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
