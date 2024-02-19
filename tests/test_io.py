@@ -1,8 +1,10 @@
 import os
-import pytest
-import networkx as nx
 from unittest.mock import patch, mock_open
-from src.imgdataconvertcodegen.io import save_graph, load_graph
+
+import networkx as nx
+import pytest
+
+from imgdataconvertcodegen import save_graph, load_graph
 
 
 def test_load_graph_from_file():

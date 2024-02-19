@@ -1,6 +1,6 @@
 import re
 from unittest.mock import patch
-from src.imgdataconvertcodegen.function_util import create_unique_function, extract_func_body
+from imgdataconvertcodegen import create_unique_function, extract_func_body
 
 
 def test_create_unique_function_name_replacement():
@@ -11,7 +11,7 @@ def original_function_name(a, b):
 
     expected_new_name_prefix = "cvt_"
 
-    with patch('src.imgdataconvertcodegen.function_util.uuid') as mock_uuid:
+    with patch('imgdataconvertcodegen.function_util.uuid') as mock_uuid:
 
         mock_uuid.uuid4.return_value.hex = "1234567890abcdef"
         expected_uuid = "1234567890abcdef"

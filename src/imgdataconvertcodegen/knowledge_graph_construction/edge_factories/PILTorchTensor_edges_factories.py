@@ -1,5 +1,5 @@
-from src.imgdataconvertcodegen.metadata_differ import are_both_same_data_repr, is_only_this_key_differ
-from src.imgdataconvertcodegen.knowledge_graph_construction.edge_factories import conversion
+from .type import conversion
+from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
 
 
 def pil_to_torch(source_metadata, target_metadata) -> conversion:

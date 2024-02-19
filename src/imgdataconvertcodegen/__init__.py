@@ -3,7 +3,8 @@ from .api import get_conversion, get_convert_path, add_convert_code_factory, add
 from .api import _code_generator, _builder
 from .metadata_differ import *
 from .function_util import *
-from .measure import get_execution_time
+from .measure import *
+from .io import *
 
 
 if sys.version_info[:2] >= (3, 8):

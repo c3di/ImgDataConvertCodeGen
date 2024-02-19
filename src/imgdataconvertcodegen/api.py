@@ -1,8 +1,7 @@
 from typing import Callable
 
-from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction.get_knowledge_graph_builder import (
-    get_knowledge_graph_builder)
+from .convert_code_generation import ConvertCodeGenerator
+from .knowledge_graph_construction.get_knowledge_graph_builder import get_knowledge_graph_builder
 
 _builder = get_knowledge_graph_builder()
 _code_generator = ConvertCodeGenerator(_builder.knowledge_graph)

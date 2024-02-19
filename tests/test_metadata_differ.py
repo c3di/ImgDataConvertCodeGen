@@ -1,4 +1,5 @@
-from src.imgdataconvertcodegen.metadata_differ import *
+from imgdataconvertcodegen import are_both_same_data_repr, is_single_metadata_differ, is_same_metadata, \
+    is_only_this_key_differ
 
 
 def test_both_metadata_match_data_repr():

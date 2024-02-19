@@ -1,15 +1,17 @@
-import numpy as np
-import torch
-import pytest
+import os
 
-from src.imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+import numpy as np
+import pytest
+import torch
+
+from imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
+from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 
 
 @pytest.fixture
 def code_generator():
     kg = KnowledgeGraph()
-    kg.load_from_file('test_data/test_kg_5nodes_4edges.json')
+    kg.load_from_file(os.path.join(os.path.dirname(__file__), 'test_data/test_kg_5nodes_4edges.json'))
     return ConvertCodeGenerator(kg)
 
 

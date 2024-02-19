@@ -1,4 +1,4 @@
-from src.imgdataconvertcodegen import are_both_same_data_repr
+from imgdataconvertcodegen import are_both_same_data_repr
 
 
 def numpy_rgb_to_bgr(source_metadata, target_metadata):

@@ -3,7 +3,7 @@ import re
 import numpy as np
 import torch
 
-from src.imgdataconvertcodegen import _code_generator
+from imgdataconvertcodegen import _code_generator
 from test_data.test_image_data import get_test_image
 
 
