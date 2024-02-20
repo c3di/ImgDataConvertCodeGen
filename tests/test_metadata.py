@@ -28,12 +28,28 @@ def test_assert_metadata_value_valid():
 
 
 def test_encode_to_string():
-    metadata = {'key1': 'value1', 'key2': 'value3'}
+    metadata = {
+        "data_representation": "torch.tensor",
+        "color_channel": 'rgb',
+        "channel_order": 'channel first',
+        "minibatch_input": True,
+        "data_type": 'uint8',
+        "intensity_range": 'full',
+        "device": 'gpu'
+    }
     encoded = encode_to_string(metadata)
-    assert encoded == 'value1-value3'
+    assert encoded == 'torch.tensor-rgb-channel first-True-uint8-full-gpu'
 
 
 def test_decode_to_dict():
-    metadata_str = 'value1-value3'
+    metadata_str = 'torch.tensor-rgb-channel first-True-uint8-full-gpu'
     decoded = decode_to_dict(metadata_str)
-    assert decoded == {'key1': 'value1', 'key2': 'value3'}
+    assert decoded == {
+        "data_representation": "torch.tensor",
+        "color_channel": 'rgb',
+        "channel_order": 'channel first',
+        "minibatch_input": True,
+        "data_type": 'uint8',
+        "intensity_range": 'full',
+        "device": 'gpu'
+    }
