@@ -1,6 +1,6 @@
 import uuid
 
-from .function_util import extract_func_body
+from .util import extract_func_body
 from .knowledge_graph_construction import encode_to_string
 
 

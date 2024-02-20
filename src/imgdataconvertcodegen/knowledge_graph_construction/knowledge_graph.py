@@ -1,7 +1,7 @@
 import networkx as nx
 
-from ..io import save_graph, load_graph
-from .metadata_values import assert_metadata_value_valid
+from .io import save_graph, load_graph
+from .metadata import check_metadata_value_valid
 
 
 class KnowledgeGraph:
@@ -50,7 +50,7 @@ class KnowledgeGraph:
         if lib_name in self._lib_presets[color_channel]:
             raise ValueError(f"{lib_name} already in the lib_presets. "
                              f"We support {list(self._lib_presets[color_channel].keys())}")
-        assert_metadata_value_valid(metadata)
+        check_metadata_value_valid(metadata)
         self._lib_presets[color_channel][lib_name] = metadata
 
     def get_metadata_by_lib_name(self, lib_name, color_channel='color'):

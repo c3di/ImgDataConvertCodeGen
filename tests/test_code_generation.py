@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
+from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from test_data.test_nodes_edges_presets_for_kg import test_lib_preset
 
@@ -18,6 +18,13 @@ def code_generator():
 def test_convert_code_generator_init(code_generator):
     assert len(code_generator.knowledge_graph.nodes) == 5, \
         "Expected 5, but got " + str(code_generator.knowledge_graph.nodes)
+
+
+def test_knowledge_graph_property(code_generator):
+    new_kg = KnowledgeGraph(test_lib_preset)
+    code_generator.knowledge_graph = new_kg
+    assert code_generator.knowledge_graph == new_kg, (
+            "Expected " + str(new_kg) + ", but got " + str(code_generator.knowledge_graph))
 
 
 def test_conversion_path(code_generator):
@@ -62,7 +69,7 @@ def test_generate_conversion_multiple_steps(code_generator):
     kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
-    with (patch('imgdataconvertcodegen.convert_code_generation.uuid.uuid4') as mock_uuid):
+    with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
         mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
         generated_code = code_generator.get_conversion(source_var, kg.get_node(1), target_var, kg.get_node(5))
 
@@ -72,3 +79,21 @@ def test_generate_conversion_multiple_steps(code_generator):
                          'result = torch.unsqueeze(var_second_uuid_hex, 0)')
 
         assert generated_code == expected_code, f'Expected {expected_code}, but got {str(generated_code)}'
+
+
+def test_generate_conversion_using_cache(code_generator):
+    kg = code_generator.knowledge_graph
+    source_var = 'source_var'
+    target_var = 'result'
+    with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
+        mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
+        generated_code = code_generator.get_conversion(source_var, kg.get_node(1), target_var, kg.get_node(5))
+        assert list(code_generator._cache.values()) == [generated_code], f"Code not cached"
+
+        code_from_cache = code_generator.get_conversion(source_var, kg.get_node(1), target_var, kg.get_node(5))
+        expected_code = ('import torch\n'
+                         'var_first_uuid_hex = torch.from_numpy(source_var)\n'
+                         'var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)\n'
+                         'result = torch.unsqueeze(var_second_uuid_hex, 0)')
+
+        assert code_from_cache == expected_code, f'Expected {expected_code}, but got {str(code_from_cache)}'

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import torch
 
-from imgdataconvertcodegen.convert_code_generation import ConvertCodeGenerator
+from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 
 

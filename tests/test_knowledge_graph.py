@@ -125,3 +125,8 @@ def test_get_shortest_path_no_path(kg):
 def test_get_shortest_path_same_node(kg):
     path = kg.get_shortest_path(kg.get_node(1), kg.get_node(1))
     assert path == [1], f"Expected [1], got {path}"
+
+
+def test_knowledge_graph_str(kg):
+    expected_str = "Knowledge Graph with 4 nodes and 3 edges."
+    assert str(kg) == expected_str, f"Expected {expected_str}, got {str(kg)}"

@@ -6,18 +6,7 @@ console script. To run this script uncomment the following lines in the
     console_scripts =
          fibonacci = imgdataconvertcodegen.skeleton:run
 
-Then run ``pip install .`` (or ``pip install -e .`` for editable mode)
-which will install the command ``fibonacci`` inside your current environment.
 
-Besides console scripts, the header (i.e. until ``_logger``...) of this file can
-also be used as template for Python modules.
-
-Note:
-    This file can be renamed depending on your needs or safely removed if not needed.
-
-References:
-    - https://setuptools.pypa.io/en/latest/userguide/entry_point.html
-    - https://pip.pypa.io/en/stable/reference/pip_install
 """
 
 import argparse
@@ -28,38 +17,9 @@ from imgdataconvertcodegen import __version__
 
 __author__ = "Fei Chen"
 __copyright__ = "Fei Chen"
-__license__ = "MIT"
 
 _logger = logging.getLogger(__name__)
 
-
-# ---- Python API ----
-# The functions defined in this section can be imported by users in their
-# Python scripts/interactive interpreter, e.g. via
-# `from imgdataconvertcodegen.skeleton import fib`,
-# when using this Python module as a library.
-
-
-def fib(n):
-    """Fibonacci example function
-
-    Args:
-      n (int): integer
-
-    Returns:
-      int: n-th Fibonacci number
-    """
-    assert n > 0
-    a, b = 1, 1
-    for _i in range(n - 1):
-        a, b = b, a + b
-    return a
-
-
-# ---- CLI ----
-# The functions defined in this section are wrappers around the main Python
-# API allowing them to be called directly from the terminal as a CLI
-# executable/script.
 
 
 def parse_args(args):
@@ -111,10 +71,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Wrapper allowing :func:`fib` to be called with string arguments in a CLI fashion
-
-    Instead of returning the value from :func:`fib`, it prints the result to the
-    ``stdout`` in a nicely formatted message.
+    """
 
     Args:
       args (List[str]): command line parameters as list of strings

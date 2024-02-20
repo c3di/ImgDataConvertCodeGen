@@ -23,10 +23,10 @@ def is_valid_metadata_pair(source_metadata: dict, target_metadata: dict):
     return not is_same_metadata(source_metadata, target_metadata)
 
 
-def assert_metadata_value_valid(metadata: dict):
+def check_metadata_value_valid(metadata: dict):
     for key, value_list in metadata_values.items():
         if not metadata.get(key) in value_list:
-            assert f'Invalid metadata: {metadata} at key: {key}. expected value list: {value_list}'
+            raise ValueError(f'Invalid metadata: {metadata} at key: {key}. Expected value list: {value_list}')
 
 
 def encode_to_string(metadata: dict) -> str:

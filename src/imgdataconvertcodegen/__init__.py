@@ -1,10 +1,7 @@
 import sys
-from .api import get_conversion, get_convert_path, add_convert_code_factory, add_image_metadata, add_new_lib_preset
-from .api import _code_generator, _builder
+from .interface_py_api import get_conversion, get_convert_path, add_convert_code_factory, add_image_metadata, add_new_lib_preset
+from .interface_py_api import _code_generator, _builder
 from .metadata_differ import *
-from .function_util import *
-from .measure import *
-from .io import *
 
 
 if sys.version_info[:2] >= (3, 8):

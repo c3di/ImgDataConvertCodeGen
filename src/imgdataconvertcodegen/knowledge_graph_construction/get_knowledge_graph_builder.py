@@ -1,7 +1,7 @@
 import os
 
 from .edge_factories import all_edge_factories
-from .metadata_values import metadata_values
+from .metadata import metadata_values
 from .lib_presets import lib_presets
 from .knowledge_graph_builder import KnowledgeGraphBuilder
 

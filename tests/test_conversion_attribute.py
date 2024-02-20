@@ -24,6 +24,10 @@ def test_conversion_property_of_edge():
         assert conversion is not None, f"No conversion from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}"
         assert len(conversion) == 2, (f"Expected two elements in the conversions, but got: {conversion} from"
                                       f" {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
+        assert isinstance(conversion[0], str), (f"Expected the first element of the conversion to be a string, but got:"
+                                                f" {conversion[0]} from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
+        assert isinstance(conversion[1], str), (f"Expected the second element of the conversion to be a string, but got:"
+                                                f" {conversion[1]} from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
 
         source_metadata = kg.get_node(edge[0])
         source_image = get_test_image(source_metadata)

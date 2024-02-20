@@ -3,7 +3,7 @@ import os.path
 from typing import Callable
 
 from .knowledge_graph import KnowledgeGraph
-from .metadata_values import assert_metadata_value_valid, is_valid_metadata, is_valid_metadata_pair
+from .metadata import check_metadata_value_valid, is_valid_metadata, is_valid_metadata_pair
 
 
 class KnowledgeGraphBuilder:
@@ -68,7 +68,7 @@ class KnowledgeGraphBuilder:
         self.build_from_scratch([factory])
 
     def add_new_metadata(self, new_metadata: dict):
-        assert_metadata_value_valid(new_metadata)
+        check_metadata_value_valid(new_metadata)
         if self.knowledge_graph.is_node_exist(new_metadata):
             return
         self._build_for_metadata(new_metadata, self._edge_factories)
