@@ -170,14 +170,14 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
     if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
         target_dtype_str = target_metadata.get("data_type")
         dtype_mapping = {
-            "uint8": "torch.uint8",
-            "float": "torch.float",
-            "double": "torch.double",
-            "int8": "torch.int8",
-            "int16": "torch.int16",
-            "int32": "torch.int32",
-            "int64": "torch.int64",
-            "float64": "torch.double",
+            "uint8": "uint8",
+            "float": "float",
+            "double": "double",
+            "int8": "int8",
+            "int16": "int16",
+            "int32": "int32",
+            "int64": "int64",
+            "float64": "double",
         }
         target_dtype = dtype_mapping.get(target_dtype_str, None)
         if target_dtype is None:
@@ -186,10 +186,10 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
         return (
             "import torch",
             f"""def convert(var):
-                    if '{target_dtype}' == 'torch.float':
+                    if '{target_dtype}' == 'float':
                         max_val = 1.0
-                        if var.dtype in [torch.uint8, torch.double, torch.int8, torch.int16, torch.int32, torch.int64]:
-                            max_val = torch.iinfo(var.dtype).max   
+                        if var.dtype in [uint8, double, int8, int16, int32, int64]:
+                            max_val = iinfo(var.dtype).max   
                     return (var / max_val).to({target_dtype})
                     else:
                         return var.to({target_dtype})""",
