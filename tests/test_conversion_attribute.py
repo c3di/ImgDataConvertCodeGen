@@ -30,9 +30,9 @@ def test_conversion_property_of_edge():
                                                 f" {conversion[1]} from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
 
         source_metadata = kg.get_node(edge[0])
-        source_image = get_test_image(source_metadata, target = False)
+        source_image = get_test_image(source_metadata)
         target_metadata = kg.get_node(edge[1])
-        target_image = get_test_image(target_metadata, target = True)
+        target_image = get_test_image(target_metadata)
         func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
 
         scope = {}
