@@ -29,10 +29,12 @@ def check_metadata_value_valid(metadata: dict):
             raise ValueError(f'Invalid metadata: {metadata} at key: {key}. Expected value list: {value_list}')
 
 
-def encode_to_string(metadata: dict) -> str:
+def encode_metadata(metadata: dict) -> str:
     return '-'.join([str(v) for v in metadata.values()])
 
 
-def decode_to_dict(metadata_str: str) -> dict:
+def decode_metadata(metadata_str: str) -> dict:
     metadata_list = metadata_str.split('-')
-    return {k: v for k, v in zip(metadata_values.keys(), metadata_list)}
+    metadata = {k: v for k, v in zip(metadata_values.keys(), metadata_list)}
+    metadata['minibatch_input'] = True if metadata['minibatch_input'] == 'True' else False
+    return metadata

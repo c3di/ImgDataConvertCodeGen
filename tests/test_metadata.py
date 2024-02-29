@@ -1,7 +1,7 @@
 import pytest
 
 from imgdataconvertcodegen.knowledge_graph_construction.metadata import is_valid_metadata_pair, \
-    check_metadata_value_valid, encode_to_string, decode_to_dict
+    check_metadata_value_valid, encode_metadata, decode_metadata
 
 
 def test_is_valid_metadata_pair():
@@ -37,13 +37,13 @@ def test_encode_to_string():
         "intensity_range": 'full',
         "device": 'gpu'
     }
-    encoded = encode_to_string(metadata)
+    encoded = encode_metadata(metadata)
     assert encoded == 'torch.tensor-rgb-channel first-True-uint8-full-gpu'
 
 
 def test_decode_to_dict():
     metadata_str = 'torch.tensor-rgb-channel first-True-uint8-full-gpu'
-    decoded = decode_to_dict(metadata_str)
+    decoded = decode_metadata(metadata_str)
     assert decoded == {
         "data_representation": "torch.tensor",
         "color_channel": 'rgb',
