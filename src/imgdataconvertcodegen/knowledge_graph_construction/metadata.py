@@ -16,6 +16,13 @@ metadata_values = {
 def is_valid_metadata(metadata: dict):
     if metadata['color_channel'] == 'rgba' or metadata['color_channel'] == 'graya':
         return metadata['data_representation'] == 'PIL.Image'
+    if metadata['data_representation'] == 'torch.tensor':
+        for type in ['uint8', 'float32', 'int8', 'int16', 'int32', 'float64', 'double', 'int64']:
+            if metadata['data_type'] == type:
+                if metadata['data_type'] == 'float32' and metadata['intensity_range'] != 'normalized_unsigned':
+                    return False
+                return True
+        return False
     return True
 
 
