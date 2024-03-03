@@ -45,7 +45,7 @@ class KnowledgeGraphBuilder:
             for target_value in self._metadata_values[attribute_name]:
                 target_metadata = source_metadata.copy()
                 target_metadata[attribute_name] = target_value
-                if ((not is_valid_metadata(source_metadata)) or
+                if ((not is_valid_metadata(target_metadata)) or
                         (not is_valid_metadata_pair(source_metadata, target_metadata))):
                     continue
                 convert_function, used_factory = self._create_conversion_function(source_metadata, target_metadata, factories_to_use)

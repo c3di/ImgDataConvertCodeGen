@@ -1,7 +1,7 @@
 import uuid
 
 from .util import extract_func_body
-from .knowledge_graph_construction import encode_to_string
+from .knowledge_graph_construction import encode_metadata
 
 
 class ConvertCodeGenerator:
@@ -75,8 +75,8 @@ class ConvertCodeGenerator:
             >>> conversion
             ('', '# Convert BGR to RGB\nvar1 = source_image[:, :, ::-1]\n# Change data format from HWC to CHW\nvar2 = np.transpose(var1, (2, 0, 1))\ntarget_image = var2')
         """
-        source_encode_str = encode_to_string(source_metadata)
-        target_encode_str = encode_to_string(target_metadata)
+        source_encode_str = encode_metadata(source_metadata)
+        target_encode_str = encode_metadata(target_metadata)
         if (source_encode_str, target_encode_str) in self._cache:
             return self._cache[(source_encode_str, target_encode_str)]
 
