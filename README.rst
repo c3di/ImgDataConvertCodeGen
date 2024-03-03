@@ -1,5 +1,5 @@
 =====================================================
-Knowledge Graph-Driven Code Generation for Image Data Conversion
+Automatically Generating Conversion Code for In-memory Representations of Images using a Knowledge Graph of Data Types
 =====================================================
 
 Introduction
