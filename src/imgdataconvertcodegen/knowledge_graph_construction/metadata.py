@@ -5,8 +5,9 @@ metadata_values = {
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
     "channel_order": ['channel last', 'channel first', 'none'],
     "minibatch_input": [True, False],
-    "data_type": ['uint8', 'uint16', 'uint32', 'uint64', 'float32', 'int8',
-                  'float64', 'double', 'int16', 'int32', 'int64'],
+    "data_type": ['uint8', 'uint16', 'uint32', 'uint64',
+                  'float32', 'float64', 'double',
+                  'int8', 'int16', 'int32', 'int64'],
     # normalized_unsigned: 0-1, normalized_signed: -1 to 1
     "intensity_range": ['full', 'normalized_unsigned', 'normalized_signed'],
     "device": ['cpu', 'gpu']

@@ -23,11 +23,9 @@ from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
 # https://scikit-image.org/docs/stable/user_guide/data_types.html
 # For scikit-image, it is unconventional to call it double, but we leave that possibility.
 def between_float64_double(source_metadata, target_metadata) -> conversion:
-    if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
-        if ((source_metadata.get('data_type') == 'float64' and
-                target_metadata.get('data_type') == 'double') or
-            (source_metadata.get('data_type') == 'double' and
-                target_metadata.get('data_type') == 'float64')):
+    if (source_metadata.get('data_type') == 'float64' and target_metadata.get('data_type') == 'double') or (
+            source_metadata.get('data_type') == 'double' and target_metadata.get('data_type') == 'float64'):
+        if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
             return "", "def convert(var):\n  return var"
     return None
 
