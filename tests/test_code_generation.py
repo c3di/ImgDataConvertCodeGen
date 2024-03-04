@@ -5,13 +5,13 @@ import pytest
 
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
-from test_data.test_nodes_edges_presets_for_kg import test_lib_preset
+from data_for_tests.nodes_edges_presets_for_kg import test_lib_preset
 
 
 @pytest.fixture
 def code_generator():
     kg = KnowledgeGraph(test_lib_preset)
-    kg.load_from_file(os.path.join(os.path.dirname(__file__), 'test_data/test_kg_5nodes_4edges.json'))
+    kg.load_from_file(os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json'))
     return ConvertCodeGenerator(kg)
 
 

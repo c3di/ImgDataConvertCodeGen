@@ -9,7 +9,7 @@ from imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, lo
 
 def test_load_graph_from_file():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_file_path = os.path.join(current_dir, 'test_data', 'test_kg_5nodes_4edges.json')
+    json_file_path = os.path.join(current_dir, 'data_for_tests', 'kg_5nodes_4edges.json')
 
     graph = load_graph(json_file_path)
 
