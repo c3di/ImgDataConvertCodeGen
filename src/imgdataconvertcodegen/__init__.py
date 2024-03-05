@@ -1,6 +1,7 @@
 import sys
 from .interface_py_api import get_conversion, get_convert_path, add_convert_code_factory, add_image_metadata, add_new_lib_preset
 from .interface_py_api import _code_generator, _builder
+from .knowledge_graph_construction import find_closest_metadata
 from .metadata_differ import *
 
 
