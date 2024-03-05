@@ -59,7 +59,29 @@ actual_image = {func_name}(source_image)""", scope)
                                                         f"{edge_data.get('factory')}")
 
 
-@pytest.mark.skipif(check_no_cuda_gpu, reason="Test skipped: No Cuda GPU")
+def is_edge_without_gpu(kg, edge):
+    source_metadata_device = (kg.get_node(edge[0]))['device']
+    target_metadata_device = (kg.get_node(edge[1]))['device']
+    return source_metadata_device == 'cpu' and target_metadata_device == 'cpu'
+
+
+# ToDo 1. test this code with @pytest.mark.skipif and without! (Commit with the decorator)
+# ToDo-Note: Test (without skipping = on system without gpu) is failing - somewhere is a bug
+# ToDo 2. find the bug
+@pytest.mark.skipif(torch.cuda.is_available(), reason="Testing only if no CUDA-enabled GPU")
+def test_conversion_property_of_edge_without_gpu():
+    kg = _code_generator.knowledge_graph
+    for edge in kg.edges:
+        if is_edge_without_gpu(kg, edge):
+            edge_data = kg.get_edge_data(edge[0], edge[1])
+            conversion = edge_data.get('conversion')
+            edge_assertions(kg, edge, edge_data, conversion)
+
+
+# ToDo 1. test this code with @pytest.mark.skipif and without! (Commit with the decorator)
+# ToDo-Note: if the test is passing is unknown (I worked on a system without cuda gpu)
+# ToDo-Note: if both not passing start with is_image_equal
+@pytest.mark.skipif(check_no_cuda_gpu, reason="No CUDA-enabled GPU")
 def test_conversion_property_of_edge():
     kg = _code_generator.knowledge_graph
     for edge in kg.edges:
