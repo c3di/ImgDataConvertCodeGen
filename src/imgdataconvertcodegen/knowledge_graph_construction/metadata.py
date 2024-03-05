@@ -19,6 +19,8 @@ def is_valid_metadata(metadata: dict):
         if metadata['data_representation'] == 'PIL.Image':
             return metadata['data_type'] == 'uint8'
         return False
+    if metadata['data_representation'] == 'numpy.ndarray':
+        return metadata['minibatch_input'] == False
     if metadata['data_representation'] == 'torch.tensor':
         for type in ['uint8', 'float32', 'int8', 'int16', 'int32', 'float64', 'double', 'int64']:
             if metadata['data_type'] == type:
