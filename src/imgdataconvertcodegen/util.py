@@ -1,5 +1,5 @@
 import re
-
+import inspect
 
 def extract_func_body(code_str, argument, return_var_name):
     """
@@ -41,3 +41,7 @@ def extract_func_body(code_str, argument, return_var_name):
         adjusted_lines = [line[4:] if line.startswith('    ') else (line[1:] if line.startswith('\t') else line) for line in replaced_body_lines]
         return '\n'.join(adjusted_lines)
     return None
+
+
+def func_obj_to_str(func_obj):
+    return inspect.getsource(func_obj)
