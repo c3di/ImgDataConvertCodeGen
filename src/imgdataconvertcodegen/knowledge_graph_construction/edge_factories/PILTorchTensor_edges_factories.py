@@ -35,7 +35,7 @@ def pil_to_tf(source_metadata, target_metadata) -> conversion:
             "import tensorflow as tf\nimport numpy as np",
             """def convert(var):
         np_array = np.array(var)
-        return tf.convert_to_tensor(np_array, dtype=tensorflow.uint8)""",
+        return tf.convert_to_tensor(np_array, dtype=tf.uint8)""",
         )
     return None
 
@@ -205,7 +205,8 @@ def tf_gpu_cpu(source_metadata, target_metadata) -> conversion:
         and target_metadata.get("device") == "cpu"
     ):
         if is_only_this_key_differ(source_metadata, target_metadata, "device"):
-            return "def convert(var):\n  return tensorflow.device('/cpu:0')(var)"
+            return ( "import tensorflow as tf",
+                    "def convert(var):\n  return tf.device('/cpu:0')(var)")
     if (
         source_metadata.get("device") == "cpu"
         and target_metadata.get("device") == "gpu"
@@ -239,7 +240,7 @@ def tf_convert_minibatch(source_metadata, target_metadata) -> conversion:
     ):
         return (
             "import tensorflow as tf",
-            "def convert(var):\n  return tf.expand_dims(var, 0)" "",
+            "def convert(var):\n  return tf.expand_dims(var, 0)",
         )
 
     return None
