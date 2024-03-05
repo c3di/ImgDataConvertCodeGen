@@ -37,6 +37,32 @@ def check_metadata_value_valid(metadata: dict):
             raise ValueError(f'Invalid metadata: {metadata} at key: {key}. Expected value list: {value_list}')
 
 
+def find_closest_metadata(source_metadata, candidates):
+    if len(candidates) == 0:
+        return None
+    if len(candidates) == 1:
+        return candidates[0]
+
+    targets = candidates
+    targets = [
+        candidate for candidate in targets
+        if candidate["data_representation"] == source_metadata["data_representation"]
+    ]
+    if len(targets) == 0:
+        targets = candidates
+
+    color_matched_targets = [
+        candidate for candidate in targets
+        if candidate["color_channel"] == source_metadata["color_channel"]
+    ]
+    if len(color_matched_targets) == 0:
+        if source_metadata["color_channel"] in ["rgb", "bgr"]:
+            for metadata in targets:
+                if metadata["color_channel"] in ["rgb", "bgr"]:
+                    return metadata
+    return targets[0]
+
+
 def encode_metadata(metadata: dict) -> str:
     return '-'.join([str(v) for v in metadata.values()])
 

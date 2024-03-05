@@ -11,7 +11,7 @@ from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 @pytest.fixture
 def code_generator():
     kg = KnowledgeGraph()
-    kg.load_from_file(os.path.join(os.path.dirname(__file__), 'test_data/test_kg_5nodes_4edges.json'))
+    kg.load_from_file(os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json'))
     return ConvertCodeGenerator(kg)
 
 

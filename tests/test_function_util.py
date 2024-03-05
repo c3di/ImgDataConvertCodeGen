@@ -1,4 +1,4 @@
-from imgdataconvertcodegen.util import extract_func_body
+from imgdataconvertcodegen.util import extract_func_body, func_obj_to_str
 
 
 def test_remove_intermediate_functon_call():
@@ -36,3 +36,29 @@ def test_extract_func_body_fail():
 
     assert actual is None, ("The function should return None if the function definition is not found in the input "
                             "string.")
+
+
+def func_example(x):
+    result = 1
+    for i in range(1, x + 1):
+        if i % 2 == 0:
+            result *= i
+        else:
+            result += i
+    return result
+
+
+def test_func_obj_to_str_function():
+    expected_source = """def func_example(x):
+    result = 1
+    for i in range(1, x + 1):
+        if i % 2 == 0:
+            result *= i
+        else:
+            result += i
+    return result
+"""
+
+    actual_source = func_obj_to_str(func_example)
+    assert actual_source == expected_source
+

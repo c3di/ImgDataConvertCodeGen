@@ -4,11 +4,12 @@ import numpy as np
 import torch
 
 from imgdataconvertcodegen import _code_generator
-from test_data.test_image_data import get_test_image
+from data_for_tests.image_data import get_test_image
 
 
 def is_image_equal(image1, image2):
-    return type(image1) == type(image2)
+    if type(image1) != type(image2):
+        return False
     if isinstance(image1, np.ndarray):
         return np.array_equal(image1, image2)
     elif isinstance(image1, torch.Tensor):
