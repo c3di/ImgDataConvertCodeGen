@@ -36,6 +36,7 @@ def test_conversion_property_of_edge():
         target_metadata = kg.get_node(edge[1])
         #print(f"target: {target_metadata}")
         target_image = get_test_image(target_metadata)
+        #print(target_image.shape, target_image.dtype, type(target_image))
         func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
 
         scope = {}
@@ -44,6 +45,7 @@ def test_conversion_property_of_edge():
 {conversion[1]}
 actual_image = {func_name}(source_image)""", scope)
         actual_image = scope.get('actual_image')
+        #print(actual_image.shape, actual_image.dtype, type(actual_image))
 
         assert is_image_equal(target_image, actual_image), (f"conversion from\n"
                                                             f"{source_metadata} to\n"
