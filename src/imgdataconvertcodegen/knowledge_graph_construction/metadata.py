@@ -1,5 +1,6 @@
-from ..metadata_differ import is_same_metadata
+from typing import TypedDict, Literal
 
+# todo: to remove
 metadata_values = {
     "data_representation": ["torch.tensor", "numpy.ndarray", "PIL.Image", "tf.tensor"],
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
@@ -14,6 +15,7 @@ metadata_values = {
 }
 
 
+# todo: to remove
 def is_valid_metadata(metadata: dict):
     if metadata['color_channel'] == 'rgba' or metadata['color_channel'] == 'graya':
         if metadata['data_representation'] == 'PIL.Image':
@@ -31,14 +33,59 @@ def is_valid_metadata(metadata: dict):
     return True
 
 
-def is_valid_metadata_pair(source_metadata: dict, target_metadata: dict):
-    return not is_same_metadata(source_metadata, target_metadata)
+class Metadata(TypedDict):
+    data_representation: str
+    color_channel: str
+    channel_order: Literal['channel last', 'channel first', 'none']
+    minibatch_input: bool
+    data_type: Literal[
+        'uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double', 'int8', 'int16', 'int32', 'int64']
+    intensity_range: Literal['full', 'normalized_unsigned', 'normalized_signed']
+    device: str
 
 
-def check_metadata_value_valid(metadata: dict):
-    for key, value_list in metadata_values.items():
-        if not metadata.get(key) in value_list:
-            raise ValueError(f'Invalid metadata: {metadata} at key: {key}. Expected value list: {value_list}')
+ImageRepr = str
+
+
+class ValuesOfImgRepr(TypedDict):
+    color_channel: list[str]
+    channel_order: list[Literal['channel last', 'channel first', 'none']]
+    minibatch_input: list[bool]
+    data_type: list[str]
+    intensity_range: list[Literal['full', 'normalized_unsigned', 'normalized_signed']]
+    device: list[str]
+
+
+bunch_of_img_repr: dict[ImageRepr, ValuesOfImgRepr] = {
+    "torch.tensor": {
+        "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
+        "channel_order": ['channel last', 'channel first', 'none'],
+        "minibatch_input": [True, False],
+        "data_type": ['uint8', 'uint16', 'uint32', 'uint64',
+                      'float32', 'float64', 'double',
+                      'int8', 'int16', 'int32', 'int64'],
+        "intensity_range": ['full', 'normalized_unsigned', 'normalized_signed'],
+        "device": ['cpu', 'gpu']
+    },
+    "numpy.ndarray": {
+        "color_channel": ['rgb', 'bgr', 'gray'],
+        "channel_order": ['channel last', 'channel first', 'none'],
+        "minibatch_input": [True, False],
+        "data_type": ['uint8', 'uint16', 'uint32', 'uint64',
+                      'float32', 'float64', 'double',
+                      'int8', 'int16', 'int32', 'int64'],
+        "intensity_range": ['full', 'normalized_unsigned', 'normalized_signed'],
+        "device": ['cpu']
+    }
+    # todo: add other data representations and values
+}
+
+
+def is_valid_value_of_img_repr(value: Metadata, valid_values: ValuesOfImgRepr):
+    for attribute, values in valid_values.items():
+        if value[attribute] not in values:
+            return False
+    return True
 
 
 def find_closest_metadata(source_metadata, candidates):
@@ -68,11 +115,11 @@ def find_closest_metadata(source_metadata, candidates):
 
 
 def encode_metadata(metadata: dict) -> str:
-    return '-'.join([str(v) for v in metadata.values()])
+    return '-'.join([str(metadata[key]) for key in Metadata.__annotations__.keys()])
 
 
 def decode_metadata(metadata_str: str) -> dict:
     metadata_list = metadata_str.split('-')
-    metadata = {k: v for k, v in zip(metadata_values.keys(), metadata_list)}
+    metadata = {k: v for k, v in zip(list(Metadata.__annotations__.keys()), metadata_list)}
     metadata['minibatch_input'] = True if metadata['minibatch_input'] == 'True' else False
     return metadata

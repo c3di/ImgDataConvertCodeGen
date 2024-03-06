@@ -1,7 +1,7 @@
 import uuid
 
 from .util import extract_func_body
-from .knowledge_graph_construction import encode_metadata
+from .knowledge_graph_construction import encode_metadata, Metadata
 
 
 class ConvertCodeGenerator:
@@ -20,30 +20,14 @@ class ConvertCodeGenerator:
     def knowledge_graph(self, value):
         self._knowledge_graph = value
 
-    def get_convert_path(self, source_metadata: dict, target_metadata: dict):
-        path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-        if path is None:
-            return []
-        metadata_list = []
-        for node_id in path:
-            metadata_list.append(self.knowledge_graph.get_node(node_id))
-        return metadata_list
+    def get_convert_path(self, source_metadata: Metadata, target_metadata: Metadata):
+        return self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
 
-    def get_conversion(self, source_var_name: str, source_metadata: dict,
-                       target_var_name: str, target_metadata: dict) -> str | None:
-        return self.get_conversion_using_metadata(source_var_name, source_metadata, target_var_name, target_metadata)
-
-    def get_conversion_using_metadata(self, source_var_name, source_metadata,
-                                      target_var_name: str, target_metadata) -> str | None:
+    def get_conversion(self, source_var_name: str, source_metadata: Metadata,
+                       target_var_name: str, target_metadata: Metadata) -> str | None:
         """
         Generates Python code as a string that performs data conversion from a source variable to a target variable
          based on the provided metadata.
-
-        Parameters:
-            source_var_name (str): The name of the variable holding the source data.
-            source_metadata (dict): A dictionary containing metadata about the source data, such as color channels, etc.
-            target_var_name (str): The name of the variable that will store the result of the conversion.
-            target_metadata (dict): A dictionary containing metadata about the target data.
 
         Examples:
             >>> source_var_name = "source_image"
@@ -85,8 +69,8 @@ class ConvertCodeGenerator:
             arg = return_name
         return '\n'.join(main_body) if len(imports) == 0 else '\n'.join(imports) + '\n' + '\n'.join(main_body)
 
-    def _get_conversion_per_step(self, source_id, target_id, arg, return_name):
-        conversion_on_edge = self.knowledge_graph.get_edge_data(source_id, target_id)['conversion']
+    def _get_conversion_per_step(self, source, target, arg, return_name):
+        conversion_on_edge = self.knowledge_graph.get_edge_data(source, target)['conversion']
         imports = conversion_on_edge[0]
         main_body = extract_func_body(conversion_on_edge[1], arg, return_name)
         return imports, main_body

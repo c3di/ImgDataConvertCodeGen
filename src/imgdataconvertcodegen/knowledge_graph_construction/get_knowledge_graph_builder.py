@@ -1,12 +1,12 @@
 import os
 
 from .edge_factories import all_edge_factories
-from .metadata import metadata_values
 from .knowledge_graph_builder import KnowledgeGraphBuilder
+from .metadata import bunch_of_img_repr
 
 dev_mode = os.getenv('Dev')
 
-builder = KnowledgeGraphBuilder(metadata_values, all_edge_factories)
+builder = KnowledgeGraphBuilder(bunch_of_img_repr, all_edge_factories)
 builder.build(dev_mode)
 
 

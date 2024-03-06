@@ -1,4 +1,4 @@
-from imgdataconvertcodegen.util import extract_func_body, func_obj_to_str
+from imgdataconvertcodegen.util import extract_func_body, func_obj_to_str, exclude_key_from_list
 
 
 def test_remove_intermediate_functon_call():
@@ -62,3 +62,10 @@ def test_func_obj_to_str_function():
     actual_source = func_obj_to_str(func_example)
     assert actual_source == expected_source
 
+
+def test_exclude_key_from_list():
+    keys = ['a', 'b', 'c', 'd']
+    exclude_key = 'b'
+    expected = ['a', 'c', 'd']
+    actual = exclude_key_from_list(keys, exclude_key)
+    assert actual == expected

@@ -19,22 +19,19 @@ def is_image_equal(image1, image2):
 
 def test_conversion_property_of_edge():
     kg = _code_generator.knowledge_graph
-    for edge in kg.edges:
-        edge_data = kg.get_edge_data(edge[0], edge[1])
+    for source_metadata, target_metadata in kg.edges:
+        edge_data = kg.get_edge_data(source_metadata, target_metadata)
         conversion = edge_data.get('conversion')
-        assert conversion is not None, f"No conversion from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}"
+        assert conversion is not None, f"No conversion from {source_metadata} to {target_metadata}"
         assert len(conversion) == 2, (f"Expected two elements in the conversions, but got: {conversion} from"
-                                      f" {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
+                                      f" {source_metadata} to {target_metadata}")
         assert isinstance(conversion[0], str), (f"Expected the first element of the conversion to be a string, but got:"
-                                                f" {conversion[0]} from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
+                                                f" {conversion[0]} from {source_metadata} to {target_metadata}")
         assert isinstance(conversion[1], str), (f"Expected the second element of the conversion to be a string, but got:"
-                                                f" {conversion[1]} from {kg.get_node(edge[0])} to {kg.get_node(edge[1])}")
+                                                f" {conversion[1]} from {source_metadata} to {target_metadata}")
 
-        source_metadata = kg.get_node(edge[0])
         source_image = get_test_image(source_metadata)
-        target_metadata = kg.get_node(edge[1])
         target_image = get_test_image(target_metadata)
-        #print(target_image.shape, target_image.dtype, type(target_image))
         func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
 
         scope = {}
@@ -43,7 +40,6 @@ def test_conversion_property_of_edge():
 {conversion[1]}
 actual_image = {func_name}(source_image)""", scope)
         actual_image = scope.get('actual_image')
-        #print(actual_image.shape, actual_image.dtype, type(actual_image))
 
         assert is_image_equal(target_image, actual_image), (f"conversion from\n"
                                                             f"{source_metadata} to\n"

@@ -16,10 +16,6 @@ def test_load_graph_from_file():
     assert isinstance(graph, nx.DiGraph)
     assert len(graph.nodes) == 5, "Graph should have 5 nodes, but it has " + str(len(graph.nodes))
     assert len(graph.edges) == 4, "Graph should have 4 edges, but it has " + str(len(graph.edges))
-    assert (1, 2) in graph.edges
-    assert (1, 3) in graph.edges
-    assert (3, 4) in graph.edges
-    assert (4, 5) in graph.edges
 
 
 def test_load_graph_with_invalid_path():

@@ -48,11 +48,10 @@ new_node = {
     "device": "cpu"
 }
 
-# (source_id, target_id, (import_statement, conversion_function))
 test_edges = [
-    (1, 2, ("", "def convert(var):\n  return var[:, :, ::-1]")),
-    (1, 3, ("import torch", "def convert(var):\n  return torch.from_numpy(var)")),
-    (3, 4, ("", "def convert(var):\n  return var.permute(2, 0, 1)")),
+    (test_nodes[0], test_nodes[1], ("", "def convert(var):\n  return var[:, :, ::-1]")),
+    (test_nodes[0], test_nodes[2], ("import torch", "def convert(var):\n  return torch.from_numpy(var)")),
+    (test_nodes[2], test_nodes[3], ("", "def convert(var):\n  return var.permute(2, 0, 1)")),
 ]
 
-new_edge = (4, 5, ("import torch", "def convert(var):\n  return torch.unsqueeze(var, 0)"))
+new_edge = (test_nodes[3], new_node, ("import torch", "def convert(var):\n  return torch.unsqueeze(var, 0)"))

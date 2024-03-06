@@ -1,4 +1,4 @@
-from .metadata import (encode_metadata, decode_metadata, check_metadata_value_valid, is_valid_metadata,
+from .metadata import (Metadata, ValuesOfImgRepr, bunch_of_img_repr, encode_metadata, decode_metadata,
                        find_closest_metadata)
 from .edge_factories import all_edge_factories
 from .knowledge_graph import KnowledgeGraph

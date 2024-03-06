@@ -45,3 +45,19 @@ def extract_func_body(code_str, argument, return_var_name):
 
 def func_obj_to_str(func_obj):
     return inspect.getsource(func_obj)
+
+
+def exclude_key_from_list(keys, exclude_key):
+    """
+    Excludes a specific key from a list of keys.
+
+    Parameters:
+    - keys: List of keys from which to exclude.
+    - exclude_key: The key to be excluded from the list.
+
+    Returns:
+    - A new list with the specified key excluded.
+    """
+    # New list with the exclude_key removed
+    filtered_keys = [key for key in keys if key != exclude_key]
+    return filtered_keys

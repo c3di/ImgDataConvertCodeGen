@@ -6,6 +6,7 @@ import torch
 
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from tests.data_for_tests.nodes_edges import new_node, test_nodes
 
 
 @pytest.fixture
@@ -27,8 +28,8 @@ def test_code_generation_using_metadata(code_generator):
     scope = globals().copy()
     scope.update(locals())
 
-    convert_code = code_generator.get_conversion('source_image', kg.get_node(1),
-                                                 'target_image', kg.get_node(5))
+    convert_code = code_generator.get_conversion('source_image', test_nodes[0],
+                                                 'target_image', new_node)
     exec(convert_code, scope)
 
     # Retrieve 'target_image' from the custom scope, ensuring accessibility despite the isolated test function scope
