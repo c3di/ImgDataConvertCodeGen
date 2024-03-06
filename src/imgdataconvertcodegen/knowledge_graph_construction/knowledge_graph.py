@@ -8,9 +8,8 @@ class KnowledgeGraph:
     _graph = None
     _uuid = 0
 
-    def __init__(self, lib_presets=None):
+    def __init__(self):
         self._graph = nx.DiGraph()
-        self._lib_presets = lib_presets
 
     def add_node(self, node) -> int:
         node_id = self.get_node_id(node)
@@ -45,19 +44,6 @@ class KnowledgeGraph:
 
     def get_edge_data(self, source_id, target_id):
         return self._graph.get_edge_data(source_id, target_id)
-
-    def add_lib_preset(self, lib_name, color_channel, metadata):
-        if lib_name in self._lib_presets[color_channel]:
-            raise ValueError(f"{lib_name} already in the lib_presets. "
-                             f"We support {list(self._lib_presets[color_channel].keys())}")
-        check_metadata_value_valid(metadata)
-        self._lib_presets[color_channel][lib_name] = metadata
-
-    def get_metadata_by_lib_name(self, lib_name, color_channel='color'):
-        if lib_name not in self._lib_presets[color_channel]:
-            raise ValueError(f"{lib_name} not in the lib_presets. "
-                             f"We support {list(self._lib_presets[color_channel].keys())}")
-        return self._lib_presets[color_channel][lib_name]
 
     def save_to_file(self, path):
         save_graph(self._graph, path)

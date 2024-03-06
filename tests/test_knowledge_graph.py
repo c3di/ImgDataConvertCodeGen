@@ -4,13 +4,13 @@ from unittest.mock import patch
 import networkx as nx
 import pytest
 
-from imgdataconvertcodegen.knowledge_graph_construction import lib_presets, KnowledgeGraph
+from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from data_for_tests.nodes_edges_presets_for_kg import test_nodes, test_edges, new_node, new_edge
 
 
 @pytest.fixture
 def kg():
-    kg = KnowledgeGraph(lib_presets)
+    kg = KnowledgeGraph()
     for node in test_nodes:
         kg.add_node(node)
     for edge in test_edges:
@@ -20,7 +20,6 @@ def kg():
 
 def test_knowledge_graph_init(kg):
     assert isinstance(kg._graph, nx.DiGraph), "The graph object is not an instance of nx.DiGraph"
-    assert kg._lib_presets == lib_presets, f"Expected {lib_presets}, got {kg._lib_presets}"
 
 
 def test_add_new_node(kg):
@@ -77,37 +76,6 @@ def test_update_uuid_after_load_from_file(kg):
     file_path = os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json')
     kg.load_from_file(file_path)
     assert kg._uuid == 5, f"Expected 5, got {kg._uuid}"
-
-
-def test_add_lib_preset(kg):
-    lib_name = 'new_lib'
-    color_channel = 'color'
-    metadata = new_node
-    kg.add_lib_preset(lib_name, color_channel, metadata)
-    assert kg._lib_presets[color_channel][
-               lib_name] == metadata, f"Expected {metadata}, got {kg._lib_presets[color_channel][lib_name]}"
-
-
-def test_add_lib_preset_failure(kg):
-    lib_name = 'numpy'
-    color_channel = 'color'
-    metadata = new_node
-    with pytest.raises(ValueError) as e:
-        kg.add_lib_preset(lib_name, color_channel, metadata)
-    assert str(
-        e.value) == f"{lib_name} already in the lib_presets. We support {list(kg._lib_presets[color_channel].keys())}"
-
-
-def test_get_metadata_by_lib_name(kg):
-    lib_name = 'numpy'
-    actual = kg.get_metadata_by_lib_name(lib_name)
-    assert actual == lib_presets['color'][lib_name], f"Expected {lib_presets['color'][lib_name]}, got {actual}"
-
-
-def test_get_metadata_by_lib_name_failure(kg):
-    with pytest.raises(ValueError) as e:
-        kg.get_metadata_by_lib_name('not_a_lib')
-    assert str(e.value) == f"not_a_lib not in the lib_presets. We support {list(lib_presets['color'].keys())}"
 
 
 def test_get_shortest_path(kg):

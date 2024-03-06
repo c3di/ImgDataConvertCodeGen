@@ -7,11 +7,11 @@ from .metadata import check_metadata_value_valid, is_valid_metadata, is_valid_me
 
 
 class KnowledgeGraphBuilder:
-    def __init__(self, metadata_values, edge_factories, lib_presets):
+    def __init__(self, metadata_values, edge_factories):
         self._metadata_values = metadata_values
         self._edge_factories = edge_factories
         self._know_graph_file_path = os.path.join(os.path.dirname(__file__), "knowledge_graph.json")
-        self._graph = KnowledgeGraph(lib_presets)
+        self._graph = KnowledgeGraph()
 
     @property
     def knowledge_graph(self):
@@ -73,6 +73,3 @@ class KnowledgeGraphBuilder:
             return
         self._build_for_metadata(new_metadata, self._edge_factories)
         self.save_knowledge_graph()
-
-    def add_lib_preset(self, lib_name: str, color_channel: str, metadata: dict):
-        self.knowledge_graph.add_lib_preset(lib_name, color_channel, metadata)

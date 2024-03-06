@@ -20,10 +20,8 @@ class ConvertCodeGenerator:
     def knowledge_graph(self, value):
         self._knowledge_graph = value
 
-    def get_convert_path(self, source_spec: str | dict, target_spec: str | dict,
-                         source_color_channel='color', target_color_channel='color'):
-        path = self.knowledge_graph.get_shortest_path(self._get_metadata(source_spec, source_color_channel),
-                                                      self._get_metadata(target_spec, target_color_channel))
+    def get_convert_path(self, source_metadata: dict, target_metadata: dict):
+        path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
         if path is None:
             return []
         metadata_list = []
@@ -31,26 +29,9 @@ class ConvertCodeGenerator:
             metadata_list.append(self.knowledge_graph.get_node(node_id))
         return metadata_list
 
-    def get_conversion(self, source_var_name: str, source_spec, target_var_name: str, target_spec,
-                       source_color_channel='color', target_color_channel='color') -> str | None:
-        """
-        Generates Python code as a string that performs data conversion from a source variable to a target variable
-        Args:
-            source_var_name: the name of the variable holding the source data.
-            source_spec: the name of library or a dictionary containing metadata about the source data.
-            target_var_name:  the name of the variable that will store the result of the conversion.
-            target_spec: the same as source_spec
-            source_color_channel: the color channel of the source data if the source_spec is a library name.
-                the value could be 'gray' | 'color' | None
-            target_color_channel: the same as source_color_channel
-
-        Returns: A string containing the Python code necessary to perform the conversion.
-
-        """
-        return self.get_conversion_using_metadata(source_var_name,
-                                                  self._get_metadata(source_spec, source_color_channel),
-                                                  target_var_name,
-                                                  self._get_metadata(target_spec, target_color_channel))
+    def get_conversion(self, source_var_name: str, source_metadata: dict,
+                       target_var_name: str, target_metadata: dict) -> str | None:
+        return self.get_conversion_using_metadata(source_var_name, source_metadata, target_var_name, target_metadata)
 
     def get_conversion_using_metadata(self, source_var_name, source_metadata,
                                       target_var_name: str, target_metadata) -> str | None:
@@ -109,8 +90,3 @@ class ConvertCodeGenerator:
         imports = conversion_on_edge[0]
         main_body = extract_func_body(conversion_on_edge[1], arg, return_name)
         return imports, main_body
-
-    def _get_metadata(self, spec, color_channel='color'):
-        if isinstance(spec, dict):
-            return spec
-        return self.knowledge_graph.get_metadata_by_lib_name(spec, color_channel)

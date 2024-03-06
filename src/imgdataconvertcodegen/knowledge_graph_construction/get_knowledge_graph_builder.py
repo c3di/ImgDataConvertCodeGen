@@ -2,12 +2,11 @@ import os
 
 from .edge_factories import all_edge_factories
 from .metadata import metadata_values
-from .lib_presets import lib_presets
 from .knowledge_graph_builder import KnowledgeGraphBuilder
 
 dev_mode = os.getenv('Dev')
 
-builder = KnowledgeGraphBuilder(metadata_values, all_edge_factories, lib_presets)
+builder = KnowledgeGraphBuilder(metadata_values, all_edge_factories)
 builder.build(dev_mode)
 
 

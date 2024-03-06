@@ -5,12 +5,11 @@ import pytest
 
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
-from data_for_tests.nodes_edges_presets_for_kg import test_lib_preset
 
 
 @pytest.fixture
 def code_generator():
-    kg = KnowledgeGraph(test_lib_preset)
+    kg = KnowledgeGraph()
     kg.load_from_file(os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json'))
     return ConvertCodeGenerator(kg)
 
@@ -21,7 +20,7 @@ def test_convert_code_generator_init(code_generator):
 
 
 def test_knowledge_graph_property(code_generator):
-    new_kg = KnowledgeGraph(test_lib_preset)
+    new_kg = KnowledgeGraph()
     code_generator.knowledge_graph = new_kg
     assert code_generator.knowledge_graph == new_kg, (
             "Expected " + str(new_kg) + ", but got " + str(code_generator.knowledge_graph))

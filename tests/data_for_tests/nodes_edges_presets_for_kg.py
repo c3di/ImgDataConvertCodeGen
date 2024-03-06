@@ -56,10 +56,3 @@ test_edges = [
 ]
 
 new_edge = (4, 5, ("import torch", "def convert(var):\n  return torch.unsqueeze(var, 0)"))
-
-test_lib_preset = {
-    "color": {
-        "numpy": test_nodes[0],
-        "torch": new_node
-    }
-}
