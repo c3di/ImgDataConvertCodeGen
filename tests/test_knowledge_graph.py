@@ -59,9 +59,6 @@ def test_get_shortest_path(kg):
     kg.add_node(new_node)
     kg.add_edge(new_edge[0], new_edge[1], new_edge[2])
 
-    expected_file_path = os.path.join('data_for_tests', 'kg_5nodes_4edges.json')
-    kg.save_to_file(expected_file_path)
-
     path = kg.get_shortest_path(test_nodes[0], new_node)
     expected_path = [test_nodes[0], test_nodes[2], test_nodes[3], new_node]
     assert path == expected_path, f"Expected {expected_path}, got {path}"
