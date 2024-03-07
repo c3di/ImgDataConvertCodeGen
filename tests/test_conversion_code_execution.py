@@ -6,7 +6,7 @@ import torch
 
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
-from tests.data_for_tests.nodes_edges import new_node, test_nodes
+from data_for_tests.nodes_edges import new_node, test_nodes
 
 
 @pytest.fixture

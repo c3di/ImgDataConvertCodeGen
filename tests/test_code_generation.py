@@ -5,7 +5,7 @@ import pytest
 
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
-from tests.data_for_tests.nodes_edges import new_node, test_nodes
+from data_for_tests.nodes_edges import new_node, test_nodes
 
 
 @pytest.fixture
@@ -51,7 +51,7 @@ def test_generate_conversion_same_type(code_generator):
     kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
-    generated_code = code_generator.get_conversion(source_var,test_nodes[0], target_var, test_nodes[0])
+    generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, test_nodes[0])
     expected_code = f'{target_var} = {source_var}'
 
     assert generated_code == expected_code, "Expected " + expected_code + ", but got " + str(generated_code)
@@ -64,7 +64,7 @@ def test_generate_conversion_multiple_steps(code_generator):
     target_var = 'result'
     with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
         mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
-        generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var,new_node)
+        generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
 
         expected_code = ('import torch\n'
                          'var_first_uuid_hex = torch.from_numpy(source_var)\n'
