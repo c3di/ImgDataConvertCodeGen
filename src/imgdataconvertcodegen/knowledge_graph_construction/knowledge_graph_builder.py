@@ -21,8 +21,8 @@ class KnowledgeGraphBuilder:
     def save_knowledge_graph(self):
         self.knowledge_graph.save_to_file(self._know_graph_file_path)
 
-    def build(self, force_to_rebuild=False) -> KnowledgeGraph:
-        if not force_to_rebuild and os.path.exists(self._know_graph_file_path):
+    def build(self) -> KnowledgeGraph:
+        if os.path.exists(self._know_graph_file_path):
             self.build_from_file(self._know_graph_file_path)
         else:
             self.build_from_scratch(self._edge_factories)
