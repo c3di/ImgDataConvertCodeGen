@@ -17,7 +17,7 @@ Install the tool directly using pip:
 
     pip install imgdataconvertcodegen
 
-Or for a more manual installation:
+Or for manual installation:
 
 .. code-block:: bash
 
@@ -28,73 +28,56 @@ Or for a more manual installation:
 Usage
 -----
 
-.. code-block:: bash
-
-   imgdataconvertcodegen  --help
-
-Example:
-
-.. code-block:: bash
+.. code-block:: python
 
     #todo imgdataconvertcodegen example_command -option1 -option2
 
 
-Develop
+Development
 -------
 
-Setting Up Development Environment
+Set Up Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Clone the repository
+^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
     git clone git@github.com:c3di/ImgDataConvertCodeGen.git
 
-Use the ``requirements_dev.txt`` file to install all necessary development dependencies.
+Installing Dependencies
+^^^^^^^^^^^^^^^^^^^
+
+Before installing dependencies, please ensure:
+
+- For TensorFlow CUDA support, confirm system compatibility at `TensorFlow's installation guide <https://www.tensorflow.org/install/pip>`_.
+- Use the correct path for ``path/to/requirements.txt`` in your project when running the installation command.
+
+With the python virtual environment activated, install the required dependencies
 
 .. code-block:: bash
 
-    pip install -r requirements_dev.txt
+    pip install -r path/to/requirements.txt
 
-Tests
+
+Run Tests
 ~~~~~
 
-There are two ways to run the unit tests for this project.
+Navigate to the working directory of the project and install project in editable mode.
 
-1. Using ``tox`` from the command line:
+.. code-block:: bash
 
-   .. code-block:: bash
+   pip install -e .
 
-       tox
+Run the tests using the following command:
 
-   ``tox`` will download the dependencies from ``requirements_tests.txt``, build the package, install it in a virtual environment and run the tests using ``pytest``. For detailed configuration options, please go to `tox documentation <https://tox.wiki/en/stable/>`__.
+.. code-block:: bash
+
+   pytest
 
 
-
-2. Using ``pytest`` within the testing framework of an IDE like PyCharm:
-
-   * Install all dependencies for tests:
-
-     .. code-block:: bash
-
-        pip install -r requirements_tests.txt
-
-   * To run tests in the IDE, the project must be installed in editable mode.
-
-     .. code-block:: bash
-
-         pip install -e .
-
-   * Set ``Dev`` environment variable to ``True`` in the IDE's run configuration.
-
-     .. code-block:: none
-
-         Dev=True
-
-   * Run the tests through test runner interface of IDE.
-
-Build
+Build the Package
 ~~~~~
 #todo
 
@@ -106,4 +89,3 @@ License
 -------
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
