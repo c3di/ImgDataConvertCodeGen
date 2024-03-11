@@ -54,6 +54,4 @@ def numpy_to_torch(source_metadata, target_metadata) -> conversion:
 default_factories = [
     between_float64_double,
     numpy_between_rgb_bgr,
-    numpy_to_torch,
-    torch_channel_order_last_to_first,
-    torch_minibatch_input_false_to_true]
+    numpy_to_torch]
