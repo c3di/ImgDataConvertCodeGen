@@ -1,16 +1,4 @@
-from .type import ImgRepr, PossibleValuesForImgRepr, ValidCheckFunc, img_metadata_config, Metadata
-
-
-def add_img_metadata_config(img_repr: ImgRepr, possible_values: PossibleValuesForImgRepr,
-                            valid_check: ValidCheckFunc):
-    img_metadata_config[img_repr] = (possible_values, valid_check)
-
-
-def is_valid_attribute_value(value: Metadata, valid_values: PossibleValuesForImgRepr):
-    for attribute, values in valid_values.items():
-        if value[attribute] not in values:
-            return False
-    return True
+from .type import Metadata
 
 
 def find_closest_metadata(source_metadata, candidates):

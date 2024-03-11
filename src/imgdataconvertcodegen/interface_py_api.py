@@ -1,9 +1,7 @@
 from typing import Callable
 
-
 from .code_generation import ConvertCodeGenerator
-from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, PossibleValuesForImgRepr, \
-    ImgMetadataConfig
+from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, MetadataValues
 
 _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
@@ -51,8 +49,8 @@ def get_convert_path(source_metadata: Metadata, target_metadata: Metadata):
     return _code_generator.get_convert_path(source_metadata, target_metadata)
 
 
-def add_img_repr(img_repr: str, config: ImgMetadataConfig):
-    _constructor.add_new_img_metadata_config(img_repr, ImgMetadataConfig)
+def add_img_repr(new_metadata: MetadataValues):
+    _constructor.add_new_metadata_values(new_metadata)
     _code_generator.knowledge_graph = _constructor.knowledge_graph
 
 

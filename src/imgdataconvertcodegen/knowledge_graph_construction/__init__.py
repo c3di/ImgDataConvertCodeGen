@@ -4,7 +4,7 @@ from .constructor import KnowledgeGraphConstructor
 from .metedata import *
 
 
-constructor = KnowledgeGraphConstructor(img_metadata_config, all_edge_factories)
+constructor = KnowledgeGraphConstructor(metadata_values, all_edge_factories)
 constructor.build()
 
 

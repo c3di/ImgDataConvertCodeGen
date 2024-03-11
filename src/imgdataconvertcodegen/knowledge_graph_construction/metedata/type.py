@@ -1,7 +1,17 @@
-from typing import TypedDict, Literal, Callable, Dict, Tuple
+from typing import TypedDict, Literal
 
-# todo: to remove
-metadata_values = {
+
+class MetadataValues(TypedDict):
+    data_representation: list[str]
+    color_channel: list[str]
+    channel_order: list[Literal['channel last', 'channel first', 'none']]
+    minibatch_input: list[bool]
+    data_type: list[str]
+    intensity_range: list[Literal['full', 'normalized_unsigned', 'normalized_signed']]
+    device: list[str]
+
+
+metadata_values: MetadataValues = {
     "data_representation": ["torch.tensor", "numpy.ndarray", "PIL.Image", "tf.tensor"],
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
     "channel_order": ['channel last', 'channel first', 'none'],
@@ -42,21 +52,3 @@ class Metadata(TypedDict):
         'uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double', 'int8', 'int16', 'int32', 'int64']
     intensity_range: Literal['full', 'normalized_unsigned', 'normalized_signed']
     device: str
-
-
-ImgRepr = str
-
-
-class PossibleValuesForImgRepr(TypedDict):
-    color_channel: list[str]
-    channel_order: list[Literal['channel last', 'channel first', 'none']]
-    minibatch_input: list[bool]
-    data_type: list[str]
-    intensity_range: list[Literal['full', 'normalized_unsigned', 'normalized_signed']]
-    device: list[str]
-
-
-ValidCheckFunc = Callable[[PossibleValuesForImgRepr], bool]
-ImgMetadataConfig = Tuple[PossibleValuesForImgRepr, ValidCheckFunc]
-ImgMetadataConfigDict = Dict[ImgRepr, ImgMetadataConfig]
-img_metadata_config: ImgMetadataConfigDict = {}
