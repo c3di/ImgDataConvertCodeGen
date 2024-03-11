@@ -1,7 +1,7 @@
 import networkx as nx
 
 from .io import save_graph, load_graph
-from .metadata import encode_metadata, Metadata, decode_metadata
+from .metedata import Metadata, encode_metadata, decode_metadata
 
 
 class KnowledgeGraph:

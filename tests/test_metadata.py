@@ -1,7 +1,7 @@
 import pytest
 
-from imgdataconvertcodegen.knowledge_graph_construction.metadata import \
-    encode_metadata, decode_metadata, find_closest_metadata
+from imgdataconvertcodegen.knowledge_graph_construction.metedata.util import find_closest_metadata, encode_metadata, \
+    decode_metadata
 
 
 def test_encode_to_string():

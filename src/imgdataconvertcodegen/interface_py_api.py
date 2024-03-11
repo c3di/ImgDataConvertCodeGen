@@ -1,10 +1,12 @@
 from typing import Callable
 
-from .code_generation import ConvertCodeGenerator
-from .knowledge_graph_construction import get_knowledge_graph_builder, Metadata, ValuesOfImgRepr
 
-_builder = get_knowledge_graph_builder()
-_code_generator = ConvertCodeGenerator(_builder.knowledge_graph)
+from .code_generation import ConvertCodeGenerator
+from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, PossibleValuesForImgRepr, \
+    ImgMetadataConfig
+
+_constructor = get_knowledge_graph_constructor()
+_code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
 def get_conversion(source_var_name: str, source_metadata: Metadata,
@@ -49,12 +51,11 @@ def get_convert_path(source_metadata: Metadata, target_metadata: Metadata):
     return _code_generator.get_convert_path(source_metadata, target_metadata)
 
 
-def add_img_repr(img_repr: str, values_for_repr: ValuesOfImgRepr):
-    #todo add example here
-    _builder.add_img_repr(img_repr, values_for_repr)
-    _code_generator.knowledge_graph = _builder.knowledge_graph
+def add_img_repr(img_repr: str, config: ImgMetadataConfig):
+    _constructor.add_new_img_metadata_config(img_repr, ImgMetadataConfig)
+    _code_generator.knowledge_graph = _constructor.knowledge_graph
 
 
 def add_convert_code_factory(new_factory: Callable | str):
-    _builder.add_new_edge_factory(new_factory)
-    _code_generator.knowledge_graph = _builder.knowledge_graph
+    _constructor.add_new_edge_factory(new_factory)
+    _code_generator.knowledge_graph = _constructor.knowledge_graph
