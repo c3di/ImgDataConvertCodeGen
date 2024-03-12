@@ -1,5 +1,5 @@
 from imgdataconvertcodegen import are_both_same_data_repr, is_single_metadata_differ, is_same_metadata, \
-    is_only_this_key_differ
+    is_differ_value_for_key
 
 
 def test_both_metadata_match_data_repr():
@@ -139,22 +139,15 @@ def test_is_same_metadata_different():
         "Metadata dictionaries with differences not in excluded keys should not be considered identical"
 
 
-def test_is_only_this_key_differ_true():
+def test_is_differ_value_for_key_true():
     metadata_a = {'key1': 'value1', 'key2': 'value2'}
     metadata_b = {'key1': 'diff_value1', 'key2': 'value2'}
-    assert is_only_this_key_differ(metadata_a, metadata_b, 'key1'), \
+    assert is_differ_value_for_key(metadata_a, metadata_b, 'key1'), \
         "Should return True when only the specified key differs"
 
 
-def test_is_only_this_key_differ_false_same():
+def test_is_differ_value_for_key_false():
     metadata_a = {'key1': 'value1', 'key2': 'value2'}
     metadata_b = {'key1': 'value1', 'key2': 'value2'}
-    assert not is_only_this_key_differ(metadata_a, metadata_b, 'key1'), \
+    assert not is_differ_value_for_key(metadata_a, metadata_b, 'key1'), \
         "Should return False when there are no differences, even for the specified key"
-
-
-def test_is_only_this_key_differ_false_multiple_differences():
-    metadata_a = {'key1': 'value1', 'key2': 'value2'}
-    metadata_b = {'key1': 'diff_value1', 'key2': 'diff_value2'}
-    assert not is_only_this_key_differ(metadata_a, metadata_b, 'key1'), \
-        "Should return False when there are multiple differences, not just in the specified key"

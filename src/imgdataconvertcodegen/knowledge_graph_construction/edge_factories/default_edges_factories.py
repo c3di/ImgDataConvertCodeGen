@@ -1,5 +1,5 @@
 from .type import conversion
-from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
+from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
 # NOTE: the source and target metadata are only different in one attribute
@@ -25,7 +25,7 @@ from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
 def between_float64_double(source_metadata, target_metadata) -> conversion:
     if (source_metadata.get('data_type') == 'float64' and target_metadata.get('data_type') == 'double') or (
             source_metadata.get('data_type') == 'double' and target_metadata.get('data_type') == 'float64'):
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
             return "", "def convert(var):\n  return var"
     return None
 

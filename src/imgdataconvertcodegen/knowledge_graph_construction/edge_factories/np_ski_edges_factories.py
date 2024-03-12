@@ -1,5 +1,5 @@
 from .type import conversion
-from ...metadata_differ import is_only_this_key_differ, is_data_type_and_intensity_range_differ
+from ...metadata_differ import is_differ_value_for_key, is_data_type_and_intensity_range_differ
 
 
 # this edge_factory is for methods with skimage and numpy
@@ -77,21 +77,21 @@ def to_float32_or_64(source_metadata, target_metadata) -> conversion:
 
 def ski_to_int16(source_metadata, target_metadata) -> conversion:
     if target_metadata.get('data_type') == 'int16':
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
             return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_int(var)"
     return None
 
 
 def ski_to_uint8(source_metadata, target_metadata) -> conversion:
     if target_metadata.get('data_type') == 'uint8':
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
             return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_ubyte(var)"
     return None
 
 
 def ski_to_uint16(source_metadata, target_metadata) -> conversion:
     if target_metadata.get('data_type') == 'uint16':
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
             return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_uint(var)"
     return None
 

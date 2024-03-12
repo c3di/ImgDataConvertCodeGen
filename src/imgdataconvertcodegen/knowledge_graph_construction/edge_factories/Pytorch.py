@@ -1,5 +1,5 @@
 from .type import conversion
-from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
+from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
 def validate_torch(metadata):
@@ -22,6 +22,7 @@ def validate_torch(metadata):
     return True
 
 
+
 def torch_gpu_cpu(source_metadata, target_metadata) -> conversion:
     if are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor"):
         if validate_torch(source_metadata) and validate_torch(target_metadata):
@@ -29,14 +30,14 @@ def torch_gpu_cpu(source_metadata, target_metadata) -> conversion:
                     source_metadata.get("device") == "gpu"
                     and target_metadata.get("device") == "cpu"
             ):
-                if is_only_this_key_differ(source_metadata, target_metadata, "device"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "device"):
                     return "import torch", "def convert(var):\n  return var.cpu()"
 
             if (
                     source_metadata.get("device") == "cpu"
                     and target_metadata.get("device") == "gpu"
             ):
-                if is_only_this_key_differ(source_metadata, target_metadata, "device"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "device"):
                     return "import torch", "def convert(var):\n  return var.cuda()"
     return None
 
@@ -46,26 +47,26 @@ def torch_channel_order(source_metadata, target_metadata) -> conversion:
         if validate_torch(source_metadata) and validate_torch(target_metadata):
             if source_metadata.get("color_channel") == "gray":
                 if target_metadata.get("channel_order") == "none":
-                    if is_only_this_key_differ(source_metadata, target_metadata, "channel_order"):
+                    if is_differ_value_for_key(source_metadata, target_metadata, "channel_order"):
                         if source_metadata.get("channel_order") == "channel first":
                             return "import torch", "def convert(var):\n  return var.squeeze(0)"
                         return "import torch", "def convert(var):\n  return var.squeeze(-1)"
                     if source_metadata.get("channel_order") == "none":
-                        if is_only_this_key_differ(source_metadata, target_metadata, "channel_order"):
+                        if is_differ_value_for_key(source_metadata, target_metadata, "channel_order"):
                             if target_metadata.get("channel_order") == "channel first":
                                 return "import torch", "def convert(var):\n  return var.unsqueeze(0)"
                             return "import torch", "def convert(var):\n  return var.unsqueeze(-1)"
             if (
                     source_metadata.get("channel_order") == "channel first"
                     and target_metadata.get("channel_order") == "channel last"):
-                if is_only_this_key_differ(source_metadata, target_metadata, "channel_order"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "channel_order"):
                     if source_metadata.get("minibatch_input"):
                         return "import torch", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
                     return "import torch", "def convert(var):\n  return var.permute(1, 2, 0)"
             if (
                     source_metadata.get('channel_order') == 'channel last' and
                     target_metadata.get('channel_order') == 'channel first'):
-                if is_only_this_key_differ(source_metadata, target_metadata, "channel_order"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "channel_order"):
                     if source_metadata.get("minibatch_input"):
                         return "import torch", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
                     return "import torch", "def convert(var):\n  return var.permute(2, 0, 1)"
@@ -78,10 +79,10 @@ def torch_minibatch_input(source_metadata, target_metadata) -> conversion:
             if source_metadata.get("minibatch_input") and not target_metadata.get(
                     "minibatch_input"
             ):
-                if is_only_this_key_differ(source_metadata, target_metadata, "minibatch_input"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "minibatch_input"):
                     return "import torch", "def convert(var):\n  return var.squeeze(0)"
             if (not source_metadata.get('minibatch_input')) and target_metadata.get('minibatch_input'):
-                if is_only_this_key_differ(source_metadata, target_metadata, "minibatch_input"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "minibatch_input"):
                     return "import torch", "def convert(var):\n  return var.unsqueeze(0)"
     return None
 
@@ -89,7 +90,7 @@ def torch_minibatch_input(source_metadata, target_metadata) -> conversion:
 def torch_convert_dtype_full(source_metadata, target_metadata) -> conversion:
     if are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor"):
         if validate_torch(source_metadata) and validate_torch(target_metadata):
-            if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+            if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
                 target_dtype_str = target_metadata.get("data_type")
                 dtype_mapping = {
                     "uint8": "uint8",
@@ -112,7 +113,7 @@ def torch_convert_dtype_full(source_metadata, target_metadata) -> conversion:
 def torch_normalize(source_metadata, target_metadata) -> conversion:
     if are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor"):
         if validate_torch(source_metadata) and validate_torch(target_metadata):
-            if (is_only_this_key_differ(source_metadata, target_metadata, "intensity_range")) and (
+            if (is_differ_value_for_key(source_metadata, target_metadata, "intensity_range")) and (
                     source_metadata['data_type'] == "float32" and source_metadata['intensity_range'] == 'full'):
                 return (
                     "import torch",
@@ -126,7 +127,7 @@ def torch_to_pil(source_metadata, target_metadata) -> conversion:
             source_metadata.get("data_representation") == "torch.tensor"
             and target_metadata.get("data_representation") == "PIL.Image"
     ):
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_representation"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_representation"):
             common_constraints = {
                 "color_channel": ['rgb', 'gray'],
                 "channel_order": ['channel last', 'channel first', 'none'],

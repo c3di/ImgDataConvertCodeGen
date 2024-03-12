@@ -1,5 +1,5 @@
 from .type import conversion
-from ...metadata_differ import is_only_this_key_differ, are_both_same_data_repr
+from ...metadata_differ import is_differ_value_for_key, are_both_same_data_repr
 
 
 def validate_pil(metadata):
@@ -29,7 +29,7 @@ def pil_rgba_to_rgb(source_metadata, target_metadata) -> conversion:
                     source_metadata.get("color_channel") == "graya"
                     and target_metadata.get("color_channel") == "gray"
             ):
-                if is_only_this_key_differ(source_metadata, target_metadata, "color_channel"):
+                if is_differ_value_for_key(source_metadata, target_metadata, "color_channel"):
                     return (
                         "",
                         """def convert(var):
@@ -39,7 +39,7 @@ def pil_rgba_to_rgb(source_metadata, target_metadata) -> conversion:
 
 
 def pil_convert_dtype(source_metadata, target_metadata) -> conversion:
-    if are_both_same_data_repr(source_metadata, target_metadata, "PIL.Image") and is_only_this_key_differ(
+    if are_both_same_data_repr(source_metadata, target_metadata, "PIL.Image") and is_differ_value_for_key(
             source_metadata, target_metadata, "data_type"):
         target_dtype = target_metadata.get("data_type")
         if target_dtype in ["uint8", "uint16", "float32", "int32"]:
@@ -66,7 +66,7 @@ def pil_to_torch(source_metadata, target_metadata) -> conversion:
             source_metadata.get("data_representation") == "PIL.Image"
             and target_metadata.get("data_representation") == "torch.tensor"
     ):
-        if is_only_this_key_differ(source_metadata, target_metadata, "data_representation"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "data_representation"):
             common_constraints = {
                 "color_channel": ['rgb', 'gray'],
                 "channel_order": ['channel last', 'channel first', 'none'],

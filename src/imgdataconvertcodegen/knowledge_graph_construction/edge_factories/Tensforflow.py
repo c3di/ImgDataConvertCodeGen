@@ -1,5 +1,5 @@
 from .type import conversion
-from ...metadata_differ import are_both_same_data_repr, is_only_this_key_differ
+from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
 def tf_gpu_cpu(source_metadata, target_metadata) -> conversion:
@@ -9,14 +9,14 @@ def tf_gpu_cpu(source_metadata, target_metadata) -> conversion:
             source_metadata.get("device") == "gpu"
             and target_metadata.get("device") == "cpu"
     ):
-        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "device"):
             return ("import tensorflow as tf",
                     "def convert(var):\n  return tf.device('/cpu:0')(var)")
     if (
             source_metadata.get("device") == "cpu"
             and target_metadata.get("device") == "gpu"
     ):
-        if is_only_this_key_differ(source_metadata, target_metadata, "device"):
+        if is_differ_value_for_key(source_metadata, target_metadata, "device"):
             return (
                 "import tensorflow as tf",
                 """def convert(var):
@@ -54,7 +54,7 @@ def tf_convert_minibatch(source_metadata, target_metadata) -> conversion:
 def tf_convert_dtype(source_metadata, target_metadata) -> conversion:
     if not are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor"):
         return None
-    if is_only_this_key_differ(source_metadata, target_metadata, "data_type"):
+    if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
         target_dtype_str = target_metadata.get("data_type")
         dtype_mapping = {
             "uint8": "tf.uint8",
