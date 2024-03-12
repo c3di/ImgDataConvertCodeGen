@@ -20,7 +20,7 @@ def get_conversion(source_var_name: str, source_metadata: Metadata,
             - `channel_order` (Literal['channel last', 'channel first', 'none']): Order of color channels.
             - `minibatch_input` (bool): Indicates if input is a minibatch.
             - `data_type` (str): Type of data (e.g., 'uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double', 'int8', 'int16', 'int32', 'int64').
-            - `intensity_range` (Literal['full', 'normalized_unsigned', 'normalized_signed']): Range of intensity values.
+            - `intensity_range` (Literal['full', '0to1', '-1to1']): Range of intensity values.
             - `device` (str): Device where the data is processed or stored.
         target_var_name (str): The name of the variable that will store the result of the conversion.
         target_metadata (Metadata): Metadata about the target data, structured similarly to source_metadata.

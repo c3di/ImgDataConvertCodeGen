@@ -37,7 +37,7 @@ def to_float32_or_64(source_metadata, target_metadata) -> conversion:
         raise ValueError(f"Unsupported target dtype: {target_dtype_str}")
 
     if (target_sign == "float" and source_sign == "unsigned" and
-            target_metadata.get('intensity_range') == 'normalized_unsigned'):
+            target_metadata.get('intensity_range') == '-1to1'):
         if target_metadata.get("data_type") == "float32":
             if is_data_type_and_intensity_range_differ(source_metadata, target_metadata):
                 return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_float32(var)"
@@ -46,7 +46,7 @@ def to_float32_or_64(source_metadata, target_metadata) -> conversion:
                 return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_float64(var)"
 
     if (target_sign == "float" and source_sign == "signed" and
-            target_metadata.get('intensity_range') == 'normalized_signed'):
+            target_metadata.get('intensity_range') == '0to1'):
         if target_metadata.get("data_type") == "float32":
             if is_data_type_and_intensity_range_differ(source_metadata, target_metadata):
                 return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_float32(var)"

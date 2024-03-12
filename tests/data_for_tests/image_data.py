@@ -40,9 +40,9 @@ def get_numpy_image(metadata):
         target_type = np.dtype(metadata["data_type"])
         img = img.astype(target_type)
 
-    if metadata["intensity_range"] == "normalized_unsigned":
+    if metadata["intensity_range"] == "0to1":
         img = img / 255.0
-    elif metadata["intensity_range"] == "normalized_signed":
+    elif metadata["intensity_range"] == "-1to1":
         img = img / 127.5 - 1.0
 
     return img

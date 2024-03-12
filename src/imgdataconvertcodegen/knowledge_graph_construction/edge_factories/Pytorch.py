@@ -16,7 +16,7 @@ def is_valid_metadata_for_torch(metadata):
         "data_type": ['uint8',
                       'float32', 'float64', 'double',
                       'int8', 'int16', 'int32', 'int64'],
-        "intensity_range": ['full', 'normalized_unsigned'],
+        "intensity_range": ['full', '-1to1'],
         "device": ['cpu', 'gpu']
     }
     for key, values in allowed_values.items():
@@ -114,13 +114,13 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
 def torch_uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversion:
     if (source_metadata.get('data_type') == 'uint8' and
             source_metadata.get("intensity_range") == "full" and
-            target_metadata.get("intensity_range") == "normalized_unsigned"):
+            target_metadata.get("intensity_range") == "0to1"):
         return "", "def convert(var):\n  return var / 255"
 
 
 def torch_uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conversion:
     if (source_metadata.get('data_type') == 'uint8' and
-            source_metadata.get("intensity_range") == "normalized_unsigned" and
+            source_metadata.get("intensity_range") == "0to1" and
             target_metadata.get("intensity_range") == "full"):
         return "", "def convert(var):\n  return var * 255"
     return None
