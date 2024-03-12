@@ -3,17 +3,22 @@ from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
 def is_valid_metadata_for_tensorflow(metadata):
-    # TODO: Add valid check for combination of values for different attributes
+    if (metadata['data_type'] in ['uint8', 'uint16', 'uint32', 'uint64', 'float16',
+                                  'float64', 'double', 'int8', 'int16', 'int32', 'int64']
+            and metadata['intensity_range'] != "full"):
+        return False
 
-    # Todo: Add valid check for each attribute
+    if metadata['color_channel'] == 'rgb' and metadata['channel_order'] == 'none':
+        return False
+    # reference: https://www.tensorflow.org/api_docs/python/tf/dtypes
     allowed_values = {
         "color_channel": ['rgb', 'gray'],
         "channel_order": ['channel first', 'channel last', 'none'],
         "minibatch_input": [True, False],
-        "data_type": ['uint8',
-                      'float32', 'float64', 'double',
+        "data_type": ['uint8', 'uint16', 'uint32', 'uint64'
+                      'float16', 'float32', 'float64', 'double',
                       'int8', 'int16', 'int32', 'int64'],
-        "intensity_range": ['full', '-1to1'],
+        "intensity_range": ['full', '0to1'],
         "device": ['cpu', 'gpu']
     }
     for key, values in allowed_values.items():
