@@ -238,6 +238,35 @@ def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conv
     return None
 
 
+def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("channel_order") == "channel last" and
+            source_metadata.get("data_type") == "float32" and
+            source_metadata.get("intensity_range") == "0to1" and
+            source_metadata.get("color_channel") == "rgb" and
+            target_metadata.get("color_channel") == "gray"):
+        if source_metadata.get("minibatch_input"):
+            # [N, H, W, 3] -> [N, H, W, 1]
+            return ("import tensorflow as tf",
+                    "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, :, 0] + 0.5870 * var[:, :, :, 1] + 0.1140 * var[:, :, :, 2], -1)")
+        # [H, W, 3] -> [H, W, 1]
+        return ("import tensorflow as tf",
+                "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, 0] + 0.5870 * var[:, :, 1] + 0.1140 * var[:, :, 2], -1)")
+    return None
+
+
+def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("channel_order") == "channel last" and
+            source_metadata.get("data_type") == "float32" and
+            source_metadata.get("intensity_range") == "0to1" and
+            source_metadata.get("color_channel") == "gray" and
+            target_metadata.get("color_channel") == "rgb"):
+        # [N, H, W, 1] -> [N, H, W, 3] or [H, W, 1] -> [H, W, 3]
+        return "import tensorflow as tf", "def convert(var):\n  return tf.concat([var, var, var], axis=-1)"
+    return None
+
+
 factories_cluster_for_tensorflow = (
     use_factories_in_cluster,
     [
@@ -254,5 +283,7 @@ factories_cluster_for_tensorflow = (
         convert_dtype,
         uint8_data_range_to_normalize,
         uint8_normalize_to_full_data_range,
+        channel_last_rgb_to_gray,
+        channel_last_gray_to_rgb
     ],
 )
