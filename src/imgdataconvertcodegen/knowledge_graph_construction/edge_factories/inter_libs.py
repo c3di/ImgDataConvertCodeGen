@@ -22,7 +22,7 @@ def numpy_to_torch(source_metadata, target_metadata) -> conversion:
             "channel_order": ["channel last", "channel first", "none"],
             "minibatch_input": [False],
             "data_type": ["uint8", "float32", "int8", "int16", "int32"],
-            "intensity_range": ["full", "normalized_unsigned"],
+            "intensity_range": ["full", "0to1"],
             "device": ["cpu"],
         }
         for key, allowed_values in common_values_numpy_torch.items():
@@ -59,7 +59,7 @@ def torch_to_numpy(source_metadata, target_metadata) -> conversion:
             "channel_order": ["channel last", "channel first", "none"],
             "minibatch_input": [False],
             "data_type": ["uint8", "float32", "int8", "int16", "int32"],
-            "intensity_range": ["full", "normalized_unsigned"],
+            "intensity_range": ["full", "0to1"],
             "device": ["cpu"],
         }
         for key, allowed_values in common_values_numpy_torch.items():
@@ -77,9 +77,6 @@ def numpy_to_pil(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata["color_channel"] == "rgb"
         and source_metadata["channel_order"] != "channel last"
-    ) or (
-        source_metadata["color_channel"] == "gray"
-        and source_metadata["channel_order"] != "none"
     ):
         return None
     if (
@@ -111,9 +108,6 @@ def pil_to_numpy(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata["color_channel"] == "rgb"
         and source_metadata["channel_order"] != "channel last"
-    ) or (
-        source_metadata["color_channel"] == "gray"
-        and source_metadata["channel_order"] != "none"
     ):
         return None
     if (
@@ -141,68 +135,105 @@ def pil_to_numpy(source_metadata, target_metadata) -> conversion:
     return None
 
 
-# TODO: split to  PIL to numpy and numpy to tensor
-# GPU？
-def pil_to_tf(source_metadata, target_metadata) -> conversion:
+def tensorflow_to_numpy(source_metadata, target_metadata) -> conversion:
     if (
-        source_metadata.get("data_representation") == "PIL.Image"
-        and target_metadata.get("data_representation") == "tf.tensor"
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] != "channel last"
     ):
-        return (
-            "import tensorflow as tf\nimport numpy as np",
-            """def convert(var):
-        np_array = np.array(var)
-        return tf.convert_to_tensor(np_array, dtype=tf.uint8)""",
-        )
-    return None
-
-
-# TODO: split to tf-to-numpy and numpy-to-tensor
-# GPU？
-def tf_to_pil(source_metadata, target_metadata) -> conversion:
+        return None
+    if (
+        source_metadata["data_type"] == "float32"
+        and source_metadata["intensity_range"] != "0to1"
+    ) or (
+        source_metadata["data_type"]
+        in ["uint8", "uint16", "uint32", "int8", "int16", "int32"]
+        and source_metadata["intensity_range"] != "full"
+    ):
+        return None
     if (
         source_metadata.get("data_representation") == "tf.tensor"
-        and target_metadata.get("data_representation") == "PIL.Image"
+        and target_metadata.get("data_representation") == "numpy.ndarray"
+        and is_same_metadata(source_metadata, target_metadata, "data_representation")
     ):
-        return (
-            "from PIL import Image",
-            "def convert(var):\n  return Image.fromarray(var.numpy())",
-        )
-    return None
+        common_values_numpy_tensorflow = {
+            "color_channel": ["rgb", "gray"],
+            "channel_order": ["channel last", "none"],
+            "minibatch_input": [False],
+            "data_type": [
+                "uint8",
+                "uint16",
+                "uint32",
+                "float32",
+                "int8",
+                "int16",
+                "int32",
+            ],
+            "intensity_range": ["full", "0to1"],
+            "device": ["cpu"],
+        }
+        for key, allowed_values in common_values_numpy_tensorflow.items():
+            if not source_metadata.get(key) in allowed_values:
+                return None
 
-
-# TODO: split to numpy-to-tf and tf-to-torch
-# GPU？
-def torch_to_tf(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("data_representation") == "torch.tensor"
-        and target_metadata.get("data_representation") == "tf.tensor"
-    ):
         return (
             "import tensorflow as tf",
-            "def convert(var):\n  return tf.convert_to_tensor(var.numpy(), dtype=tf.as_dtype(var.dtype))",
+            "def convert(var):\n  return tf.make_ndarray(var)",
         )
     return None
 
 
-# TODO: numpy-to-torch and torch-to-numpy
-def tf_to_torch(source_metadata, target_metadata) -> conversion:
+def numpy_to_tensorflow(source_metadata, target_metadata) -> conversion:
     if (
-        source_metadata.get("data_representation") == "tf.tensor"
-        and target_metadata.get("data_representation") == "torch.tensor"
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] != "channel last"
     ):
+        return None
+    if (
+        source_metadata["data_type"] == "float32"
+        and source_metadata["intensity_range"] != "0to1"
+    ) or (
+        source_metadata["data_type"]
+        in ["uint8", "uint16", "uint32", "int8", "int16", "int32"]
+        and source_metadata["intensity_range"] != "full"
+    ):
+        return None
+    if (
+        source_metadata.get("data_representation") == "numpy.ndarray"
+        and target_metadata.get("data_representation") == "tf.tensor"
+        and is_same_metadata(source_metadata, target_metadata, "data_representation")
+    ):
+        common_values_numpy_tensorflow = {
+            "color_channel": ["rgb", "gray"],
+            "channel_order": ["channel last", "none"],
+            "minibatch_input": [False],
+            "data_type": [
+                "uint8",
+                "uint16",
+                "uint32",
+                "float32",
+                "int8",
+                "int16",
+                "int32",
+            ],
+            "intensity_range": ["full", "0to1"],
+            "device": ["cpu"],
+        }
+        for key, allowed_values in common_values_numpy_tensorflow.items():
+            if not source_metadata.get(key) in allowed_values:
+                return None
+
         return (
-            "import torch",
-            "def convert(var):\n  return torch.tensor(var_np = var.numpy(), dtype=var.dtype.as_numpy_dtype)",
+            "import tensorflow as tf",
+            f"def convert(var):\n  return tf.convert_to_tensor(var, dtype ={source_metadata['data_type']})",
         )
     return None
 
 
 inter_libs_factories = [
-    pil_to_torch,
-    pil_to_tf,
-    torch_to_pil,
-    torch_to_tf,
-    tf_to_pil,
-    tf_to_torch,
+    numpy_to_pil,
+    pil_to_numpy,
+    numpy_to_torch,
+    torch_to_numpy,
+    numpy_to_tensorflow,
+    tensorflow_to_numpy,
 ]
