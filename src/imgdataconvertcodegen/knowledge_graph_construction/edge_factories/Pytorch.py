@@ -16,7 +16,7 @@ def is_valid_metadata_for_torch(metadata):
         "data_type": ['uint8',
                       'float32', 'float64', 'double',
                       'int8', 'int16', 'int32', 'int64'],
-        "intensity_range": ['full', '-1to1'],
+        "intensity_range": ['full', '0to1'],
         "device": ['cpu', 'gpu']
     }
     for key, values in allowed_values.items():
