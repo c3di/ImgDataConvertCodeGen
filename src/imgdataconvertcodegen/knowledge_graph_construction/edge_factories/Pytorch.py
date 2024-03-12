@@ -31,42 +31,42 @@ def use_factories_in_cluster(source_metadata, target_metadata):
             is_valid_metadata_for_torch(target_metadata))
 
 
-def torch_gpu_to_cpu(source_metadata, target_metadata) -> conversion:
+def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("device") == "gpu" and target_metadata.get("device") == "cpu":
         return "", "def convert(var):\n  return var.cpu()"
     return None
 
 
-def torch_cpu_to_gpu(source_metadata, target_metadata) -> conversion:
+def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("device") == "cpu" and target_metadata.get("device") == "gpu":
         return "", "def convert(var):\n  return var.cuda()"
     return None
 
 
-def torch_channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "none" and target_metadata.get("channel_order") == "channel first":
         return "", "def convert(var):\n  return var.unsqueeze(0)"
 
 
-def torch_channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "none" and target_metadata.get("channel_order") == "channel last":
         return "", "def convert(var):\n  return var.unsqueeze(-1)"
     return None
 
 
-def torch_channel_last_to_none(source_metadata, target_metadata) -> conversion:
+def channel_last_to_none(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "channel last" and target_metadata.get("channel_order") == "none":
         return "", "def convert(var):\n  return var.squeeze(-1)"
     return None
 
 
-def torch_channel_first_to_none(source_metadata, target_metadata) -> conversion:
+def channel_first_to_none(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "channel first" and target_metadata.get("channel_order") == "none":
         return "", "def convert(var):\n  return var.squeeze(0)"
     return None
 
 
-def torch_channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "channel last" and target_metadata.get(
             "channel_order") == "channel first":
         if source_metadata.get("minibatch_input"):
@@ -75,7 +75,7 @@ def torch_channel_last_to_channel_first(source_metadata, target_metadata) -> con
     return None
 
 
-def torch_channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
     if source_metadata.get('channel_order') == 'channel first' and target_metadata.get(
             'channel_order') == 'channel last':
         if source_metadata.get('minibatch_input'):
@@ -84,18 +84,18 @@ def torch_channel_first_to_channel_last(source_metadata, target_metadata) -> con
     return None
 
 
-def torch_minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
+def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("minibatch_input") and not target_metadata.get("minibatch_input"):
         return "", "def convert(var):\n  return var.squeeze(0)"
     return None
 
 
-def torch_minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
+def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     if (not source_metadata.get('minibatch_input')) and target_metadata.get('minibatch_input'):
         return "", "def convert(var):\n  return var.unsqueeze(0)"
 
 
-def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
+def convert_dtype(source_metadata, target_metadata) -> conversion:
     if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
         dtype_mapping = {
             "uint8": "uint8",
@@ -111,14 +111,14 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def torch_uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversion:
+def uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversion:
     if (source_metadata.get('data_type') == 'uint8' and
             source_metadata.get("intensity_range") == "full" and
             target_metadata.get("intensity_range") == "0to1"):
         return "", "def convert(var):\n  return var / 255"
 
 
-def torch_uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conversion:
+def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conversion:
     if (source_metadata.get('data_type') == 'uint8' and
             source_metadata.get("intensity_range") == "0to1" and
             target_metadata.get("intensity_range") == "full"):
@@ -127,17 +127,17 @@ def torch_uint8_normalize_to_full_data_range(source_metadata, target_metadata) -
 
 
 factories_cluster_for_Pytorch = (use_factories_in_cluster, [
-    torch_gpu_to_cpu,
-    torch_cpu_to_gpu,
-    torch_channel_none_to_channel_first,
-    torch_channel_none_to_channel_last,
-    torch_channel_first_to_none,
-    torch_channel_first_to_channel_last,
-    torch_channel_last_to_none,
-    torch_channel_last_to_channel_first,
-    torch_minibatch_true_to_false,
-    torch_minibatch_false_to_true,
-    torch_convert_dtype,
-    torch_uint8_data_range_to_normalize,
-    torch_uint8_normalize_to_full_data_range,
+    gpu_to_cpu,
+    cpu_to_gpu,
+    channel_none_to_channel_first,
+    channel_none_to_channel_last,
+    channel_first_to_none,
+    channel_first_to_channel_last,
+    channel_last_to_none,
+    channel_last_to_channel_first,
+    minibatch_true_to_false,
+    minibatch_false_to_true,
+    convert_dtype,
+    uint8_data_range_to_normalize,
+    uint8_normalize_to_full_data_range,
 ])
