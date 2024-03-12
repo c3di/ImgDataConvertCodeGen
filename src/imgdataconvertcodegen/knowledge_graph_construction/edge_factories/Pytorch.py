@@ -22,7 +22,6 @@ def validate_torch(metadata):
     return True
 
 
-
 def torch_gpu_cpu(source_metadata, target_metadata) -> conversion:
     if are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor"):
         if validate_torch(source_metadata) and validate_torch(target_metadata):
@@ -122,48 +121,10 @@ def torch_normalize(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def torch_to_pil(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("data_representation") == "torch.tensor"
-            and target_metadata.get("data_representation") == "PIL.Image"
-    ):
-        if is_differ_value_for_key(source_metadata, target_metadata, "data_representation"):
-            common_constraints = {
-                "color_channel": ['rgb', 'gray'],
-                "channel_order": ['channel last', 'channel first', 'none'],
-                "minibatch_input": [False],
-                "data_type": ['uint8'],
-                "device": ['cpu']
-            }
-
-            for key, allowed_values in common_constraints.items():
-                if not source_metadata.get(key) in allowed_values:
-                    return None
-        return (
-            "from torchvision.transforms import ToPILImage",
-            "def convert(var):\n  return ToPILImage()(var)",
-        )
-    return None
-
-
-def torch_to_tf(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("data_representation") == "torch.tensor"
-            and target_metadata.get("data_representation") == "tf.tensor"
-    ):
-        return (
-            "import tensorflow as tf",
-            "def convert(var):\n  return tf.convert_to_tensor(var.numpy(), dtype=tf.as_dtype(var.dtype))",
-        )
-    return None
-
-
 pytorch_factories = [
     torch_gpu_cpu,
     torch_channel_order,
     torch_minibatch_input,
     torch_convert_dtype_full,
     torch_normalize,
-    torch_to_pil,
-    torch_to_tf,
 ]

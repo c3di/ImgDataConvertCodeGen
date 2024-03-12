@@ -90,34 +90,8 @@ def tf_convert_dtype(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def tf_to_pil(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("data_representation") == "tf.tensor"
-            and target_metadata.get("data_representation") == "PIL.Image"
-    ):
-        return (
-            "from PIL import Image",
-            "def convert(var):\n  return Image.fromarray(var.numpy())",
-        )
-    return None
-
-
-def tf_to_torch(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("data_representation") == "tf.tensor"
-            and target_metadata.get("data_representation") == "torch.tensor"
-    ):
-        return (
-            "import torch",
-            "def convert(var):\n  return torch.tensor(var_np = var.numpy(), dtype=var.dtype.as_numpy_dtype)",
-        )
-    return None
-
-
 tensorflow_factories = [
     tf_gpu_cpu,
     tf_convert_minibatch,
     tf_convert_dtype,
-    tf_to_pil,
-    tf_to_torch
 ]
