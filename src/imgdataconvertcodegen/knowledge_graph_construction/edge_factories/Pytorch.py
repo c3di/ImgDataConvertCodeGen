@@ -107,10 +107,7 @@ def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
             "float64": "double",
             "float32": "float",
         }
-        return (
-            "import torch",
-            f"def convert(var):\n  return var.to({dtype_mapping.get(target_metadata.get("data_type"))})",
-        )
+        return "", f'def convert(var):\n  return var.to("{dtype_mapping.get(target_metadata.get("data_type"))}")'
     return None
 
 
