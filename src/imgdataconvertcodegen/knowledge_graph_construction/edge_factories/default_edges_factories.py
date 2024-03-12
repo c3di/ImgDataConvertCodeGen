@@ -41,17 +41,6 @@ def numpy_between_rgb_bgr(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def numpy_to_torch(source_metadata, target_metadata) -> conversion:
-    if (source_metadata.get('data_representation') == 'numpy.ndarray' and
-            target_metadata.get('data_representation') == 'torch.tensor'):
-        return "import torch", "def convert(var):\n  return torch.from_numpy(var)"
-    return None
-
-
-
-
-# Todo... add more factories from the table
 default_factories = [
     between_float64_double,
-    numpy_between_rgb_bgr,
-    numpy_to_torch]
+    numpy_between_rgb_bgr]
