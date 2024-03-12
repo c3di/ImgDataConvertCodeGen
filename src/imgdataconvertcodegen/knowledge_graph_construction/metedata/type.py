@@ -24,24 +24,6 @@ metadata_values: MetadataValues = {
 }
 
 
-# todo: to remove
-def is_valid_metadata(metadata: dict):
-    if metadata['color_channel'] == 'rgba' or metadata['color_channel'] == 'graya':
-        if metadata['data_representation'] == 'PIL.Image':
-            return metadata['data_type'] == 'uint8'
-        return False
-    if metadata['data_representation'] == 'numpy.ndarray':
-        return metadata['minibatch_input'] == False
-    if metadata['data_representation'] == 'torch.tensor':
-        for type in ['uint8', 'float32', 'int8', 'int16', 'int32', 'float64', 'double', 'int64']:
-            if metadata['data_type'] == type:
-                if metadata['data_type'] == 'float32' and metadata['intensity_range'] != 'normalized_unsigned':
-                    return False
-                return True
-        return False
-    return True
-
-
 class Metadata(TypedDict):
     data_representation: str
     color_channel: str
