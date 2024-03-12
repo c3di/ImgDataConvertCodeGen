@@ -33,36 +33,36 @@ def use_factories_in_cluster(source_metadata, target_metadata):
 
 def torch_gpu_to_cpu(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("device") == "gpu" and target_metadata.get("device") == "cpu":
-        return "import torch", "def convert(var):\n  return var.cpu()"
+        return "", "def convert(var):\n  return var.cpu()"
     return None
 
 
 def torch_cpu_to_gpu(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("device") == "cpu" and target_metadata.get("device") == "gpu":
-        return "import torch", "def convert(var):\n  return var.cuda()"
+        return "", "def convert(var):\n  return var.cuda()"
     return None
 
 
 def torch_channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "none" and target_metadata.get("channel_order") == "channel first":
-        return "import torch", "def convert(var):\n  return var.unsqueeze(0)"
+        return "", "def convert(var):\n  return var.unsqueeze(0)"
 
 
 def torch_channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "none" and target_metadata.get("channel_order") == "channel last":
-        return "import torch", "def convert(var):\n  return var.unsqueeze(-1)"
+        return "", "def convert(var):\n  return var.unsqueeze(-1)"
     return None
 
 
 def torch_channel_last_to_none(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "channel last" and target_metadata.get("channel_order") == "none":
-        return "import torch", "def convert(var):\n  return var.squeeze(-1)"
+        return "", "def convert(var):\n  return var.squeeze(-1)"
     return None
 
 
 def torch_channel_first_to_none(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("channel_order") == "channel first" and target_metadata.get("channel_order") == "none":
-        return "import torch", "def convert(var):\n  return var.squeeze(0)"
+        return "", "def convert(var):\n  return var.squeeze(0)"
     return None
 
 
@@ -70,8 +70,8 @@ def torch_channel_last_to_channel_first(source_metadata, target_metadata) -> con
     if source_metadata.get("channel_order") == "channel last" and target_metadata.get(
             "channel_order") == "channel first":
         if source_metadata.get("minibatch_input"):
-            return "import torch", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
-        return "import torch", "def convert(var):\n  return var.permute(2, 0, 1)"
+            return "", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
+        return "", "def convert(var):\n  return var.permute(2, 0, 1)"
     return None
 
 
@@ -79,20 +79,20 @@ def torch_channel_first_to_channel_last(source_metadata, target_metadata) -> con
     if source_metadata.get('channel_order') == 'channel first' and target_metadata.get(
             'channel_order') == 'channel last':
         if source_metadata.get('minibatch_input'):
-            return "import torch", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
-        return "import torch", "def convert(var):\n  return var.permute(1, 2, 0)"
+            return "", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
+        return "", "def convert(var):\n  return var.permute(1, 2, 0)"
     return None
 
 
 def torch_minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("minibatch_input") and not target_metadata.get("minibatch_input"):
-        return "import torch", "def convert(var):\n  return var.squeeze(0)"
+        return "", "def convert(var):\n  return var.squeeze(0)"
     return None
 
 
 def torch_minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     if (not source_metadata.get('minibatch_input')) and target_metadata.get('minibatch_input'):
-        return "import torch", "def convert(var):\n  return var.unsqueeze(0)"
+        return "", "def convert(var):\n  return var.unsqueeze(0)"
 
 
 def torch_convert_dtype(source_metadata, target_metadata) -> conversion:
