@@ -150,8 +150,8 @@ def convert_dtype(source_metadata, target_metadata) -> conversion:
         return (
             "import tensorflow as tf\n  from torchvision.transforms import functional as F",
             f"""def convert(var):
-                    dtype = getattr(tf, '{dtype_mapping[target_metadata["data_type"]]}')
-                    return F.convert_image_dtype(var, dtype)""",
+    dtype = getattr(tf, '{dtype_mapping[target_metadata["data_type"]]}')
+    return F.convert_image_dtype(var, dtype)""",
         )
     return None
 
@@ -185,9 +185,11 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
             target_metadata.get("color_channel") == "gray"):
         if source_metadata.get("minibatch_input"):
             # [N, 3, H, W] -> [N, 1, H, W]
-            return "", "def convert(var):\n  return (0.2989 * var[:, 0, :, :] + 0.5870 * var[:, 1, :, :] + 0.1140 * var[:, 2, :, :]).unsqueeze(1)"
+            return "", ("def convert(var):\n  return (0.2989 * var[:, 0, :, :] + 0.5870 * var[:, 1, :, :]"
+                        " + 0.1140 * var[:, 2, :, :]).unsqueeze(1)")
         # [3, H, W] -> [1, H, W]
-        return "", "def convert(var):\n  return (0.2989 * var[0, :, :] + 0.5870 * var[1, :, :] + 0.1140 * var[2, :, :]).unsqueeze(0)"
+        return "", ("def convert(var):\n  return (0.2989 * var[0, :, :] + 0.5870 * var[1, :, :]"
+                    " + 0.1140 * var[2, :, :]).unsqueeze(0)")
     return None
 
 

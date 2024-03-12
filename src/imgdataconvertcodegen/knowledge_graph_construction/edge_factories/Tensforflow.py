@@ -78,12 +78,10 @@ def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
         and target_metadata.get("device") == "gpu"
     ):
         return (
-            (
                 "import tensorflow as tf",
                 """def convert(var):
-                    with tf.device('/device:GPU:0'):
-                        return tf.identity(var)""",
-            ),
+    with tf.device('/device:GPU:0'):
+        return tf.identity(var)""",
         )
     return None
 
@@ -212,8 +210,8 @@ def convert_dtype(source_metadata, target_metadata) -> conversion:
         return (
             "import tensorflow as tf",
             f"""def convert(var):
-                    dtype = getattr(tf, '{target_dtype}')
-                    return tf.cast(var, dtype)""",
+    dtype = getattr(tf, '{target_dtype}')
+    return tf.cast(var, dtype)""",
         )
     return None
 
@@ -248,10 +246,12 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
         if source_metadata.get("minibatch_input"):
             # [N, H, W, 3] -> [N, H, W, 1]
             return ("import tensorflow as tf",
-                    "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, :, 0] + 0.5870 * var[:, :, :, 1] + 0.1140 * var[:, :, :, 2], -1)")
+                    "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, :, 0] + 0.5870 * var[:, :, :, 1]"
+                    " + 0.1140 * var[:, :, :, 2], -1)")
         # [H, W, 3] -> [H, W, 1]
         return ("import tensorflow as tf",
-                "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, 0] + 0.5870 * var[:, :, 1] + 0.1140 * var[:, :, 2], -1)")
+                "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, 0] + 0.5870 * var[:, :, 1] "
+                "+ 0.1140 * var[:, :, 2], -1)")
     return None
 
 
