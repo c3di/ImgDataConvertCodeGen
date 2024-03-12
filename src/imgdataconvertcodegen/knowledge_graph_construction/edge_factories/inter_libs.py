@@ -4,10 +4,18 @@ from ...metadata_differ import is_same_metadata
 
 def numpy_to_torch(source_metadata, target_metadata) -> conversion:
     if (
+        source_metadata["data_type"] in ["uint8", "int8", "int16", "int32"]
+        and target_metadata["intensity_range"] != "full"
+    ) or (
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] == "none"
+    ):
+        return None
+
+    if (
         source_metadata.get("data_representation") == "numpy.ndarray"
         and target_metadata.get("data_representation") == "torch.tensor"
         and is_same_metadata(source_metadata, target_metadata, "data_representation")
-        and (source_metadata["data_type"] in ["uint8", "int8", "int16", "int32"] and target_metadata["intensity_range"]=="full")
     ):
         common_values_numpy_torch = {
             "color_channel": ["rgb", "gray"],
@@ -30,14 +38,25 @@ def numpy_to_torch(source_metadata, target_metadata) -> conversion:
 
 def torch_to_numpy(source_metadata, target_metadata) -> conversion:
     if (
+        source_metadata["data_type"] in ["uint8", "int8", "int16", "int32"]
+        and target_metadata["intensity_range"] != "full"
+    ) or (
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] == "none"
+    ):
+        return None
+    if (
         source_metadata.get("data_representation") == "torch.tensor"
-        and target_metadata.get("data_representation") == "numpy.ndarra"
+        and target_metadata.get("data_representation") == "numpy.ndarray"
         and is_same_metadata(source_metadata, target_metadata, "data_representation")
-        and (source_metadata["data_type"] in ["uint8", "int8", "int16", "int32"] and target_metadata["intensity_range"]=="full")
+        and (
+            source_metadata["data_type"] in ["uint8", "int8", "int16", "int32"]
+            and target_metadata["intensity_range"] == "full"
+        )
     ):
         common_values_numpy_torch = {
             "color_channel": ["rgb", "gray"],
-            "channel_order": ['channel last', 'channel first', 'none'],
+            "channel_order": ["channel last", "channel first", "none"],
             "minibatch_input": [False],
             "data_type": ["uint8", "float32", "int8", "int16", "int32"],
             "intensity_range": ["full", "normalized_unsigned"],
@@ -54,50 +73,70 @@ def torch_to_numpy(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def pil_to_torch(source_metadata, target_metadata) -> conversion:
+def numpy_to_pil(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "PIL.Image"
-            and target_metadata.get("data_representation") == "torch.tensor"
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] != "channel last"
+    ) or (
+        source_metadata["color_channel"] == "gray"
+        and source_metadata["channel_order"] != "none"
     ):
-        common_constraints = {
-            "color_channel": ['rgb', 'gray'],
+        return None
+    if (
+        source_metadata.get("data_representation") == "numpy.ndarray"
+        and target_metadata.get("data_representation") == "PIL.Image"
+        and is_same_metadata(source_metadata, target_metadata, "data_representation")
+    ):
+        common_constraints_numpy_pil = {
+            "color_channel": ["rgb", "gray"],
+            "channel_order": ["channel last", "none"],
             "minibatch_input": [False],
-            "data_type": ['uint8'],
-            "device": ['cpu']
+            "data_type": ["uint8"],
+            "intensity_range": ["full"],
+            "device": ["cpu"],
         }
 
-        for key, allowed_values in common_constraints.items():
+        for key, allowed_values in common_constraints_numpy_pil.items():
             if not source_metadata.get(key) in allowed_values:
                 return None
 
         return (
-            "from torchvision.transforms import ToTensor",
-            "def convert(var):\n  return ToTensor()(var)",
+            "from PIL import Image",
+            "def convert(var):\n  return Image.fromarray(var)",
         )
     return None
 
 
-# TODO: https://pytorch.org/vision/master/generated/torchvision.transforms.functional.to_pil_image.html
-def torch_to_pil(source_metadata, target_metadata) -> conversion:
+def pil_to_numpy(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "torch.tensor"
-            and target_metadata.get("data_representation") == "PIL.Image"
+        source_metadata["color_channel"] == "rgb"
+        and source_metadata["channel_order"] != "channel last"
+    ) or (
+        source_metadata["color_channel"] == "gray"
+        and source_metadata["channel_order"] != "none"
     ):
-
-        common_constraints = {
-            "color_channel": ['rgb', 'gray'],
-            "channel_order": ['channel last', 'channel first', 'none'],
+        return None
+    if (
+        source_metadata.get("data_representation") == "PIL.Image"
+        and target_metadata.get("data_representation") == "numpy.ndarray"
+        and is_same_metadata(source_metadata, target_metadata, "data_representation")
+    ):
+        common_constraints_numpy_pil = {
+            "color_channel": ["rgb", "gray"],
+            "channel_order": ["channel last", "none"],
             "minibatch_input": [False],
-            "data_type": ['uint8'],
-            "device": ['cpu']
+            "data_type": ["uint8"],
+            "intensity_range": ["full"],
+            "device": ["cpu"],
         }
 
-        for key, allowed_values in common_constraints.items():
+        for key, allowed_values in common_constraints_numpy_pil.items():
             if not source_metadata.get(key) in allowed_values:
                 return None
+
         return (
-            "from torchvision.transforms import ToPILImage",
-            "def convert(var):\n  return ToPILImage()(var)",
+            "import numpy as np",
+            "def convert(var):\n  return np.array(var)",
         )
     return None
 
@@ -106,8 +145,8 @@ def torch_to_pil(source_metadata, target_metadata) -> conversion:
 # GPU？
 def pil_to_tf(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "PIL.Image"
-            and target_metadata.get("data_representation") == "tf.tensor"
+        source_metadata.get("data_representation") == "PIL.Image"
+        and target_metadata.get("data_representation") == "tf.tensor"
     ):
         return (
             "import tensorflow as tf\nimport numpy as np",
@@ -122,8 +161,8 @@ def pil_to_tf(source_metadata, target_metadata) -> conversion:
 # GPU？
 def tf_to_pil(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "tf.tensor"
-            and target_metadata.get("data_representation") == "PIL.Image"
+        source_metadata.get("data_representation") == "tf.tensor"
+        and target_metadata.get("data_representation") == "PIL.Image"
     ):
         return (
             "from PIL import Image",
@@ -136,8 +175,8 @@ def tf_to_pil(source_metadata, target_metadata) -> conversion:
 # GPU？
 def torch_to_tf(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "torch.tensor"
-            and target_metadata.get("data_representation") == "tf.tensor"
+        source_metadata.get("data_representation") == "torch.tensor"
+        and target_metadata.get("data_representation") == "tf.tensor"
     ):
         return (
             "import tensorflow as tf",
@@ -149,8 +188,8 @@ def torch_to_tf(source_metadata, target_metadata) -> conversion:
 # TODO: numpy-to-torch and torch-to-numpy
 def tf_to_torch(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_representation") == "tf.tensor"
-            and target_metadata.get("data_representation") == "torch.tensor"
+        source_metadata.get("data_representation") == "tf.tensor"
+        and target_metadata.get("data_representation") == "torch.tensor"
     ):
         return (
             "import torch",
@@ -165,5 +204,5 @@ inter_libs_factories = [
     torch_to_pil,
     torch_to_tf,
     tf_to_pil,
-    tf_to_torch
+    tf_to_torch,
 ]
