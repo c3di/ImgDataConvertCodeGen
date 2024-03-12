@@ -17,7 +17,7 @@ metadata_values: MetadataValues = {
     "channel_order": ['channel last', 'channel first', 'none'],
     "minibatch_input": [True, False],
     "data_type": ['uint8', 'uint16', 'uint32', 'uint64',
-                  'float32', 'float64', 'double',
+                  'float16', 'float32', 'float64', 'double',
                   'int8', 'int16', 'int32', 'int64'],
     "intensity_range": ['full', '0to1', '-1to1'],
     "device": ['cpu', 'gpu']
