@@ -184,21 +184,10 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
             source_metadata.get("color_channel") == "rgb" and
             target_metadata.get("color_channel") == "gray"):
         if source_metadata.get("minibatch_input"):
+            # [N, 3, H, W] -> [N, 1, H, W]
             return "", "def convert(var):\n  return (0.2989 * var[:, 0, :, :] + 0.5870 * var[:, 1, :, :] + 0.1140 * var[:, 2, :, :]).unsqueeze(1)"
+        # [3, H, W] -> [1, H, W]
         return "", "def convert(var):\n  return (0.2989 * var[0, :, :] + 0.5870 * var[1, :, :] + 0.1140 * var[2, :, :]).unsqueeze(0)"
-    return None
-
-
-def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
-            source_metadata.get("color_channel") == "rgb" and
-            target_metadata.get("color_channel") == "gray"):
-        if source_metadata.get("minibatch_input"):
-            return "", "def convert(var):\n  return (0.2989 * var[:, :, :, 0] + 0.5870 * var[:, :, :, 1] + 0.1140 * var[:, :, :, 2]).unsqueeze(3)"
-        return "", "def convert(var):\n  return (0.2989 * var[:, :, 0] + 0.5870 * var[:, :, 1] + 0.1140 * var[:, :, 2]).unsqueeze(-1)"
     return None
 
 
@@ -210,21 +199,10 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
             source_metadata.get("color_channel") == "gray" and
             target_metadata.get("color_channel") == "rgb"):
         if source_metadata.get("minibatch_input"):
+            # [N, 1, H, W] -> [N, 3, H, W]
             return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 1)"
+        # [1, H, W] -> [3, H, W]
         return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 0)"
-    return None
-
-
-def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
-    if (
-            source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
-            source_metadata.get("color_channel") == "gray" and
-            target_metadata.get("color_channel") == "rgb"):
-        if source_metadata.get("minibatch_input"):
-            return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 3)"
-        return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 2)"
     return None
 
 
@@ -245,8 +223,6 @@ factories_cluster_for_Pytorch = (
         uint8_data_range_to_normalize,
         uint8_normalize_to_full_data_range,
         channel_first_rgb_to_gray,
-        channel_last_rgb_to_gray,
         channel_first_gray_to_rgb,
-        channel_last_gray_to_rgb
     ],
 )
