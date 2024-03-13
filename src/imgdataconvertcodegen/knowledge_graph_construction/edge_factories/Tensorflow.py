@@ -88,7 +88,7 @@ def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
             "import tensorflow as tf",
             """def convert(var):
     with tf.device('/device:GPU:0'):
-        return tf.identity(var)""",
+    return tf.identity(var)""",
         )
     return None
 
@@ -249,7 +249,7 @@ def float32_full_range_to_0to1(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def uint8_normalize_to_full_range(source_metadata, target_metadata) -> conversion:
+def uint8_normalized_to_full_range(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata.get("data_type") == "uint8"
         and source_metadata.get("intensity_range") == "0to1"
@@ -259,7 +259,7 @@ def uint8_normalize_to_full_range(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint16_normalize_to_full_range(source_metadata, target_metadata) -> conversion:
+def uint16_normalized_to_full_range(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata.get("data_type") == "uint16"
         and source_metadata.get("intensity_range") == "0to1"
@@ -270,7 +270,9 @@ def uint16_normalize_to_full_range(source_metadata, target_metadata) -> conversi
             "def convert(var):\n  return var * 65535",
         )
     return None
-#TODO add more dtypes
+
+
+# TODO add more dtypes
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
@@ -331,9 +333,9 @@ factories_cluster_for_tensorflow = (
         minibatch_false_to_true,
         convert_dtype_without_rescale,
         uint8_full_range_to_normalize,
-        uint8_normalize_to_full_range,
+        uint8_normalized_to_full_range,
         float32_full_range_to_0to1,
-        uint16_normalize_to_full_range,
+        uint16_normalized_to_full_range,
         channel_last_rgb_to_gray,
         channel_last_gray_to_rgb,
     ],

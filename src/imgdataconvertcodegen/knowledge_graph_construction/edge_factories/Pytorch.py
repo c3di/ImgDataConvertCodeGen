@@ -28,9 +28,9 @@ def is_attribute_value_valid_for_torch(metadata):
 
 def is_metadata_valid_for_torch(metadata):
     if (
-            metadata["data_type"]
-            in ["float64", "double", "int8", "int16", "int32", "int64"]
-            and metadata["intensity_range"] != "full"
+        metadata["data_type"]
+        in ["uint8", "float64", "double", "int8", "int16", "int32", "int64"]
+        and metadata["intensity_range"] != "full"
     ):
         return False
     if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
@@ -40,18 +40,18 @@ def is_metadata_valid_for_torch(metadata):
 
 def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
-            are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor")
-            and is_attribute_value_valid_for_torch(source_metadata)
-            and is_attribute_value_valid_for_torch(target_metadata)
-            and is_metadata_valid_for_torch(source_metadata)
-            and is_metadata_valid_for_torch(target_metadata)
+        are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor")
+        and is_attribute_value_valid_for_torch(source_metadata)
+        and is_attribute_value_valid_for_torch(target_metadata)
+        and is_metadata_valid_for_torch(source_metadata)
+        and is_metadata_valid_for_torch(target_metadata)
     )
 
 
 def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("device") == "gpu"
-            and target_metadata.get("device") == "cpu"
+        source_metadata.get("device") == "gpu"
+        and target_metadata.get("device") == "cpu"
     ):
         return "", "def convert(var):\n  return var.cpu()"
     return None
@@ -59,8 +59,8 @@ def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
 
 def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("device") == "cpu"
-            and target_metadata.get("device") == "gpu"
+        source_metadata.get("device") == "cpu"
+        and target_metadata.get("device") == "gpu"
     ):
         return "", "def convert(var):\n  return var.cuda()"
     return None
@@ -68,8 +68,8 @@ def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
 
 def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "none"
-            and target_metadata.get("channel_order") == "channel first"
+        source_metadata.get("channel_order") == "none"
+        and target_metadata.get("channel_order") == "channel first"
     ):
         return "", "def convert(var):\n  return var.unsqueeze(0)"
     return None
@@ -77,8 +77,8 @@ def channel_none_to_channel_first(source_metadata, target_metadata) -> conversio
 
 def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "none"
-            and target_metadata.get("channel_order") == "channel last"
+        source_metadata.get("channel_order") == "none"
+        and target_metadata.get("channel_order") == "channel last"
     ):
         return "", "def convert(var):\n  return var.unsqueeze(-1)"
     return None
@@ -86,8 +86,8 @@ def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion
 
 def channel_last_to_none(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "channel last"
-            and target_metadata.get("channel_order") == "none"
+        source_metadata.get("channel_order") == "channel last"
+        and target_metadata.get("channel_order") == "none"
     ):
         return "", "def convert(var):\n  return var.squeeze(-1)"
     return None
@@ -95,8 +95,8 @@ def channel_last_to_none(source_metadata, target_metadata) -> conversion:
 
 def channel_first_to_none(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "channel first"
-            and target_metadata.get("channel_order") == "none"
+        source_metadata.get("channel_order") == "channel first"
+        and target_metadata.get("channel_order") == "none"
     ):
         return "", "def convert(var):\n  return var.squeeze(0)"
     return None
@@ -104,8 +104,8 @@ def channel_first_to_none(source_metadata, target_metadata) -> conversion:
 
 def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "channel last"
-            and target_metadata.get("channel_order") == "channel first"
+        source_metadata.get("channel_order") == "channel last"
+        and target_metadata.get("channel_order") == "channel first"
     ):
         if source_metadata.get("minibatch_input"):
             return "", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
@@ -115,8 +115,8 @@ def channel_last_to_channel_first(source_metadata, target_metadata) -> conversio
 
 def channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("channel_order") == "channel first"
-            and target_metadata.get("channel_order") == "channel last"
+        source_metadata.get("channel_order") == "channel first"
+        and target_metadata.get("channel_order") == "channel last"
     ):
         if source_metadata.get("minibatch_input"):
             return "", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
@@ -126,7 +126,7 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> conversio
 
 def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
     if source_metadata.get("minibatch_input") and not target_metadata.get(
-            "minibatch_input"
+        "minibatch_input"
     ):
         return "", "def convert(var):\n  return var.squeeze(0)"
     return None
@@ -134,7 +134,7 @@ def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
 
 def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     if (not source_metadata.get("minibatch_input")) and target_metadata.get(
-            "minibatch_input"
+        "minibatch_input"
     ):
         return "", "def convert(var):\n  return var.unsqueeze(0)"
     return None
@@ -161,47 +161,66 @@ def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversion:
+def uint8_full_range_to_normalize(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_type") == "uint8"
-            and source_metadata.get("intensity_range") == "full"
-            and target_metadata.get("intensity_range") == "0to1"
+        source_metadata.get("data_type") == "uint8"
+        and source_metadata.get("intensity_range") == "full"
+        and target_metadata.get("intensity_range") == "0to1"
     ):
         return "", "def convert(var):\n  return var / 255"
     return None
 
 
-def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conversion:
+def uint8_normalized_to_full_range(source_metadata, target_metadata) -> conversion:
     if (
-            source_metadata.get("data_type") == "uint8"
-            and source_metadata.get("intensity_range") == "0to1"
-            and target_metadata.get("intensity_range") == "full"
+        source_metadata.get("data_type") == "uint8"
+        and source_metadata.get("intensity_range") == "0to1"
+        and target_metadata.get("intensity_range") == "full"
     ):
         return "", "def convert(var):\n  return var * 255"
+    return None
+
+
+def float32_full_range_to_normalize(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("data_type") == "float32"
+        and source_metadata.get("intensity_range") == "full"
+        and target_metadata.get("intensity_range") == "0to1"
+    ):
+        return (
+            "",
+            "def convert(var):\n  return (var - var.min()) / (var.max() - var.min())",
+        )
     return None
 
 
 def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     # [N, 3, H, W] -> [N, 1, H, W]
     if (
-            source_metadata.get("channel_order") == "channel first" and
-            source_metadata.get("color_channel") == "rgb" and
-            target_metadata.get("color_channel") == "gray" and
-            source_metadata.get("minibatch_input")):
-        return ("from torchvision.transforms import functional as F",
-                "def convert(var):\n  return F.rgb_to_grayscale(var)")
+        source_metadata.get("channel_order") == "channel first"
+        and source_metadata.get("color_channel") == "rgb"
+        and target_metadata.get("color_channel") == "gray"
+        and source_metadata.get("minibatch_input")
+    ):
+        return (
+            "from torchvision.transforms import functional as F",
+            "def convert(var):\n  return F.rgb_to_grayscale(var)",
+        )
     return None
 
 
 def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
     # [N, 1, H, W] -> [N, 3, H, W]
     if (
-            source_metadata.get("channel_order") == "channel first" and
-            source_metadata.get("color_channel") == "gray" and
-            target_metadata.get("color_channel") == "rgb" and
-            source_metadata.get("minibatch_input")
+        source_metadata.get("channel_order") == "channel first"
+        and source_metadata.get("color_channel") == "gray"
+        and target_metadata.get("color_channel") == "rgb"
+        and source_metadata.get("minibatch_input")
     ):
-        return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 1)"
+        return (
+            "import torch",
+            "def convert(var):\n  return torch.cat((var, var, var), 1)",
+        )
     return None
 
 
@@ -219,8 +238,9 @@ factories_cluster_for_Pytorch = (
         minibatch_true_to_false,
         minibatch_false_to_true,
         convert_dtype_without_rescale,
-        uint8_data_range_to_normalize,
-        uint8_normalize_to_full_data_range,
+        uint8_full_range_to_normalize,
+        uint8_normalized_to_full_range,
+        float32_full_range_to_normalize,
         channel_first_rgb_to_gray,
         channel_first_gray_to_rgb,
     ],
