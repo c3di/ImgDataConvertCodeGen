@@ -52,7 +52,7 @@ def is_valid_metadata_for_tensorflow(metadata):
     return True
 
 
-def use_factories_in_cluster(source_metadata, target_metadata):
+def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
         are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor")
         and is_valid_metadata_for_tensorflow(source_metadata)
