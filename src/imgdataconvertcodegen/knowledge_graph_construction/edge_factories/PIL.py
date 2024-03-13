@@ -1,4 +1,4 @@
-from .type import conversion
+from .type import Conversion, FactoriesCluster, ConversionForMetadataPair
 from ...metadata_differ import are_both_same_data_repr
 
 
@@ -36,19 +36,19 @@ def can_use_factories_in_cluster(source_metadata, target_metadata):
     )
 
 
-def rgba_to_rgb(source_metadata, target_metadata) -> conversion:
+def rgba_to_rgb(source_metadata, target_metadata) -> Conversion:
     if source_metadata.get("color_channel") == "rgba" and target_metadata.get("color_channel") == "rgb":
         return "", 'def convert(var):\n  return var.convert("RGB")'
     return None
 
 
-def rgba_to_graya(source_metadata, target_metadata) -> conversion:
+def rgba_to_graya(source_metadata, target_metadata) -> Conversion:
     if source_metadata.get("color_channel") == "rgba" and target_metadata.get("color_channel") == "graya":
         return '', 'def convert(var):\n  return var.convert("LA")'
     return None
 
 
-factories_cluster_for_pil = (
+factories_cluster_for_pil : FactoriesCluster = (
     can_use_factories_in_cluster,
     [
         rgba_to_rgb,
@@ -56,11 +56,11 @@ factories_cluster_for_pil = (
     ],
 )
 
-pil_graya_or_rgba_rgb_to_gray = ('', 'def convert(var):\n  return var.convert("L")')
+pil_graya_or_rgba_rgb_to_gray: Conversion = ('', 'def convert(var):\n  return var.convert("L")')
 
-pil_gray_to_rgb = ('', 'def convert(var):\n  return var.convert("RGB")')
+pil_gray_to_rgb: Conversion = ('', 'def convert(var):\n  return var.convert("RGB")')
 
-factories_for_pil_metadata_pair = [
+factories_for_pil_metadata_pair: ConversionForMetadataPair = [
     (
         {
             "color_channel": 'rgb',

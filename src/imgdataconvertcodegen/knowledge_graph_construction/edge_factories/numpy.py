@@ -1,4 +1,4 @@
-from .type import conversion
+from .type import Conversion, FactoriesCluster
 from ...metadata_differ import are_both_same_data_repr, is_same_metadata
 
 
@@ -50,7 +50,7 @@ def can_use_factories_in_cluster(source_metadata, target_metadata):
     )
 
 
-def channel_first_between_bgr_rgb(source_metadata, target_metadata) -> conversion:
+def channel_first_between_bgr_rgb(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
@@ -71,7 +71,7 @@ def channel_first_between_bgr_rgb(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+def channel_first_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
@@ -92,7 +92,7 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_first_bgr_to_gray(source_metadata, target_metadata) -> conversion:
+def channel_first_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
@@ -113,7 +113,7 @@ def channel_first_bgr_to_gray(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_first_gray_to_rgb_or_bgr(source_metadata, target_metadata) -> conversion:
+def channel_first_gray_to_rgb_or_bgr(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
@@ -134,7 +134,7 @@ def channel_first_gray_to_rgb_or_bgr(source_metadata, target_metadata) -> conver
     return None
 
 
-def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> conversion:
+def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
@@ -154,7 +154,7 @@ def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> conversion
         return "import numpy as np", "def convert(var):\n  return var[:, :, ::-1]"
 
 
-def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
@@ -175,7 +175,7 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_last_bgr_to_gray(source_metadata, target_metadata) -> conversion:
+def channel_last_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
@@ -196,7 +196,7 @@ def channel_last_bgr_to_gray(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> conversion:
+def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
@@ -217,7 +217,7 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> convers
     return None
 
 
-def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'channel first':
         if source_metadata['mini_batch_input']:
             # [N, H, W, C] -> [N, C, H, W]
@@ -227,14 +227,14 @@ def channel_last_to_channel_first(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_last_to_channel_none(source_metadata, target_metadata) -> conversion:
+def channel_last_to_channel_none(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'none':
         # [N, H, W, 1] -> [N, H, W] or [H, W, 1] -> [H, W]
         return "", "def convert(var):\n  return var.squeeze(-1)"
     return None
 
 
-def channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'channel last':
         if source_metadata['mini_batch_input']:
             # [N, C, H, W] -> [N, H, W, C]
@@ -244,7 +244,7 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_first_to_channel_none(source_metadata, target_metadata) -> conversion:
+def channel_first_to_channel_none(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'none':
         if source_metadata['mini_batch_input']:
             # [N, 1, H, W] -> [N, H, W]
@@ -254,7 +254,7 @@ def channel_first_to_channel_none(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'none' or target_metadata['channel_order'] == 'channel first':
         if source_metadata['mini_batch_input']:
             # [N, H, W] -> [N, 1, H, W]
@@ -264,26 +264,26 @@ def channel_none_to_channel_first(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_last(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'none' or target_metadata['channel_order'] == 'channel last':
         # [N, H, W] -> [N, H, W, 1] or [H, W] -> [H, W, 1]
         return "", "def convert(var):\n  return var.unsqueeze(-1)"
     return None
 
 
-def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
+def minibatch_true_to_false(source_metadata, target_metadata) -> Conversion:
     if source_metadata['minibatch_input'] and not target_metadata['minibatch_input']:
         return "", "def convert(var):\n  return var[0]"
     return None
 
 
-def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
+def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
     if not source_metadata['minibatch_input'] and target_metadata['minibatch_input']:
         return "", "def convert(var):\n  return var.unsqueeze(0)"
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversion:
     if is_same_metadata(source_metadata, target_metadata, "data_type"):
         # https://numpy.org/doc/stable/user/basics.types.html
         # https://scikit-image.org/docs/stable/user_guide/data_types.html
@@ -312,7 +312,7 @@ def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
+def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "uint8"
             and target_metadata.get("data_type") == "float32(0to1)"
@@ -321,7 +321,7 @@ def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def uint8_to_float32_minus1_to_1(source_metadata, target_metadata) -> conversion:
+def uint8_to_float32_minus1_to_1(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "uint8"
             and target_metadata.get("data_type") == "float32(-1to1)"
@@ -330,7 +330,7 @@ def uint8_to_float32_minus1_to_1(source_metadata, target_metadata) -> conversion
     return None
 
 
-def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "float32(0to1)"
             and target_metadata.get("data_type") == "uint8"
@@ -339,7 +339,7 @@ def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def float32_minus1_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+def float32_minus1_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "float32(-1to1)"
             and target_metadata.get("data_type") == "uint8"
@@ -348,7 +348,7 @@ def float32_minus1_to_1_to_uint8(source_metadata, target_metadata) -> conversion
     return None
 
 
-factories_cluster_for_numpy = (
+factories_cluster_for_numpy: FactoriesCluster = (
     can_use_factories_in_cluster,
     [
         channel_first_between_bgr_rgb,

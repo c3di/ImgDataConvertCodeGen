@@ -1,10 +1,11 @@
-from .edge_factories import all_edge_factories
+from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
+                             factories_clusters, factories_for_metadata_pair)
 from .knowledge_graph import KnowledgeGraph
 from .constructor import KnowledgeGraphConstructor
 from .metedata import *
 
 
-constructor = KnowledgeGraphConstructor(metadata_values, all_edge_factories)
+constructor = KnowledgeGraphConstructor(metadata_values, factories_clusters, factories_for_metadata_pair)
 constructor.build()
 
 

@@ -2,10 +2,10 @@ from .PIL import is_attribute_value_valid_for_pil, is_metadata_valid_for_pil
 from .Pytorch import is_attribute_value_valid_for_torch, is_metadata_valid_for_torch
 from .Tensorflow import is_attribute_value_valid_for_tensorflow, is_metadata_valid_for_tensorflow
 from .numpy import is_attribute_value_valid_for_numpy, is_metadata_valid_for_numpy
-from .type import conversion
+from .type import Conversion, FactoriesCluster
 
 
-def numpy_to_torch(source_metadata, target_metadata) -> conversion:
+def numpy_to_torch(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "numpy.ndarray"
             and target_metadata.get("data_representation") == "torch.tensor"
@@ -17,7 +17,7 @@ def numpy_to_torch(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def torch_to_numpy(source_metadata, target_metadata) -> conversion:
+def torch_to_numpy(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "torch.tensor"
             and target_metadata.get("data_representation") == "numpy.ndarray"
@@ -39,7 +39,7 @@ def is_convert_between_numpy_and_torch(source_metadata, target_metadata):
     )
 
 
-factories_cluster_for_numpy_torch = (
+factories_cluster_for_numpy_torch: FactoriesCluster= (
     is_convert_between_numpy_and_torch,
     [
         numpy_to_torch,
@@ -48,7 +48,7 @@ factories_cluster_for_numpy_torch = (
 )
 
 
-def numpy_to_pil(source_metadata, target_metadata) -> conversion:
+def numpy_to_pil(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "numpy.ndarray"
             and target_metadata.get("data_representation") == "PIL.Image"
@@ -60,7 +60,7 @@ def numpy_to_pil(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def pil_to_numpy(source_metadata, target_metadata) -> conversion:
+def pil_to_numpy(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "PIL.Image"
             and target_metadata.get("data_representation") == "numpy.ndarray"
@@ -82,7 +82,7 @@ def is_convert_between_numpy_and_pil(source_metadata, target_metadata):
     )
 
 
-factories_cluster_for_numpy_pil = (
+factories_cluster_for_numpy_pil: FactoriesCluster = (
     is_convert_between_numpy_and_pil,
     [
         numpy_to_pil,
@@ -91,7 +91,7 @@ factories_cluster_for_numpy_pil = (
 )
 
 
-def tensorflow_to_numpy(source_metadata, target_metadata) -> conversion:
+def tensorflow_to_numpy(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "tf.tensor"
             and target_metadata.get("data_representation") == "numpy.ndarray"
@@ -103,7 +103,7 @@ def tensorflow_to_numpy(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def numpy_to_tensorflow(source_metadata, target_metadata) -> conversion:
+def numpy_to_tensorflow(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_representation") == "numpy.ndarray"
             and target_metadata.get("data_representation") == "tf.tensor"
@@ -128,7 +128,7 @@ def is_convert_between_numpy_and_tensorflow(source_metadata, target_metadata):
     )
 
 
-factories_cluster_for_numpy_tensorflow = (
+factories_cluster_for_numpy_tensorflow: FactoriesCluster = (
     is_convert_between_numpy_and_tensorflow,
     [
         numpy_to_tensorflow,

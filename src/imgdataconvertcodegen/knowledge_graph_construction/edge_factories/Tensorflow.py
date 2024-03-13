@@ -1,4 +1,4 @@
-from .type import conversion
+from .type import Conversion, FactoriesCluster
 from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
@@ -47,7 +47,7 @@ def can_use_factories_in_cluster(source_metadata, target_metadata):
     )
 
 
-def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
+def minibatch_true_to_false(source_metadata, target_metadata) -> Conversion:
     if source_metadata.get("minibatch_input") and not target_metadata.get(
         "minibatch_input"
     ):
@@ -58,7 +58,7 @@ def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
+def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
     if (not source_metadata.get("minibatch_input")) and target_metadata.get(
         "minibatch_input"
     ):
@@ -69,7 +69,7 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "none"
         and target_metadata.get("channel_order") == "channel first"
@@ -81,7 +81,7 @@ def channel_none_to_channel_first(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_none_to_channel_last(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "none"
         and target_metadata.get("channel_order") == "channel last"
@@ -93,7 +93,7 @@ def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion
     return None
 
 
-def channel_last_to_none(source_metadata, target_metadata) -> conversion:
+def channel_last_to_none(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "channel last"
         and target_metadata.get("channel_order") == "none"
@@ -105,7 +105,7 @@ def channel_last_to_none(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_first_to_none(source_metadata, target_metadata) -> conversion:
+def channel_first_to_none(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "channel first"
         and target_metadata.get("channel_order") == "none"
@@ -117,7 +117,7 @@ def channel_first_to_none(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
+def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "channel last"
         and target_metadata.get("channel_order") == "channel first"
@@ -134,7 +134,7 @@ def channel_last_to_channel_first(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
+def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversion:
     if (
         source_metadata.get("channel_order") == "channel first"
         and target_metadata.get("channel_order") == "channel last"
@@ -151,7 +151,7 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> conversio
     return None
 
 
-def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
     # Outputs a tensor of the same `DType`. The operation supports data types (for `image` and `dtype`) of `uint8`,
     # `uint16`, `uint32`, `uint64`, `int8`,`int16`, `int32`, `int64`, `float16`, `float32`, `float64`.
     # Images that are represented using floating point values are expected to have values in the range [0,1).
@@ -178,7 +178,7 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
+def channel_last_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
     # [N, H, W, 1] -> [N, H, W, 3]
     # Outputs a tensor of the same `DType`
     if (
@@ -194,7 +194,7 @@ def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversion:
     if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
         # reference: https://www.tensorflow.org/api_docs/python/tf/dtypes
         dtype_mapping = {
@@ -221,7 +221,7 @@ def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
+def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "uint8"
             and target_metadata.get("intensity_range") == "float32(0to1)"
@@ -230,7 +230,7 @@ def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "float32(0to1)"
             and target_metadata.get("data_type") == "uint8"
@@ -239,7 +239,7 @@ def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
+def gpu_to_cpu(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("device") == "gpu"
             and target_metadata.get("device") == "cpu"
@@ -251,7 +251,7 @@ def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
+def cpu_to_gpu(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("device") == "cpu"
             and target_metadata.get("device") == "gpu"
@@ -265,7 +265,7 @@ def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
     return None
 
 
-factories_cluster_for_tensorflow = (
+factories_cluster_for_tensorflow: FactoriesCluster = (
     can_use_factories_in_cluster,
     [
         channel_last_rgb_to_gray,
