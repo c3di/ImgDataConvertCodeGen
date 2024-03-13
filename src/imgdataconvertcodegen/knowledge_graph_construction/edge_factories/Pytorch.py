@@ -209,7 +209,7 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
 
 
 factories_cluster_for_Pytorch = (
-    use_factories_in_cluster,
+    can_use_factories_in_cluster,
     [
         gpu_to_cpu,
         cpu_to_gpu,
