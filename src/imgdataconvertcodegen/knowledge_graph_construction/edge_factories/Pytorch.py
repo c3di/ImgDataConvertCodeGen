@@ -2,16 +2,7 @@ from .type import conversion
 from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
-def is_valid_metadata_for_torch(metadata):
-    if (
-            metadata["data_type"]
-            in ["float64", "double", "int8", "int16", "int32", "int64"]
-            and metadata["intensity_range"] != "full"
-    ):
-        return False
-    if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
-        return False
-
+def is_attribute_value_valid_for_torch(metadata):
     allowed_values = {
         "color_channel": ["rgb", "gray"],
         "channel_order": ["channel first", "channel last", "none"],
@@ -35,11 +26,25 @@ def is_valid_metadata_for_torch(metadata):
     return True
 
 
+def is_metadata_valid_for_torch(metadata):
+    if (
+            metadata["data_type"]
+            in ["float64", "double", "int8", "int16", "int32", "int64"]
+            and metadata["intensity_range"] != "full"
+    ):
+        return False
+    if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
+        return False
+    return True
+
+
 def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
             are_both_same_data_repr(source_metadata, target_metadata, "torch.tensor")
-            and is_valid_metadata_for_torch(source_metadata)
-            and is_valid_metadata_for_torch(target_metadata)
+            and is_attribute_value_valid_for_torch(source_metadata)
+            and is_attribute_value_valid_for_torch(target_metadata)
+            and is_metadata_valid_for_torch(source_metadata)
+            and is_metadata_valid_for_torch(target_metadata)
     )
 
 
@@ -135,7 +140,7 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def convert_dtype(source_metadata, target_metadata) -> conversion:
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
     if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
         dtype_mapping = {
             "uint8": "torch.uint8",
@@ -177,34 +182,26 @@ def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conv
 
 
 def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+    # [N, 3, H, W] -> [N, 1, H, W]
     if (
             source_metadata.get("channel_order") == "channel first" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
             source_metadata.get("color_channel") == "rgb" and
-            target_metadata.get("color_channel") == "gray"):
-        if source_metadata.get("minibatch_input"):
-            # [N, 3, H, W] -> [N, 1, H, W]
-            return "", ("def convert(var):\n  return (0.2989 * var[:, 0, :, :] + 0.5870 * var[:, 1, :, :]"
-                        " + 0.1140 * var[:, 2, :, :]).unsqueeze(1)")
-        # [3, H, W] -> [1, H, W]
-        return "", ("def convert(var):\n  return (0.2989 * var[0, :, :] + 0.5870 * var[1, :, :]"
-                    " + 0.1140 * var[2, :, :]).unsqueeze(0)")
+            target_metadata.get("color_channel") == "gray" and
+            source_metadata.get("minibatch_input")):
+        return ("from torchvision.transforms import functional as F",
+                "def convert(var):\n  return F.rgb_to_grayscale(var)")
     return None
 
 
 def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
+    # [N, 1, H, W] -> [N, 3, H, W]
     if (
             source_metadata.get("channel_order") == "channel first" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
             source_metadata.get("color_channel") == "gray" and
-            target_metadata.get("color_channel") == "rgb"):
-        if source_metadata.get("minibatch_input"):
-            # [N, 1, H, W] -> [N, 3, H, W]
-            return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 1)"
-        # [1, H, W] -> [3, H, W]
-        return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 0)"
+            target_metadata.get("color_channel") == "rgb" and
+            source_metadata.get("minibatch_input")
+    ):
+        return "import torch", "def convert(var):\n  return torch.cat((var, var, var), 1)"
     return None
 
 
@@ -221,7 +218,7 @@ factories_cluster_for_Pytorch = (
         channel_last_to_channel_first,
         minibatch_true_to_false,
         minibatch_false_to_true,
-        convert_dtype,
+        convert_dtype_without_rescale,
         uint8_data_range_to_normalize,
         uint8_normalize_to_full_data_range,
         channel_first_rgb_to_gray,

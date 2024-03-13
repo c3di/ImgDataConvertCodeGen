@@ -2,28 +2,7 @@ from .type import conversion
 from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
-def is_valid_metadata_for_tensorflow(metadata):
-    if (
-        metadata["data_type"]
-        in [
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "float16",
-            "float64",
-            "double",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        ]
-        and metadata["intensity_range"] != "full"
-    ):
-        return False
-
-    if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
-        return False
+def is_attribute_value_valid_for_tensorflow(metadata):
     # reference: https://www.tensorflow.org/api_docs/python/tf/dtypes
     allowed_values = {
         "color_channel": ["rgb", "gray"],
@@ -52,11 +31,39 @@ def is_valid_metadata_for_tensorflow(metadata):
     return True
 
 
+def is_metadata_valid_for_tensorflow(metadata):
+    if (
+        metadata["data_type"]
+        in [
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float64",
+            "double",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ]
+        and metadata["intensity_range"] != "full"
+    ):
+        return False
+
+    if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
+        return False
+
+    return True
+
+
 def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
-        are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor")
-        and is_valid_metadata_for_tensorflow(source_metadata)
-        and is_valid_metadata_for_tensorflow(target_metadata)
+            are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor")
+            and is_attribute_value_valid_for_tensorflow(source_metadata)
+            and is_attribute_value_valid_for_tensorflow(target_metadata)
+            and is_metadata_valid_for_tensorflow(source_metadata)
+            and is_metadata_valid_for_tensorflow(target_metadata)
     )
 
 
@@ -190,7 +197,7 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> conversio
     return None
 
 
-def convert_dtype(source_metadata, target_metadata) -> conversion:
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
     if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
         dtype_mapping = {
             "uint8": "tf.uint8",
@@ -236,34 +243,47 @@ def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conv
     return None
 
 
+def float32_full_to_float32_0to1(source_metadata, target_metadata) -> conversion:
+    # Todo
+    pass
+
+
+def float32_0to1_to_float32_full(source_metadata, target_metadata) -> conversion:
+    pass
+
+
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
+    # Outputs a tensor of the same `DType`. The operation supports data types (for `image` and `dtype`) of `uint8`,
+    # `uint16`, `uint32`, `uint64`, `int8`,`int16`, `int32`, `int64`, `float16`, `float32`, `float64`.
+    # Images that are represented using floating point values are expected to have values in the range [0,1).
+    # Image data stored in integer data types are expected to have values in the range `[0,MAX]`,
+    # where `MAX` is the largest positive representable number for the data type.
+    # This op converts between data types, scaling the values appropriately before casting.
+    # reference: https://github.com/tensorflow/tensorflow/blob/0f7eb923815f4fd82321dda01bab45b493227d58/tensorflow/python/ops/image_ops_impl.py#L2381-L2393
+    is_allowed_dtype_intensity_range = ((source_metadata.get("data_type") == "float32" and
+                                         source_metadata.get("intensity_range") == "0to1")
+                                        or source_metadata.get("data_type") != "float32")
+    # [N, H, W, 3] -> [N, H, W, 1]
     if (
             source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
             source_metadata.get("color_channel") == "rgb" and
-            target_metadata.get("color_channel") == "gray"):
-        if source_metadata.get("minibatch_input"):
-            # [N, H, W, 3] -> [N, H, W, 1]
-            return ("import tensorflow as tf",
-                    "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, :, 0] + 0.5870 * var[:, :, :, 1]"
-                    " + 0.1140 * var[:, :, :, 2], -1)")
-        # [H, W, 3] -> [H, W, 1]
-        return ("import tensorflow as tf",
-                "def convert(var):\n  return tf.expand_dims(0.2989 * var[:, :, 0] + 0.5870 * var[:, :, 1] "
-                "+ 0.1140 * var[:, :, 2], -1)")
+            target_metadata.get("color_channel") == "gray" and
+            source_metadata.get("minibatch_input") and
+            is_allowed_dtype_intensity_range
+    ):
+        return "import tensorflow as tf", "def convert(var):\n  return tf.image.rgb_to_grayscale(var)"
     return None
 
 
 def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
+    # [N, H, W, 1] -> [N, H, W, 3]
+    # Outputs a tensor of the same `DType`
     if (
             source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("data_type") == "float32" and
-            source_metadata.get("intensity_range") == "0to1" and
             source_metadata.get("color_channel") == "gray" and
-            target_metadata.get("color_channel") == "rgb"):
-        # [N, H, W, 1] -> [N, H, W, 3] or [H, W, 1] -> [H, W, 3]
-        return "import tensorflow as tf", "def convert(var):\n  return tf.concat([var, var, var], axis=-1)"
+            target_metadata.get("color_channel") == "rgb" and
+            source_metadata.get("minibatch_input")):
+        return "import tensorflow as tf", "def convert(var):\n  return tf.image.grayscale_to_rgb(var)"
     return None
 
 
@@ -280,7 +300,7 @@ factories_cluster_for_tensorflow = (
         channel_last_to_channel_first,
         minibatch_true_to_false,
         minibatch_false_to_true,
-        convert_dtype,
+        convert_dtype_without_rescale,
         uint8_data_range_to_normalize,
         uint8_normalize_to_full_data_range,
         channel_last_rgb_to_gray,
