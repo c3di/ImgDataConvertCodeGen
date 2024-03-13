@@ -16,5 +16,6 @@ class Metadata(TypedDict):
     channel_order: Literal['channel last', 'channel first', 'none']
     minibatch_input: bool
     data_type: Literal[
-        'uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double', 'int8', 'int16', 'int32', 'int64']
+        'uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double', 'int8', 'int16', 'int32', 'int64',
+        'float32(0to1)', 'float32(-1to1)', 'float64(0to1)', 'float64(-1to1)', 'double(0to1)', 'double(-1to1)']
     device: str
