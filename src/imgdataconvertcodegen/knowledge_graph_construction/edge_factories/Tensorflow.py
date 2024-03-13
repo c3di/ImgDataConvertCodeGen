@@ -223,7 +223,7 @@ def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversion:
+def uint8_full_range_to_normalize(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata.get("data_type") == "uint8"
         and source_metadata.get("intensity_range") == "full"
@@ -233,17 +233,7 @@ def uint8_data_range_to_normalize(source_metadata, target_metadata) -> conversio
     return None
 
 
-def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "0to1"
-        and target_metadata.get("intensity_range") == "full"
-    ):
-        return "", "def convert(var):\n  return var * 255"
-    return None
-
-
-def float32_full_to_float32_0to1(source_metadata, target_metadata) -> conversion:
+def float32_full_range_to_0to1(source_metadata, target_metadata) -> conversion:
     if (
         source_metadata.get("data_type") == "float32"
         and source_metadata.get("intensity_range") == "full"
@@ -256,22 +246,31 @@ def float32_full_to_float32_0to1(source_metadata, target_metadata) -> conversion
     var_max = tf.reduce_max(var)
     return (var - var_min) / (var_max - var_min)""",
         )
-        #TODO: or use the scale function as below
     return None
 
 
-def float32_0to1_to_float32_full(source_metadata, target_metadata) -> conversion:
-    # https://github.com/tensorflow/transform/blob/7233ed3413159e4eb635da34a531a0dab50adfc3/tensorflow_transform/mappers.py#L351
+def uint8_normalize_to_full_range(source_metadata, target_metadata) -> conversion:
     if (
-        source_metadata.get("data_type") == "float32"
+        source_metadata.get("data_type") == "uint8"
+        and source_metadata.get("intensity_range") == "0to1"
+        and target_metadata.get("intensity_range") == "full"
+    ):
+        return "", "def convert(var):\n  return var * 255"
+    return None
+
+
+def uint16_normalize_to_full_range(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("data_type") == "uint16"
         and source_metadata.get("intensity_range") == "0to1"
         and target_metadata.get("intensity_range") == "full"
     ):
         return (
-            "import tensorflow_transform as tft",
-            "def convert(var):\n  return tft.scale_by_min_max(var, min=0.0, max=255.0)",
+            "",
+            "def convert(var):\n  return var * 65535",
         )
     return None
+#TODO add more dtypes
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
@@ -331,10 +330,10 @@ factories_cluster_for_tensorflow = (
         minibatch_true_to_false,
         minibatch_false_to_true,
         convert_dtype_without_rescale,
-        uint8_data_range_to_normalize,
-        uint8_normalize_to_full_data_range,
-        float32_full_to_float32_0to1,
-        float32_0to1_to_float32_full,
+        uint8_full_range_to_normalize,
+        uint8_normalize_to_full_range,
+        float32_full_range_to_0to1,
+        uint16_normalize_to_full_range,
         channel_last_rgb_to_gray,
         channel_last_gray_to_rgb,
     ],
