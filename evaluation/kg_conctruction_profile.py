@@ -16,3 +16,10 @@ if __name__ == "__main__":
         results.sort_stats(pstats.SortKey.TIME)
         print(constructor.knowledge_graph)
         results.print_stats()
+
+    print("Loading from file")
+    with cProfile.Profile() as profile:
+        constructor.build_from_file(constructor._know_graph_file_path)
+        results = pstats.Stats(profile)
+        results.sort_stats(pstats.SortKey.TIME)
+        results.print_stats()
