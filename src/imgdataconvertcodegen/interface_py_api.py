@@ -1,7 +1,6 @@
-from typing import Callable
-
 from .code_generation import ConvertCodeGenerator
-from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, MetadataValues
+from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, MetadataValues, FactoriesCluster, \
+    ConversionForMetadataPair
 
 _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
@@ -50,11 +49,16 @@ def get_convert_path(source_metadata: Metadata, target_metadata: Metadata):
     return _code_generator.get_convert_path(source_metadata, target_metadata)
 
 
-def add_img_repr(new_metadata: MetadataValues):
-    _constructor.add_new_metadata_values(new_metadata)
+def add_meta_values_for_image(new_metadata: MetadataValues):
+    _constructor.add_metadata_values(new_metadata)
     _code_generator.knowledge_graph = _constructor.knowledge_graph
 
 
-def add_convert_code_factory(new_factory: Callable | str):
-    _constructor.add_new_edge_factory(new_factory)
+def add_edge_factory_cluster(factory_cluster: FactoriesCluster):
+    _constructor.add_edge_factory_cluster(factory_cluster)
+    _code_generator.knowledge_graph = _constructor.knowledge_graph
+
+
+def add_conversion_for_metadata_pair(self, pair: ConversionForMetadataPair):
+    _constructor.add_conversion_for_metadata_pair(pair)
     _code_generator.knowledge_graph = _constructor.knowledge_graph

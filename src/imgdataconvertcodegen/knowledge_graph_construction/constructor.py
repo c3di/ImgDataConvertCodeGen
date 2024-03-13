@@ -1,16 +1,19 @@
 import itertools
 import os.path
-from typing import Callable
+from typing import List
 
 from .knowledge_graph import KnowledgeGraph
 from .metedata import MetadataValues
+from .edge_factories import FactoriesCluster, ConversionForMetadataPair
 from ..util import exclude_key_from_list
 
 
 class KnowledgeGraphConstructor:
-    def __init__(self, metadata_values: MetadataValues, edge_factories: list[Callable] = []):
+    def __init__(self, metadata_values: MetadataValues, edge_factories_clusters: list[FactoriesCluster],
+                 list_of_conversion_for_metadata_pair: List[ConversionForMetadataPair]):
         self._metadata_values = metadata_values
-        self._edge_factories = edge_factories
+        self._edge_factories_clusters = edge_factories_clusters
+        self._list_of_conversion_for_metadata_pair = list_of_conversion_for_metadata_pair
         self._know_graph_file_path = os.path.join(os.path.dirname(__file__), "knowledge_graph.json")
         self._graph = KnowledgeGraph()
 
@@ -32,38 +35,54 @@ class KnowledgeGraphConstructor:
         self.knowledge_graph.load_from_file(path)
 
     def build_from_scratch(self):
-        self._create_edges_from_metadata_values(self._metadata_values, self._edge_factories)
+        self._create_edges_using_factories_clusters(self._metadata_values,
+                                                    self._edge_factories_clusters)
+        self._create_edges_from_manual_annotation(self._list_of_conversion_for_metadata_pair)
+        self.save_knowledge_graph()
 
-    def _create_edges_from_metadata_values(self, metadata_values, factories_to_use: list[Callable]):
+    def _create_edges_using_factories_clusters(self, metadata_values,
+                                               factories_clusters: list[FactoriesCluster]):
+        # one property change policy.
         attributes = list(metadata_values.keys())
         attributes_values_lists = list(metadata_values.values())
         for attribute_values in itertools.product(*attributes_values_lists):
             source_metadata = dict(zip(attributes, attribute_values))
-            self._create_edges_that_start_from(source_metadata, metadata_values, factories_to_use)
-        self.save_knowledge_graph()
-
-    def _create_edges_that_start_from(self, source_metadata, metadata_values, factories_to_use: list[Callable]):
-        for attribute in metadata_values.keys():
-            for new_attribute_v in exclude_key_from_list(metadata_values[attribute], source_metadata[attribute]):
-                self._create_edge(source_metadata, attribute, new_attribute_v, factories_to_use)
+            for attribute in metadata_values.keys():
+                for new_attribute_v in exclude_key_from_list(metadata_values[attribute], source_metadata[attribute]):
+                    self._create_edge(source_metadata, attribute, new_attribute_v, factories_clusters)
 
     def _create_edge(self, source, changed_attribute: str, new_attribute_value,
-                     factories_to_use: list[Callable] = []):
-        """
-        one property change policy.
-        """
+                     factories_clusters: list[FactoriesCluster]):
         target = source.copy()
         target[changed_attribute] = new_attribute_value
-        for factory in factories_to_use:
-            function = factory(source, target)
-            if function is not None:
-                used_factory = f'{factory.__code__.co_name} in {factory.__code__.co_filename}'
-                self.knowledge_graph.add_edge(source, target,
-                                              conversion=function, factory=used_factory)
+        for factory_cluster in factories_clusters:
+            can_use_factories_in_cluster, factories = factory_cluster
+            if not can_use_factories_in_cluster(source, target):
+                continue
+            for factory in factories:
+                function = factory(source, target)
+                if function is not None:
+                    used_factory = f'{factory.__code__.co_name} in {factory.__code__.co_filename}'
+                    self.knowledge_graph.add_edge(source, target, conversion=function, factory=used_factory)
 
-    def add_new_edge_factory(self, factory: Callable):
-        self._edge_factories.append(factory)
-        self._create_edges_from_metadata_values(self._metadata_values, [factory])
+    def _create_edges_from_manual_annotation(self, list_of_conversion_for_metadata_pair: List[ConversionForMetadataPair]):
+        if list_of_conversion_for_metadata_pair is None:
+            return
+        for source_metadata, target_metadata, conversion in list_of_conversion_for_metadata_pair:
+            self.knowledge_graph.add_edge(source_metadata, target_metadata, conversion=conversion, factory="manual")
 
-    def add_new_metadata_values(self, new_metadata: MetadataValues):
-        self._create_edges_from_metadata_values(new_metadata, self._edge_factories)
+    def add_edge_factory_cluster(self, factory_cluster: FactoriesCluster):
+        self._edge_factories_clusters.append(factory_cluster)
+        self._create_edges_using_factories_clusters(self._metadata_values, [factory_cluster])
+        self.save_knowledge_graph()
+
+    def add_metadata_values(self, new_metadata: MetadataValues):
+        self._create_edges_using_factories_clusters(new_metadata, self._edge_factories_clusters)
+        self.save_knowledge_graph()
+
+    def add_conversion_for_metadata_pair(self, pair: ConversionForMetadataPair):
+        if pair is None or len(pair) == 0:
+            return
+        for source_metadata, target_metadata, conversion in pair:
+            self.knowledge_graph.add_edge(source_metadata, target_metadata, conversion=conversion, factory="manual")
+        self.save_knowledge_graph()

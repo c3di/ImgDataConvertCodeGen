@@ -60,9 +60,10 @@ pil_graya_or_rgba_rgb_to_gray: Conversion = ('', 'def convert(var):\n  return va
 
 pil_gray_to_rgb: Conversion = ('', 'def convert(var):\n  return var.convert("RGB")')
 
-factories_for_pil_metadata_pair: ConversionForMetadataPair = [
+factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
     (
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'rgb',
             "channel_order": 'channel last',
             "minibatch_input": False,
@@ -70,6 +71,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
             "device": 'cpu',
         },
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
@@ -78,6 +80,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
         }, pil_graya_or_rgba_rgb_to_gray),
     (
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'rgba',
             "channel_order": 'channel last',
             "minibatch_input": False,
@@ -85,6 +88,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
             "device": 'cpu',
         },
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
@@ -93,6 +97,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
         }, pil_graya_or_rgba_rgb_to_gray),
     (
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'graya',
             "channel_order": 'channel last',
             "minibatch_input": False,
@@ -100,6 +105,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
             "device": 'cpu',
         },
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
@@ -108,6 +114,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
         }, pil_graya_or_rgba_rgb_to_gray),
     (
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
@@ -115,6 +122,7 @@ factories_for_pil_metadata_pair: ConversionForMetadataPair = [
             "device": 'cpu',
         },
         {
+            "data_representation": "PIL.Image",
             "color_channel": 'rgb',
             "channel_order": 'channel last',
             "minibatch_input": False,

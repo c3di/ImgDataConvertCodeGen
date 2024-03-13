@@ -60,7 +60,7 @@ def channel_first_between_bgr_rgb(source_metadata, target_metadata) -> Conversio
         source_metadata["color_channel"] == "rgb"
         and target_metadata["color_channel"] == "bgr"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, C, H, W]
             return (
                 "import numpy as np",
@@ -78,7 +78,7 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
         source_metadata["color_channel"] == "rgb"
         and target_metadata["color_channel"] == "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, 3, H, W] -> [N, 1, H, W]
             return (
                 "import numpy as np",
@@ -99,7 +99,7 @@ def channel_first_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
         source_metadata["color_channel"] == "bgr"
         and target_metadata["color_channel"] == "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, 3, H, W] -> [N, 1, H, W]
             return (
                 "import numpy as np",
@@ -120,7 +120,7 @@ def channel_first_gray_to_rgb_or_bgr(source_metadata, target_metadata) -> Conver
         source_metadata["color_channel"] == "gray"
         and target_metadata["color_channel"] != "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, 1, H, W] -> [N, 3, H, W]
             return (
                 "import numpy as np",
@@ -144,7 +144,7 @@ def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> Conversion
         source_metadata["color_channel"] == "rgb"
         and target_metadata["color_channel"] == "bgr"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, H, W, C]
             return (
                 "import numpy as np",
@@ -161,7 +161,7 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
         source_metadata["color_channel"] == "rgb"
         and target_metadata["color_channel"] == "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, H, W, 3] -> [N, H, W, 1]
             return (
                 "import numpy as np",
@@ -182,7 +182,7 @@ def channel_last_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
         source_metadata["color_channel"] == "bgr"
         and target_metadata["color_channel"] == "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, H, W, 3] -> [N, H, W, 1]
             return (
                 "import numpy as np",
@@ -203,7 +203,7 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> Convers
         source_metadata["color_channel"] == "gray"
         and target_metadata["color_channel"] != "gray"
     ):
-        if source_metadata["mini_batch_input"]:
+        if source_metadata["minibatch_input"]:
             # [N, H, W, 1] -> [N, H, W, 3]
             return (
                 "import numpy as np",
@@ -219,7 +219,7 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> Convers
 
 def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'channel first':
-        if source_metadata['mini_batch_input']:
+        if source_metadata['minibatch_input']:
             # [N, H, W, C] -> [N, C, H, W]
             return "", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
         # [H, W, C] -> [C, H, W]
@@ -236,7 +236,7 @@ def channel_last_to_channel_none(source_metadata, target_metadata) -> Conversion
 
 def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'channel last':
-        if source_metadata['mini_batch_input']:
+        if source_metadata['minibatch_input']:
             # [N, C, H, W] -> [N, H, W, C]
             return "", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
         # [C, H, W] -> [H, W, C]
@@ -246,7 +246,7 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversio
 
 def channel_first_to_channel_none(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'none':
-        if source_metadata['mini_batch_input']:
+        if source_metadata['minibatch_input']:
             # [N, 1, H, W] -> [N, H, W]
             return "", "def convert(var):\n  return var.squeeze(1)"
         # [1, H, W] -> [H, W]
@@ -256,7 +256,7 @@ def channel_first_to_channel_none(source_metadata, target_metadata) -> Conversio
 
 def channel_none_to_channel_first(source_metadata, target_metadata) -> Conversion:
     if source_metadata['channel_order'] == 'none' or target_metadata['channel_order'] == 'channel first':
-        if source_metadata['mini_batch_input']:
+        if source_metadata['minibatch_input']:
             # [N, H, W] -> [N, 1, H, W]
             return "", "def convert(var):\n  return var.unsqueeze(1)"
         # [H, W] -> [1, H, W]
