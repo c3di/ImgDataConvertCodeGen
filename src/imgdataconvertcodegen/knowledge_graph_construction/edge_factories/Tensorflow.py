@@ -59,11 +59,11 @@ def is_metadata_valid_for_tensorflow(metadata):
 
 def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
-            are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor")
-            and is_attribute_value_valid_for_tensorflow(source_metadata)
-            and is_attribute_value_valid_for_tensorflow(target_metadata)
-            and is_metadata_valid_for_tensorflow(source_metadata)
-            and is_metadata_valid_for_tensorflow(target_metadata)
+        are_both_same_data_repr(source_metadata, target_metadata, "tf.tensor")
+        and is_attribute_value_valid_for_tensorflow(source_metadata)
+        and is_attribute_value_valid_for_tensorflow(target_metadata)
+        and is_metadata_valid_for_tensorflow(source_metadata)
+        and is_metadata_valid_for_tensorflow(target_metadata)
     )
 
 
@@ -85,8 +85,8 @@ def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
         and target_metadata.get("device") == "gpu"
     ):
         return (
-                "import tensorflow as tf",
-                """def convert(var):
+            "import tensorflow as tf",
+            """def convert(var):
     with tf.device('/device:GPU:0'):
         return tf.identity(var)""",
         )
@@ -244,12 +244,34 @@ def uint8_normalize_to_full_data_range(source_metadata, target_metadata) -> conv
 
 
 def float32_full_to_float32_0to1(source_metadata, target_metadata) -> conversion:
-    # Todo
-    pass
+    if (
+        source_metadata.get("data_type") == "float32"
+        and source_metadata.get("intensity_range") == "full"
+        and target_metadata.get("intensity_range") == "0to1"
+    ):
+        return (
+            "import tensorflow as tf",
+            """def convert(var):
+    var_min = tf.reduce_min(var)
+    var_max = tf.reduce_max(var)
+    return (var - var_min) / (var_max - var_min)""",
+        )
+        #TODO: or use the scale function as below
+    return None
 
 
 def float32_0to1_to_float32_full(source_metadata, target_metadata) -> conversion:
-    pass
+    # https://github.com/tensorflow/transform/blob/7233ed3413159e4eb635da34a531a0dab50adfc3/tensorflow_transform/mappers.py#L351
+    if (
+        source_metadata.get("data_type") == "float32"
+        and source_metadata.get("intensity_range") == "0to1"
+        and target_metadata.get("intensity_range") == "full"
+    ):
+        return (
+            "import tensorflow_transform as tft",
+            "def convert(var):\n  return tft.scale_by_min_max(var, min=0.0, max=255.0)",
+        )
+    return None
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
@@ -260,18 +282,22 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     # where `MAX` is the largest positive representable number for the data type.
     # This op converts between data types, scaling the values appropriately before casting.
     # reference: https://github.com/tensorflow/tensorflow/blob/0f7eb923815f4fd82321dda01bab45b493227d58/tensorflow/python/ops/image_ops_impl.py#L2381-L2393
-    is_allowed_dtype_intensity_range = ((source_metadata.get("data_type") == "float32" and
-                                         source_metadata.get("intensity_range") == "0to1")
-                                        or source_metadata.get("data_type") != "float32")
+    is_allowed_dtype_intensity_range = (
+        source_metadata.get("data_type") == "float32"
+        and source_metadata.get("intensity_range") == "0to1"
+    ) or source_metadata.get("data_type") != "float32"
     # [N, H, W, 3] -> [N, H, W, 1]
     if (
-            source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("color_channel") == "rgb" and
-            target_metadata.get("color_channel") == "gray" and
-            source_metadata.get("minibatch_input") and
-            is_allowed_dtype_intensity_range
+        source_metadata.get("channel_order") == "channel last"
+        and source_metadata.get("color_channel") == "rgb"
+        and target_metadata.get("color_channel") == "gray"
+        and source_metadata.get("minibatch_input")
+        and is_allowed_dtype_intensity_range
     ):
-        return "import tensorflow as tf", "def convert(var):\n  return tf.image.rgb_to_grayscale(var)"
+        return (
+            "import tensorflow as tf",
+            "def convert(var):\n  return tf.image.rgb_to_grayscale(var)",
+        )
     return None
 
 
@@ -279,11 +305,15 @@ def channel_last_gray_to_rgb(source_metadata, target_metadata) -> conversion:
     # [N, H, W, 1] -> [N, H, W, 3]
     # Outputs a tensor of the same `DType`
     if (
-            source_metadata.get("channel_order") == "channel last" and
-            source_metadata.get("color_channel") == "gray" and
-            target_metadata.get("color_channel") == "rgb" and
-            source_metadata.get("minibatch_input")):
-        return "import tensorflow as tf", "def convert(var):\n  return tf.image.grayscale_to_rgb(var)"
+        source_metadata.get("channel_order") == "channel last"
+        and source_metadata.get("color_channel") == "gray"
+        and target_metadata.get("color_channel") == "rgb"
+        and source_metadata.get("minibatch_input")
+    ):
+        return (
+            "import tensorflow as tf",
+            "def convert(var):\n  return tf.image.grayscale_to_rgb(var)",
+        )
     return None
 
 
@@ -303,7 +333,9 @@ factories_cluster_for_tensorflow = (
         convert_dtype_without_rescale,
         uint8_data_range_to_normalize,
         uint8_normalize_to_full_data_range,
+        float32_full_to_float32_0to1,
+        float32_0to1_to_float32_full,
         channel_last_rgb_to_gray,
-        channel_last_gray_to_rgb
+        channel_last_gray_to_rgb,
     ],
 )
