@@ -2,8 +2,6 @@ from .type import conversion
 from ...metadata_differ import is_differ_value_for_key, is_data_type_and_intensity_range_differ
 
 
-# this edge_factory is for methods with skimage and numpy
-
 # https://stackoverflow.com/questions/21429261/array-conversion-using-scikit-image-from-integer-to-float
 # returning None for double first convert with between_float64_double in default_edge_factories.py
 def to_float32_or_64(source_metadata, target_metadata) -> conversion:
@@ -94,11 +92,3 @@ def ski_to_uint16(source_metadata, target_metadata) -> conversion:
         if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
             return "import skimage as ski", "def convert(var):\n  return ski.util.img_as_uint(var)"
     return None
-
-
-ski_factories = [
-    to_float32_or_64,
-    ski_to_int16,
-    ski_to_uint8,
-    ski_to_uint16
-]
