@@ -36,15 +36,3 @@ def is_same_metadata(metadata_a, metadata_b, not_included_keys=None):
 
 def is_differ_value_for_key(metadata_a, metadata_b, key):
     return metadata_a[key] != metadata_b[key]
-
-
-# !!! Do not use it! This is only for is_data_type_and_intensity_range_differ()
-def __is_two_keys_differ(metadata_a, metadata_b, first_key, second_key):
-    if metadata_a[first_key] != metadata_b[first_key] and metadata_a[second_key] != metadata_b[second_key]:
-        return is_same_metadata(metadata_a, metadata_b, [first_key, second_key])
-    return False
-
-
-# !!! Only use this for floats
-def is_data_type_and_intensity_range_differ(metadata_a, metadata_b):
-    __is_two_keys_differ(metadata_a, metadata_b, "data_type", "intensity_range")

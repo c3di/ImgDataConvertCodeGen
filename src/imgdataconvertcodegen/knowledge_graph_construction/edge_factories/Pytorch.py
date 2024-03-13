@@ -7,17 +7,18 @@ def is_attribute_value_valid_for_torch(metadata):
         "color_channel": ["rgb", "gray"],
         "channel_order": ["channel first", "channel last", "none"],
         "minibatch_input": [True, False],
+        # https://pytorch.org/docs/stable/tensors.html
         "data_type": [
             "uint8",
-            "float32",
-            "float64",
-            "double",
             "int8",
             "int16",
             "int32",
             "int64",
+            "float32",
+            "float32(0to1)",
+            "float64",
+            "double",
         ],
-        "intensity_range": ["full", "0to1"],
         "device": ["cpu", "gpu"],
     }
     for key, values in allowed_values.items():
@@ -27,12 +28,6 @@ def is_attribute_value_valid_for_torch(metadata):
 
 
 def is_metadata_valid_for_torch(metadata):
-    if (
-        metadata["data_type"]
-        in ["uint8", "float64", "double", "int8", "int16", "int32", "int64"]
-        and metadata["intensity_range"] != "full"
-    ):
-        return False
     if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
         return False
     return True
@@ -46,24 +41,6 @@ def can_use_factories_in_cluster(source_metadata, target_metadata):
         and is_metadata_valid_for_torch(source_metadata)
         and is_metadata_valid_for_torch(target_metadata)
     )
-
-
-def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("device") == "gpu"
-        and target_metadata.get("device") == "cpu"
-    ):
-        return "", "def convert(var):\n  return var.cpu()"
-    return None
-
-
-def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("device") == "cpu"
-        and target_metadata.get("device") == "gpu"
-    ):
-        return "", "def convert(var):\n  return var.cuda()"
-    return None
 
 
 def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
@@ -140,67 +117,13 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
-    if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
-        dtype_mapping = {
-            "uint8": "torch.uint8",
-            "double": "torch.double",
-            "int8": "torch.int8",
-            "int16": "torch.int16",
-            "int32": "torch.int32",
-            "int64": "torch.int64",
-            "float64": "torch.double",
-            "float32": "torch.float",
-        }
-        return (
-            "import tensorflow as tf\n  from torchvision.transforms import functional as F",
-            f"""def convert(var):
-    dtype = getattr(tf, '{dtype_mapping[target_metadata["data_type"]]}')
-    return F.convert_image_dtype(var, dtype)""",
-        )
-    return None
-
-
-def uint8_full_range_to_normalize(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "full"
-        and target_metadata.get("intensity_range") == "0to1"
-    ):
-        return "", "def convert(var):\n  return var / 255"
-    return None
-
-
-def uint8_normalized_to_full_range(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "0to1"
-        and target_metadata.get("intensity_range") == "full"
-    ):
-        return "", "def convert(var):\n  return var * 255"
-    return None
-
-
-def float32_full_range_to_normalize(source_metadata, target_metadata) -> conversion:
-    if (
-        source_metadata.get("data_type") == "float32"
-        and source_metadata.get("intensity_range") == "full"
-        and target_metadata.get("intensity_range") == "0to1"
-    ):
-        return (
-            "",
-            "def convert(var):\n  return (var - var.min()) / (var.max() - var.min())",
-        )
-    return None
-
-
 def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
     # [N, 3, H, W] -> [N, 1, H, W]
     if (
-        source_metadata.get("channel_order") == "channel first"
-        and source_metadata.get("color_channel") == "rgb"
-        and target_metadata.get("color_channel") == "gray"
-        and source_metadata.get("minibatch_input")
+            source_metadata.get("channel_order") == "channel first"
+            and source_metadata.get("color_channel") == "rgb"
+            and target_metadata.get("color_channel") == "gray"
+            and source_metadata.get("minibatch_input")
     ):
         return (
             "from torchvision.transforms import functional as F",
@@ -212,10 +135,10 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> conversion:
 def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
     # [N, 1, H, W] -> [N, 3, H, W]
     if (
-        source_metadata.get("channel_order") == "channel first"
-        and source_metadata.get("color_channel") == "gray"
-        and target_metadata.get("color_channel") == "rgb"
-        and source_metadata.get("minibatch_input")
+            source_metadata.get("channel_order") == "channel first"
+            and source_metadata.get("color_channel") == "gray"
+            and target_metadata.get("color_channel") == "rgb"
+            and source_metadata.get("minibatch_input")
     ):
         return (
             "import torch",
@@ -224,11 +147,70 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> conversion:
     return None
 
 
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
+    if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
+        # https://pytorch.org/docs/stable/tensors.html
+        dtype_mapping = {
+            "uint8": "torch.uint8",
+            "int8": "torch.int8",
+            "int16": "torch.int16",
+            "int32": "torch.int32",
+            "int64": "torch.int64",
+            "float32": "torch.float",
+            "float32(0to1)": "torch.float",
+            "float64": "torch.double",
+            "double": "torch.double",
+        }
+        return (
+            "import tensorflow as tf\n  from torchvision.transforms import functional as F",
+            f"""def convert(var):
+    dtype = getattr(tf, '{dtype_mapping[target_metadata["data_type"]]}')
+    return F.convert_image_dtype(var, dtype)""",
+        )
+    return None
+
+
+def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("data_type") == "uint8"
+        and target_metadata.get("data_type") == "float32(0to1)"
+    ):
+        return "", "def convert(var):\n  return var / 255.0"
+    return None
+
+
+def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("data_type") == "float32(0to1)"
+        and target_metadata.get("data_type") == "uint8"
+    ):
+        return "", "def convert(var):\n  return (var * 255).to(torch.uint8)"
+    return None
+
+
+def gpu_to_cpu(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("device") == "gpu"
+        and target_metadata.get("device") == "cpu"
+    ):
+        return "", "def convert(var):\n  return var.cpu()"
+    return None
+
+
+def cpu_to_gpu(source_metadata, target_metadata) -> conversion:
+    if (
+        source_metadata.get("device") == "cpu"
+        and target_metadata.get("device") == "gpu"
+    ):
+        return "", "def convert(var):\n  return var.cuda()"
+    return None
+
+
 factories_cluster_for_Pytorch = (
     can_use_factories_in_cluster,
     [
-        gpu_to_cpu,
-        cpu_to_gpu,
+        channel_first_rgb_to_gray,
+        channel_first_gray_to_rgb,
         channel_none_to_channel_first,
         channel_none_to_channel_last,
         channel_first_to_none,
@@ -238,10 +220,9 @@ factories_cluster_for_Pytorch = (
         minibatch_true_to_false,
         minibatch_false_to_true,
         convert_dtype_without_rescale,
-        uint8_full_range_to_normalize,
-        uint8_normalized_to_full_range,
-        float32_full_range_to_normalize,
-        channel_first_rgb_to_gray,
-        channel_first_gray_to_rgb,
+        uint8_to_float32_0_to_1,
+        float32_0_to_1_to_uint8,
+        gpu_to_cpu,
+        cpu_to_gpu
     ],
 )

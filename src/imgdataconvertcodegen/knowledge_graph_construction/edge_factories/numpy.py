@@ -3,11 +3,6 @@ from ...metadata_differ import are_both_same_data_repr, is_same_metadata
 
 
 def is_metadata_valid_for_numpy(metadata):
-    if (
-        metadata["data_type"] in ["uint8", "uint16", "uint32", "int8", "int16", "int32"]
-        and metadata["intensity_range"] != "full"
-    ):
-        return False
     if metadata["color_channel"] == "rgb" and metadata["channel_order"] == "none":
         return False
     return True
@@ -17,6 +12,8 @@ def is_attribute_value_valid_for_numpy(metadata):
     allowed_values = {
         "color_channel": ["rgb", "gray"],
         "channel_order": ["channel first", "channel last", "none"],
+        # https://numpy.org/doc/stable/user/basics.types.html
+        # https://scikit-image.org/docs/stable/user_guide/data_types.html
         "minibatch_input": [True, False],
         "data_type": [
             "uint8",
@@ -28,8 +25,13 @@ def is_attribute_value_valid_for_numpy(metadata):
             "int8",
             "int16",
             "int32",
+            "float32(0to1)",
+            "float32(-1to1)",
+            "float64(0to1)",
+            "float64(-1to1)",
+            "double(0to1)",
+            "double(-1to1)",
         ],
-        "intensity_range": ["full", "0to1", "-1to1"],
         "device": ["cpu"],
     }
     for key, values in allowed_values.items():
@@ -215,112 +217,6 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> convers
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
-    if is_same_metadata(source_metadata, target_metadata, "data_type"):
-        dtype_mapping = {
-            "uint8": "np.uint8",
-            "uint16": "np.uint16",
-            "uint32": "np.uint32",
-            "int8": "np.int8",
-            "int16": "np.int16",
-            "int32": "np.int32",
-            "float32": "np.float32",
-            "float64": "np.float64",
-            "double": "np.float64",
-        }
-        return (
-            "import numpy as np",
-            f"""def convert(var):
-    return var.astype({dtype_mapping[target_metadata["data_type"]]})""",
-        )
-    return None
-
-
-def uint8_full_range_to_normalize_unsigned(
-    source_metadata, target_metadata
-) -> conversion:
-    # only unsigned as it needs to be conversed to float to be normalized to signed
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "full"
-        and target_metadata.get("intensity_range") == "0to1"
-    ):
-        return "", "def convert(var):\n  return var / 255"
-    return None
-
-
-def float_full_range_to_normalize_unsigned(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") in ["float32", "float64", "double"]
-        and source_metadata.get("intensity_range") == "full"
-        and target_metadata.get("intensity_range") == "0to1"
-    ):
-        return (
-            "import numpy as np",
-            """def convert(var):
-min_val = np.min(var)
-max_val = np.max(var)
-return (var - min_val) / (max_val - min_val)""",
-        )
-    return None
-
-
-def float_full_range_to_normalize_signed(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") in ["float32", "float64", "double"]
-        and source_metadata.get("intensity_range") == "full"
-        and target_metadata.get("intensity_range") == "-1to1"
-    ):
-        return (
-            "import numpy as np",
-            """def convert(var):
-min_val = np.min(var)
-max_val = np.max(var)
-return 2 * (var - min_val) / (max_val - min_val) - 1""",
-        )
-    return None
-
-
-def float_normalized_unsigned_to_normalized_signed(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") in ["float32", "float64", "double"]
-        and source_metadata.get("intensity_range") == "0to1"
-        and target_metadata.get("intensity_range") == "-1to1"
-    ):
-        return ("", "def convert(var):\n  return 2 * var - 1")
-    return None
-
-
-def float_normalized_signed_to_normalized_unsigned(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") in ["float32", "float64", "double"]
-        and source_metadata.get("intensity_range") == "-1to1"
-        and target_metadata.get("intensity_range") == "0to1"
-    ):
-        return ("", "def convert(var):\n  return (var + 1) / 2")
-    return None
-
-def uint8_normalized_unsigned_to_full_range(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "0to1"
-        and target_metadata.get("intensity_range") == "full"
-    ):
-        return "", "def convert(var):\n  return var * 255"
-    return None
-#TODO: add more dtyps normalized to full range
-
-
 def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
     if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'channel first':
         if source_metadata['mini_batch_input']:
@@ -387,6 +283,71 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
     return None
 
 
+def convert_dtype_without_rescale(source_metadata, target_metadata) -> conversion:
+    if is_same_metadata(source_metadata, target_metadata, "data_type"):
+        # https://numpy.org/doc/stable/user/basics.types.html
+        # https://scikit-image.org/docs/stable/user_guide/data_types.html
+        dtype_mapping = {
+            "uint8": "np.uint8",
+            "uint16": "np.uint16",
+            "uint32": "np.uint32",
+            "int8": "np.int8",
+            "int16": "np.int16",
+            "int32": "np.int32",
+            "float32": "np.float32",
+            "float32(0to1)": "np.float32",
+            "float32(-1to1)": "np.float32",
+            "float64": "np.float64",
+            "float64(0to1)": "np.float64",
+            "float64(-1to1)": "np.float64",
+            "double": "np.float64",
+            "double(0to1)": "np.float64",
+            "double(-1to1)": "np.float64",
+        }
+        return (
+            "import numpy as np",
+            f"""def convert(var):
+    return var.astype({dtype_mapping[target_metadata["data_type"]]})""",
+        )
+    return None
+
+
+def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("data_type") == "uint8"
+            and target_metadata.get("data_type") == "float32(0to1)"
+    ):
+        return "", "def convert(var):\n  return var / 255.0"
+    return None
+
+
+def uint8_to_float32_minus1_to_1(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("data_type") == "uint8"
+            and target_metadata.get("data_type") == "float32(-1to1)"
+    ):
+        return "", "def convert(var):\n  return (var / 127.5) - 1"
+    return None
+
+
+def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("data_type") == "float32(0to1)"
+            and target_metadata.get("data_type") == "uint8"
+    ):
+        return "", "def convert(var):\n  return (var * 255).astype(np.uint8)"
+    return None
+
+
+def float32_minus1_to_1_to_uint8(source_metadata, target_metadata) -> conversion:
+    if (
+            source_metadata.get("data_type") == "float32(-1to1)"
+            and target_metadata.get("data_type") == "uint8"
+    ):
+        return "", "def convert(var):\n  return ((var + 1) * 127.5).astype(np.uint8)"
+    return None
+
+
 factories_cluster_for_numpy = (
     can_use_factories_in_cluster,
     [
@@ -407,11 +368,9 @@ factories_cluster_for_numpy = (
         minibatch_true_to_false,
         minibatch_false_to_true,
         convert_dtype_without_rescale,
-        uint8_full_range_to_normalize_unsigned,
-        float_full_range_to_normalize_unsigned,
-        float_full_range_to_normalize_signed,
-        float_normalized_unsigned_to_normalized_signed,
-        float_normalized_signed_to_normalized_unsigned,
-        uint8_normalized_unsigned_to_full_range,
+        uint8_to_float32_0_to_1,
+        uint8_to_float32_minus1_to_1,
+        float32_0_to_1_to_uint8,
+        float32_minus1_to_1_to_uint8,
     ],
 )
