@@ -1,13 +1,18 @@
 from .type import conversion
-from .default_edges_factories import default_factories
+from .PIL import factories_cluster_for_pil
 from .Pytorch import factories_cluster_for_Pytorch
-from .PIL import pil_factories
-from .Tensforflow import factories_cluster_for_tensorflow
-from .inter_libs import inter_libs_factories
+from .Tensorflow import factories_cluster_for_tensorflow
+from .inter_libs import (factories_cluster_for_numpy_pil, factories_cluster_for_numpy_torch,
+                         factories_cluster_for_numpy_tensorflow)
 
-all_edge_factories = default_factories + pil_factories + inter_libs_factories
+#Todo: remove and change in the knowledge graph construction
+all_edge_factories = []
 
 factories_cluster = [
+    factories_cluster_for_pil,
     factories_cluster_for_Pytorch,
     factories_cluster_for_tensorflow,
+    factories_cluster_for_numpy_pil,
+    factories_cluster_for_numpy_torch,
+    factories_cluster_for_numpy_tensorflow,
 ]
