@@ -144,6 +144,72 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> convers
     return None
 
 
+def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'channel first':
+        if source_metadata['mini_batch_input']:
+            # [N, H, W, C] -> [N, C, H, W]
+            return "", "def convert(var):\n  return var.permute(0, 3, 1, 2)"
+        # [H, W, C] -> [C, H, W]
+        return "", "def convert(var):\n  return var.permute(2, 0, 1)"
+    return None
+
+
+def channel_last_to_channel_none(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'none':
+        # [N, H, W, 1] -> [N, H, W] or [H, W, 1] -> [H, W]
+        return "", "def convert(var):\n  return var.squeeze(-1)"
+    return None
+
+
+def channel_first_to_channel_last(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'channel last':
+        if source_metadata['mini_batch_input']:
+            # [N, C, H, W] -> [N, H, W, C]
+            return "", "def convert(var):\n  return var.permute(0, 2, 3, 1)"
+        # [C, H, W] -> [H, W, C]
+        return "", "def convert(var):\n  return var.permute(1, 2, 0)"
+    return None
+
+
+def channel_first_to_channel_none(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'channel first' or target_metadata['channel_order'] == 'none':
+        if source_metadata['mini_batch_input']:
+            # [N, 1, H, W] -> [N, H, W]
+            return "", "def convert(var):\n  return var.squeeze(1)"
+        # [1, H, W] -> [H, W]
+        return "", "def convert(var):\n  return var.squeeze(0)"
+    return None
+
+
+def channel_none_to_channel_first(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'none' or target_metadata['channel_order'] == 'channel first':
+        if source_metadata['mini_batch_input']:
+            # [N, H, W] -> [N, 1, H, W]
+            return "", "def convert(var):\n  return var.unsqueeze(1)"
+        # [H, W] -> [1, H, W]
+        return "", "def convert(var):\n  return var.unsqueeze(0)"
+    return None
+
+
+def channel_none_to_channel_last(source_metadata, target_metadata) -> conversion:
+    if source_metadata['channel_order'] == 'none' or target_metadata['channel_order'] == 'channel last':
+        # [N, H, W] -> [N, H, W, 1] or [H, W] -> [H, W, 1]
+        return "", "def convert(var):\n  return var.unsqueeze(-1)"
+    return None
+
+
+def minibatch_true_to_false(source_metadata, target_metadata) -> conversion:
+    if source_metadata['minibatch_input'] and not target_metadata['minibatch_input']:
+        return "", "def convert(var):\n  return var[0]"
+    return None
+
+
+def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
+    if not source_metadata['minibatch_input'] and target_metadata['minibatch_input']:
+        return "", "def convert(var):\n  return var.unsqueeze(0)"
+    return None
+
+
 factories_cluster_for_numpy = (
     can_use_factories_in_cluster,
     [
@@ -155,5 +221,13 @@ factories_cluster_for_numpy = (
         channel_last_rgb_to_gray,
         channel_last_bgr_to_gray,
         channel_last_gray_to_rgb_or_gbr,
+        channel_last_to_channel_first,
+        channel_last_to_channel_none,
+        channel_first_to_channel_last,
+        channel_first_to_channel_none,
+        channel_none_to_channel_first,
+        channel_none_to_channel_last,
+        minibatch_true_to_false,
+        minibatch_false_to_true,
     ]
 )
