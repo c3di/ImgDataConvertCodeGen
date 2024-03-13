@@ -308,6 +308,18 @@ def float_normalized_signed_to_normalized_unsigned(
         return ("", "def convert(var):\n  return (var + 1) / 2")
     return None
 
+def uint8_normalized_unsigned_to_full_range(
+    source_metadata, target_metadata
+) -> conversion:
+    if (
+        source_metadata.get("data_type") == "uint8"
+        and source_metadata.get("intensity_range") == "0to1"
+        and target_metadata.get("intensity_range") == "full"
+    ):
+        return "", "def convert(var):\n  return var * 255"
+    return None
+#TODO: add more dtyps normalized to full range
+
 
 def channel_last_to_channel_first(source_metadata, target_metadata) -> conversion:
     if source_metadata['channel_order'] == 'channel last' or target_metadata['channel_order'] == 'channel first':
@@ -374,18 +386,6 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> conversion:
         return "", "def convert(var):\n  return var.unsqueeze(0)"
     return None
 
-
-def uint8_normalized_unsigned_to_full_range(
-    source_metadata, target_metadata
-) -> conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and source_metadata.get("intensity_range") == "0to1"
-        and target_metadata.get("intensity_range") == "full"
-    ):
-        return "", "def convert(var):\n  return var * 255"
-    return None
-#TODO: add more dtyps normalized to full range
 
 factories_cluster_for_numpy = (
     can_use_factories_in_cluster,
