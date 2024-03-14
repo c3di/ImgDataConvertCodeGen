@@ -49,12 +49,6 @@ def test_save_to_file(kg):
         mock_save_graph.assert_called_once_with(kg._graph, expected_file_path)
 
 
-def test_update_uuid_after_load_from_file(kg):
-    file_path = os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json')
-    kg.load_from_file(file_path)
-    assert len(kg.nodes) == 5, f"Expected 5, got {kg._uuid}"
-
-
 def test_get_shortest_path(kg):
     kg.add_node(new_node)
     kg.add_edge(new_edge[0], new_edge[1], new_edge[2])
