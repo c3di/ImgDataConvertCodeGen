@@ -203,7 +203,7 @@ def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
         target_dtype = dtype_mapping.get(target_metadata.get("image_data_type"))
         return (
             "import tensorflow as tf",
-            f"def convert(var):\n return tf.image.convert_image_dtype(var, dtype)",
+            f"def convert(var):\n return tf.image.convert_image_dtype(var, {target_dtype})",
         )
     return None
 
