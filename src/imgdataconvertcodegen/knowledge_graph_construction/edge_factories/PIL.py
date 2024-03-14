@@ -9,7 +9,7 @@ def is_attribute_value_valid_for_pil(metadata):
         "channel_order": ['channel last', 'none'],
         "minibatch_input": [False],
         # Pillow doesn’t yet support multichannel images with a depth of more than 8 bits per channel.
-        "data_type": ['uint8'],
+        "image_data_type": ['uint8'],
         "device": ['cpu'],
     }
     for key, allowed_values in allowed_values.items():
@@ -67,7 +67,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'rgb',
             "channel_order": 'channel last',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         },
         {
@@ -75,7 +75,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         }, pil_graya_or_rgba_rgb_to_gray),
     (
@@ -84,7 +84,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'rgba',
             "channel_order": 'channel last',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         },
         {
@@ -92,7 +92,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         }, pil_graya_or_rgba_rgb_to_gray),
     (
@@ -101,7 +101,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'graya',
             "channel_order": 'channel last',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         },
         {
@@ -109,7 +109,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         }, pil_graya_or_rgba_rgb_to_gray),
     (
@@ -118,7 +118,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'gray',
             "channel_order": 'none',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         },
         {
@@ -126,7 +126,7 @@ factories_for_pil_metadata_pair: list[ConversionForMetadataPair] = [
             "color_channel": 'rgb',
             "channel_order": 'channel last',
             "minibatch_input": False,
-            "data_type": 'uint8',
+            "image_data_type": 'uint8',
             "device": 'cpu',
         }, pil_gray_to_rgb),
 ]

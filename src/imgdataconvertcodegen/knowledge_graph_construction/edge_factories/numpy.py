@@ -1,5 +1,5 @@
 from .type import Conversion, FactoriesCluster
-from ...metadata_differ import are_both_same_data_repr, is_same_metadata
+from ...metadata_differ import are_both_same_data_repr, is_differ_value_for_key
 
 
 def is_metadata_valid_for_numpy(metadata):
@@ -15,7 +15,7 @@ def is_attribute_value_valid_for_numpy(metadata):
         # https://numpy.org/doc/stable/user/basics.types.html
         # https://scikit-image.org/docs/stable/user_guide/data_types.html
         "minibatch_input": [True, False],
-        "data_type": [
+        "image_data_type": [
             "uint8",
             "uint16",
             "uint32",
@@ -42,11 +42,11 @@ def is_attribute_value_valid_for_numpy(metadata):
 
 def can_use_factories_in_cluster(source_metadata, target_metadata):
     return (
-        are_both_same_data_repr(source_metadata, target_metadata, "numpy.ndarray")
-        and is_attribute_value_valid_for_numpy(source_metadata)
-        and is_attribute_value_valid_for_numpy(target_metadata)
-        and is_metadata_valid_for_numpy(source_metadata)
-        and is_metadata_valid_for_numpy(target_metadata)
+            are_both_same_data_repr(source_metadata, target_metadata, "numpy.ndarray")
+            and is_attribute_value_valid_for_numpy(source_metadata)
+            and is_attribute_value_valid_for_numpy(target_metadata)
+            and is_metadata_valid_for_numpy(source_metadata)
+            and is_metadata_valid_for_numpy(target_metadata)
     )
 
 
@@ -54,11 +54,11 @@ def channel_first_between_bgr_rgb(source_metadata, target_metadata) -> Conversio
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
-        source_metadata["color_channel"] == "bgr"
-        and target_metadata["color_channel"] == "rgb"
+            source_metadata["color_channel"] == "bgr"
+            and target_metadata["color_channel"] == "rgb"
     ) or (
-        source_metadata["color_channel"] == "rgb"
-        and target_metadata["color_channel"] == "bgr"
+            source_metadata["color_channel"] == "rgb"
+            and target_metadata["color_channel"] == "bgr"
     ):
         if source_metadata["minibatch_input"]:
             # [N, C, H, W]
@@ -75,8 +75,8 @@ def channel_first_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
-        source_metadata["color_channel"] == "rgb"
-        and target_metadata["color_channel"] == "gray"
+            source_metadata["color_channel"] == "rgb"
+            and target_metadata["color_channel"] == "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, 3, H, W] -> [N, 1, H, W]
@@ -96,8 +96,8 @@ def channel_first_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
-        source_metadata["color_channel"] == "bgr"
-        and target_metadata["color_channel"] == "gray"
+            source_metadata["color_channel"] == "bgr"
+            and target_metadata["color_channel"] == "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, 3, H, W] -> [N, 1, H, W]
@@ -117,8 +117,8 @@ def channel_first_gray_to_rgb_or_bgr(source_metadata, target_metadata) -> Conver
     if source_metadata["channel_order"] != "channel first":
         return None
     if (
-        source_metadata["color_channel"] == "gray"
-        and target_metadata["color_channel"] != "gray"
+            source_metadata["color_channel"] == "gray"
+            and target_metadata["color_channel"] != "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, 1, H, W] -> [N, 3, H, W]
@@ -138,11 +138,11 @@ def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> Conversion
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
-        source_metadata["color_channel"] == "bgr"
-        and target_metadata["color_channel"] == "rgb"
+            source_metadata["color_channel"] == "bgr"
+            and target_metadata["color_channel"] == "rgb"
     ) or (
-        source_metadata["color_channel"] == "rgb"
-        and target_metadata["color_channel"] == "bgr"
+            source_metadata["color_channel"] == "rgb"
+            and target_metadata["color_channel"] == "bgr"
     ):
         if source_metadata["minibatch_input"]:
             # [N, H, W, C]
@@ -158,8 +158,8 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
-        source_metadata["color_channel"] == "rgb"
-        and target_metadata["color_channel"] == "gray"
+            source_metadata["color_channel"] == "rgb"
+            and target_metadata["color_channel"] == "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, H, W, 3] -> [N, H, W, 1]
@@ -179,8 +179,8 @@ def channel_last_bgr_to_gray(source_metadata, target_metadata) -> Conversion:
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
-        source_metadata["color_channel"] == "bgr"
-        and target_metadata["color_channel"] == "gray"
+            source_metadata["color_channel"] == "bgr"
+            and target_metadata["color_channel"] == "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, H, W, 3] -> [N, H, W, 1]
@@ -200,8 +200,8 @@ def channel_last_gray_to_rgb_or_gbr(source_metadata, target_metadata) -> Convers
     if source_metadata["channel_order"] != "channel last":
         return None
     if (
-        source_metadata["color_channel"] == "gray"
-        and target_metadata["color_channel"] != "gray"
+            source_metadata["color_channel"] == "gray"
+            and target_metadata["color_channel"] != "gray"
     ):
         if source_metadata["minibatch_input"]:
             # [N, H, W, 1] -> [N, H, W, 3]
@@ -283,69 +283,130 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversion:
-    if is_same_metadata(source_metadata, target_metadata, "data_type"):
-        # https://numpy.org/doc/stable/user/basics.types.html
-        # https://scikit-image.org/docs/stable/user_guide/data_types.html
-        dtype_mapping = {
-            "uint8": "np.uint8",
-            "uint16": "np.uint16",
-            "uint32": "np.uint32",
-            "int8": "np.int8",
-            "int16": "np.int16",
-            "int32": "np.int32",
-            "float32": "np.float32",
-            "float32(0to1)": "np.float32",
-            "float32(-1to1)": "np.float32",
-            "float64": "np.float64",
-            "float64(0to1)": "np.float64",
-            "float64(-1to1)": "np.float64",
-            "double": "np.float64",
-            "double(0to1)": "np.float64",
-            "double(-1to1)": "np.float64",
-        }
-        return (
-            "import numpy as np",
-            f"""def convert(var):
-    return var.astype({dtype_mapping[target_metadata["data_type"]]})""",
-        )
+# https://numpy.org/doc/stable/user/basics.types.html
+# https://scikit-image.org/docs/stable/user_guide/data_types.html
+
+def image_data_to_uint8_full_range(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("image_data_type") in ["uint16", "uint32", "int8", "int16", "int32",
+                                                       "float32(0to1)", "float64(0to1)", "double(0to1)"]
+            and target_metadata.get("image_data_type") == "uint8"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_ubyte(var)",
+
+
+def image_data_to_uint16_full_range(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("image_data_type") in ["uint8", "uint32", "int8", "int16", "int32",
+                                                 "float32(0to1)", "float64(0to1)", "double(0to1)"]
+            and target_metadata.get("image_data_type") == "uint16"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_uint(var)",
+
+
+def image_data_to_int16_full_range(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32", "int8", "int32",
+                                                 "float32(-1to1)", "float64(-1to1)", "double(-1to1)"
+                                                                                     "float32(0to1)", "float64(0to1)",
+                                                 "double(0to1)"]
+            and target_metadata.get("image_data_type") == "int16"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_int(var)",
+
+
+dtype_float_mapping = {
+    "float32": "np.float32",
+    "float64": "np.float64",
+    "double": "np.float64",
+}
+
+dtype_float_0_to_1_mapping = {
+    "float32(0to1)": "np.float32",
+    "float64(0to1)": "np.float64",
+    "double(0to1)": "np.float64",
+}
+
+dtype_float_minus1_to_1_mapping = {
+    "float32(-1to1)": "np.float32",
+    "float64(-1to1)": "np.float64",
+    "double(-1to1)": "np.float64",
+}
+
+
+def convert_image_dtype_float_to_float(source_metadata, target_metadata) -> Conversion:
+    if is_differ_value_for_key(source_metadata, target_metadata, "image_data_type"):
+        for float_type_mapping in [dtype_float_mapping, dtype_float_0_to_1_mapping, dtype_float_minus1_to_1_mapping]:
+            if source_metadata["image_data_type"] in float_type_mapping and target_metadata["image_data_type"] in float_type_mapping:
+                return (
+                    "",
+                    f"def convert(var):\n return var.astype('{float_type_mapping[target_metadata['image_data_type']]}')",
+                )
     return None
 
 
-def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
+def image_data_unsigned_integer_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") == "uint8"
+            source_metadata.get("data_type") in ["uint8", "uint16", "uint32"]
             and target_metadata.get("data_type") == "float32(0to1)"
     ):
-        return "", "def convert(var):\n  return var / 255.0"
-    return None
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
 
 
-def uint8_to_float32_minus1_to_1(source_metadata, target_metadata) -> Conversion:
+def image_data_float32_full_range_to_float_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") == "uint8"
-            and target_metadata.get("data_type") == "float32(-1to1)"
+            source_metadata.get("data_type") == "float32"
+            and target_metadata.get("data_type") == "float32(0to1)"
     ):
-        return "", "def convert(var):\n  return (var / 127.5) - 1"
-    return None
+        return "import numpy as np", "def convert(var):\n return var / np.iinfo('np.float32').max",
 
 
-def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
-    if (
-            source_metadata.get("data_type") == "float32(0to1)"
-            and target_metadata.get("data_type") == "uint8"
-    ):
-        return "", "def convert(var):\n  return (var * 255).astype(np.uint8)"
-    return None
-
-
-def float32_minus1_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
+def image_data_float32_minus1_1_to_float32_0_1(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("data_type") == "float32(-1to1)"
-            and target_metadata.get("data_type") == "uint8"
+            and target_metadata.get("data_type") == "float32(0to1)"
     ):
-        return "", "def convert(var):\n  return ((var + 1) * 127.5).astype(np.uint8)"
-    return None
+        return "", "def convert(var):\n return var * 0.5 + 0.5"
+
+
+def image_data_float32_0_to_1_to_float32_full_range(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("data_type") == "float32(0to1)"
+            and target_metadata.get("data_type") == "float32"
+    ):
+        return "import numpy as np", "def convert(var):\n return var * np.iinfo('np.float32').max",
+
+
+def image_data_integer_to_float32_minus1_to_1(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("data_type") == "float32(-1to1)"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
+
+
+def image_data_float32_0_1_to_float32_minus1_1(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("data_type") == "float32(0to1)"
+            and target_metadata.get("data_type") == "float32(-1to1)"
+    ):
+        return "", "def convert(var):\n return var * 2.0 - 1"
+
+
+def image_data_integer_to_float64_minus1_to_1(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("data_type") == "float64(-1to1)"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
+
+
+def image_data_unsigned_integer_to_float64_0_to_1(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("data_type") in ["uint8", "uint16", "uint32"]
+            and target_metadata.get("data_type") == "float64(0to1)"
+    ):
+        return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
 
 
 factories_cluster_for_numpy: FactoriesCluster = (
@@ -367,10 +428,17 @@ factories_cluster_for_numpy: FactoriesCluster = (
         channel_none_to_channel_last,
         minibatch_true_to_false,
         minibatch_false_to_true,
-        convert_dtype_without_rescale,
-        uint8_to_float32_0_to_1,
-        uint8_to_float32_minus1_to_1,
-        float32_0_to_1_to_uint8,
-        float32_minus1_to_1_to_uint8,
+        image_data_to_uint8_full_range,
+        image_data_to_uint16_full_range,
+        image_data_to_int16_full_range,
+        convert_image_dtype_float_to_float,
+        image_data_unsigned_integer_to_float32_0_to_1,
+        image_data_float32_full_range_to_float_0_to_1,
+        image_data_float32_minus1_1_to_float32_0_1,
+        image_data_float32_0_to_1_to_float32_full_range,
+        image_data_integer_to_float32_minus1_to_1,
+        image_data_float32_0_1_to_float32_minus1_1,
+        image_data_integer_to_float64_minus1_to_1,
+        image_data_unsigned_integer_to_float64_0_to_1,
     ],
 )

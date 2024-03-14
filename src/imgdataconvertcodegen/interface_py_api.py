@@ -18,7 +18,7 @@ def get_conversion(source_var_name: str, source_metadata: Metadata,
             - `color_channel` (str): Description of color channels.
             - `channel_order` (Literal['channel last', 'channel first', 'none']): Order of color channels.
             - `minibatch_input` (bool): Indicates if input is a minibatch.
-            - `data_type` (str): Type of data ('uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double'
+            - `image_data_type` (str): Type of data ('uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double'
               'float32(0to1)', 'float32(-1to1)', 'float64(0to1)', 'float64(-1to1)', 'double(0to1)', 'double(-1to1)'
               'int8', 'int16', 'int32', 'int64').
             - `device` (str): Device where the data is processed or stored.

@@ -7,8 +7,9 @@ def is_attribute_value_valid_for_tensorflow(metadata):
         "color_channel": ["rgb", "gray"],
         "channel_order": ["channel first", "channel last", "none"],
         "minibatch_input": [True, False],
-        # reference: https://www.tensorflow.org/api_docs/python/tf/dtypes
-        "data_type": [
+        # https://www.tensorflow.org/api_docs/python/tf/dtypes
+        # https://www.tensorflow.org/api_docs/python/tf/image/convert_image_dtype
+        "image_data_type": [
             "uint8",
             "uint16",
             "uint32",
@@ -17,11 +18,10 @@ def is_attribute_value_valid_for_tensorflow(metadata):
             "int16",
             "int32",
             "int64",
-            "float16",
-            "float32",
+            "float16(0to1)",
             "float32(0to1)",
-            "float64",
-            "double",
+            "float64(0to1)",
+            "double(0to1)",
         ],
         "device": ["cpu", "gpu"],
     }
@@ -152,24 +152,12 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversio
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
-    # Outputs a tensor of the same `DType`. The operation supports data types (for `image` and `dtype`) of `uint8`,
-    # `uint16`, `uint32`, `uint64`, `int8`,`int16`, `int32`, `int64`, `float16`, `float32`, `float64`.
-    # Images that are represented using floating point values are expected to have values in the range [0,1).
-    # Image data stored in integer data types are expected to have values in the range `[0,MAX]`,
-    # where `MAX` is the largest positive representable number for the data type.
-    # This op converts between data types, scaling the values appropriately before casting.
-    # reference: https://github.com/tensorflow/tensorflow/blob/0f7eb923815f4fd82321dda01bab45b493227d58/tensorflow/python/ops/image_ops_impl.py#L2381-L2393
-    is_allowed_dtype_intensity_range = (
-                                               source_metadata.get("data_type") == "float32"
-                                               and source_metadata.get("intensity_range") == "0to1"
-                                       ) or source_metadata.get("data_type") != "float32"
     # [N, H, W, 3] -> [N, H, W, 1]
     if (
         source_metadata.get("channel_order") == "channel last"
         and source_metadata.get("color_channel") == "rgb"
         and target_metadata.get("color_channel") == "gray"
         and source_metadata.get("minibatch_input")
-        and is_allowed_dtype_intensity_range
     ):
         return (
             "import tensorflow as tf",
@@ -194,9 +182,10 @@ def channel_last_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversion:
-    if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
-        # reference: https://www.tensorflow.org/api_docs/python/tf/dtypes
+def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
+    if is_differ_value_for_key(source_metadata, target_metadata, "image_data_type"):
+        # https://www.tensorflow.org/api_docs/python/tf/dtypes
+        # https://www.tensorflow.org/api_docs/python/tf/image/convert_image_dtype
         dtype_mapping = {
             "uint8": "tf.uint8",
             "uint16": "tf.uint16",
@@ -206,36 +195,16 @@ def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversio
             "int16": "tf.int16",
             "int32": "tf.int32",
             "int64": "tf.int64",
-            "float16": "tf.float16",
-            "float32": "tf.float32",
-            "float64": "tf.float64",
-            "double": "tf.float64",
+            "float16(0to1)": "tf.float16",
+            "float32(0to1)": "tf.float32",
+            "float64(0to1)": "tf.float64",
+            "double(0to1)": "tf.float64",
         }
-        target_dtype = dtype_mapping.get(target_metadata.get("data_type"))
+        target_dtype = dtype_mapping.get(target_metadata.get("image_data_type"))
         return (
             "import tensorflow as tf",
-            f"""def convert(var):
-    dtype = getattr(tf, '{target_dtype}')
-    return tf.cast(var, dtype)""",
+            f"def convert(var):\n return tf.image.convert_image_dtype(var, dtype)",
         )
-    return None
-
-
-def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
-    if (
-            source_metadata.get("data_type") == "uint8"
-            and target_metadata.get("intensity_range") == "float32(0to1)"
-    ):
-        return "", "def convert(var):\n  return var / 255.0"
-    return None
-
-
-def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
-    if (
-            source_metadata.get("data_type") == "float32(0to1)"
-            and target_metadata.get("data_type") == "uint8"
-    ):
-        return "", "def convert(var):\n  return tf.cast(var * 255, tf.uint8)"
     return None
 
 
@@ -278,9 +247,7 @@ factories_cluster_for_tensorflow: FactoriesCluster = (
         channel_last_to_channel_first,
         minibatch_true_to_false,
         minibatch_false_to_true,
-        convert_dtype_without_rescale,
-        uint8_to_float32_0_to_1,
-        float32_0_to_1_to_uint8,
+        convert_image_dtype,
         gpu_to_cpu,
         cpu_to_gpu,
     ],

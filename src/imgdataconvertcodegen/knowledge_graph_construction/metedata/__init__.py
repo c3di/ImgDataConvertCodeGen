@@ -7,7 +7,9 @@ metadata_values: MetadataValues = {
     "color_channel": ['rgb', 'bgr', 'gray', 'rgba', 'graya'],
     "channel_order": ['channel last', 'channel first', 'none'],
     "minibatch_input": [True, False],
-    "data_type": ['uint8', 'uint16', 'uint32', 'uint64',
+    # image dtype conversion maybe involves type convert, intensity range rescale
+    # and normalization for float point number in torch, tensorflow
+    "image_data_type": ['uint8', 'uint16', 'uint32', 'uint64',
                   'float16', 'float32', 'float64', 'double',
                   # intensity range for floating point can be -1 to 1 or 0 to 1 from
                   # https://scikit-image.org/docs/stable/user_guide/data_types.html

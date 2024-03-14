@@ -4,8 +4,7 @@ test_nodes = [
         "color_channel": "rgb",
         "channel_order": "channel last",
         "minibatch_input": False,
-        "data_type": "uint8",
-        "intensity_range": "full",
+        "image_data_type": "uint8",
         "device": "cpu"
     },
     {
@@ -13,8 +12,7 @@ test_nodes = [
         "color_channel": "bgr",
         "channel_order": "channel last",
         "minibatch_input": False,
-        "data_type": "uint8",
-        "intensity_range": "full",
+        "image_data_type": "uint8",
         "device": "cpu"
     },
     {
@@ -22,8 +20,7 @@ test_nodes = [
         "color_channel": "rgb",
         "channel_order": "channel last",
         "minibatch_input": False,
-        "data_type": "uint8",
-        "intensity_range": "full",
+        "image_data_type": "uint8",
         "device": "cpu"
     },
     {
@@ -31,8 +28,7 @@ test_nodes = [
         "color_channel": "rgb",
         "channel_order": "channel first",
         "minibatch_input": False,
-        "data_type": "uint8",
-        "intensity_range": "full",
+        "image_data_type": "uint8",
         "device": "cpu"
     }
 
@@ -43,8 +39,7 @@ new_node = {
     "color_channel": "rgb",
     "channel_order": "channel first",
     "minibatch_input": True,
-    "data_type": "uint8",
-    "intensity_range": "full",
+    "image_data_type": "uint8",
     "device": "cpu"
 }
 

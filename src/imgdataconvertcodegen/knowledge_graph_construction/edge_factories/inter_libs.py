@@ -112,7 +112,7 @@ def numpy_to_tensorflow(source_metadata, target_metadata) -> Conversion:
         return (
             "import tensorflow as tf",
             f"""def convert(var):
-    dtype = getattr(tf, '{source_metadata['data_type']}')
+    dtype = getattr(tf, '{source_metadata['image_data_type']}')
     return tf.convert_to_tensor(var, dtype = dtype)""",
         )
     return None

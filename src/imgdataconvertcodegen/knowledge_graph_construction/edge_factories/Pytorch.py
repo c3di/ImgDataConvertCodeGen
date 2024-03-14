@@ -8,16 +8,17 @@ def is_attribute_value_valid_for_torch(metadata):
         "channel_order": ["channel first", "channel last", "none"],
         "minibatch_input": [True, False],
         # https://pytorch.org/docs/stable/tensors.html
-        "data_type": [
+        # https://github.com/pytorch/vision/blob/ba64d65bc6811f2b173792a640cb4cbe5a750840/torchvision/transforms/v2/functional/_misc.py#L210-L259
+        # https://pytorch.org/docs/stable/generated/torch.is_floating_point.html remove float32 full, float64 full, double full
+        "image_data_type": [
             "uint8",
             "int8",
             "int16",
             "int32",
             "int64",
-            "float32",
             "float32(0to1)",
-            "float64",
-            "double",
+            "float64(0to1)",
+            "double(0to1)",
         ],
         "device": ["cpu", "gpu"],
     }
@@ -147,44 +148,27 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
     return None
 
 
-def convert_dtype_without_rescale(source_metadata, target_metadata) -> Conversion:
-    if is_differ_value_for_key(source_metadata, target_metadata, "data_type"):
+def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
+    # image dtype conversion involves type convert, intensity range rescale and normalization for float point
+    if is_differ_value_for_key(source_metadata, target_metadata, "image_data_type"):
         # https://pytorch.org/docs/stable/tensors.html
+        # https://github.com/pytorch/vision/blob/ba64d65bc6811f2b173792a640cb4cbe5a750840/torchvision/transforms/v2/functional/_misc.py#L210-L259
         dtype_mapping = {
             "uint8": "torch.uint8",
             "int8": "torch.int8",
             "int16": "torch.int16",
             "int32": "torch.int32",
             "int64": "torch.int64",
-            "float32": "torch.float",
             "float32(0to1)": "torch.float",
-            "float64": "torch.double",
-            "double": "torch.double",
+            "float64(0to1)": "torch.double",
+            "double(0to1)": "torch.double",
         }
         return (
-            "import tensorflow as tf\n  from torchvision.transforms import functional as F",
+            "from torchvision.transforms.v2 import functional as F",
             f"""def convert(var):
-    dtype = getattr(tf, '{dtype_mapping[target_metadata["data_type"]]}')
-    return F.convert_image_dtype(var, dtype)""",
+    dtype = getattr(tf, '{dtype_mapping[target_metadata["image_data_type"]]}')
+    return F.to_dtype(var, dtype, scale=True)""",
         )
-    return None
-
-
-def uint8_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
-    if (
-        source_metadata.get("data_type") == "uint8"
-        and target_metadata.get("data_type") == "float32(0to1)"
-    ):
-        return "", "def convert(var):\n  return var / 255.0"
-    return None
-
-
-def float32_0_to_1_to_uint8(source_metadata, target_metadata) -> Conversion:
-    if (
-        source_metadata.get("data_type") == "float32(0to1)"
-        and target_metadata.get("data_type") == "uint8"
-    ):
-        return "", "def convert(var):\n  return (var * 255).to(torch.uint8)"
     return None
 
 
@@ -219,9 +203,7 @@ factories_cluster_for_Pytorch: FactoriesCluster = (
         channel_last_to_channel_first,
         minibatch_true_to_false,
         minibatch_false_to_true,
-        convert_dtype_without_rescale,
-        uint8_to_float32_0_to_1,
-        float32_0_to_1_to_uint8,
+        convert_image_dtype,
         gpu_to_cpu,
         cpu_to_gpu
     ],
