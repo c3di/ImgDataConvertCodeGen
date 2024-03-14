@@ -152,6 +152,7 @@ def channel_last_between_bgr_rgb(source_metadata, target_metadata) -> Conversion
             )
         # [H, W, C]
         return "import numpy as np", "def convert(var):\n  return var[:, :, ::-1]"
+    return None
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
@@ -285,6 +286,54 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
 
 # https://numpy.org/doc/stable/user/basics.types.html
 # https://scikit-image.org/docs/stable/user_guide/data_types.html
+dtype_mapping = {
+    "uint8": "np.uint8",
+    "uint16": "np.uint16",
+    "uint32": "np.uint32",
+    "int8": "np.int8",
+    "int16": "np.int16",
+    "int32": "np.int32",
+}
+
+
+def image_data_integer_to_integer(source_metadata, target_metadata) -> Conversion:
+    if (is_differ_value_for_key(source_metadata, target_metadata, "image_data_type") and
+            (source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32"] and target_metadata.get("image_data_type") in ["uint8", "uint16", "uint32"])
+            or
+            (source_metadata.get("image_data_type") in ["int8", "int16", "int32"] and target_metadata.get("image_data_type") in ["int8", "int16", "int32"])
+    ):
+        source_np_type = dtype_mapping[source_metadata.get("image_data_type")]
+        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
+        source_range = f"np.iinfo({source_np_type}).max"
+        target_range = f"np.iinfo({target_np_type}).max"
+        return "import numpy as np", f"def convert(var):\n return (var / {source_range} * {target_range}).astype('{target_np_type}')"
+    return None
+
+
+def image_data_signed_integer_to_unsigned_integer(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("image_data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("image_data_type") in ['uint8', 'uint16', 'uint32']
+            and source_metadata.get("image_data_type") == target_metadata.get("image_data_type")[1:]
+    ):
+        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
+        shift_value = f"np.iinfo({target_np_type}).max // 2 + 1"
+        return "import numpy as np", f"def convert(var):\n return (var + {shift_value}).astype('{target_np_type}')"
+    return None
+
+
+def image_data_unsigned_integer_to_signed_integer(source_metadata, target_metadata) -> Conversion:
+    if (
+            source_metadata.get("image_data_type") in ['uint8', 'uint16', 'uint32']
+            and target_metadata.get("image_data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("image_data_type") == source_metadata.get("image_data_type")[1:]
+    ):
+        source_np_type = dtype_mapping[source_metadata.get("image_data_type")]
+        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
+        shift_value = f"np.iinfo({source_np_type}).max // 2 + 1"
+        return "import numpy as np", f"def convert(var):\n return (var - {shift_value}).astype('{target_np_type}')"
+    return None
+
 
 def image_data_to_uint8_full_range(source_metadata, target_metadata) -> Conversion:
     if (
@@ -293,6 +342,7 @@ def image_data_to_uint8_full_range(source_metadata, target_metadata) -> Conversi
             and target_metadata.get("image_data_type") == "uint8"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_ubyte(var)",
+    return None
 
 
 def image_data_to_uint16_full_range(source_metadata, target_metadata) -> Conversion:
@@ -302,17 +352,19 @@ def image_data_to_uint16_full_range(source_metadata, target_metadata) -> Convers
             and target_metadata.get("image_data_type") == "uint16"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_uint(var)",
+    return None
 
 
 def image_data_to_int16_full_range(source_metadata, target_metadata) -> Conversion:
     if (
             source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32", "int8", "int32",
                                                  "float32(-1to1)", "float64(-1to1)", "double(-1to1)"
-                                                                                     "float32(0to1)", "float64(0to1)",
+                                                  "float32(0to1)", "float64(0to1)",
                                                  "double(0to1)"]
             and target_metadata.get("image_data_type") == "int16"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_int(var)",
+    return None
 
 
 dtype_float_mapping = {
@@ -351,6 +403,7 @@ def image_data_unsigned_integer_to_float32_0_to_1(source_metadata, target_metada
             and target_metadata.get("data_type") == "float32(0to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
+    return None
 
 
 def image_data_float32_full_range_to_float_0_to_1(source_metadata, target_metadata) -> Conversion:
@@ -358,8 +411,8 @@ def image_data_float32_full_range_to_float_0_to_1(source_metadata, target_metada
             source_metadata.get("data_type") == "float32"
             and target_metadata.get("data_type") == "float32(0to1)"
     ):
-        return "import numpy as np", "def convert(var):\n return var / np.iinfo('np.float32').max",
-
+        return "import numpy as np", "def convert(var):\n return var / np.iinfo(np.float32).max",
+    return None
 
 def image_data_float32_minus1_1_to_float32_0_1(source_metadata, target_metadata) -> Conversion:
     if (
@@ -367,6 +420,7 @@ def image_data_float32_minus1_1_to_float32_0_1(source_metadata, target_metadata)
             and target_metadata.get("data_type") == "float32(0to1)"
     ):
         return "", "def convert(var):\n return var * 0.5 + 0.5"
+    return None
 
 
 def image_data_float32_0_to_1_to_float32_full_range(source_metadata, target_metadata) -> Conversion:
@@ -374,7 +428,8 @@ def image_data_float32_0_to_1_to_float32_full_range(source_metadata, target_meta
             source_metadata.get("data_type") == "float32(0to1)"
             and target_metadata.get("data_type") == "float32"
     ):
-        return "import numpy as np", "def convert(var):\n return var * np.iinfo('np.float32').max",
+        return "import numpy as np", "def convert(var):\n return var * np.iinfo(np.float32).max",
+    return None
 
 
 def image_data_integer_to_float32_minus1_to_1(source_metadata, target_metadata) -> Conversion:
@@ -383,6 +438,7 @@ def image_data_integer_to_float32_minus1_to_1(source_metadata, target_metadata) 
             and target_metadata.get("data_type") == "float32(-1to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
+    return None
 
 
 def image_data_float32_0_1_to_float32_minus1_1(source_metadata, target_metadata) -> Conversion:
@@ -391,6 +447,7 @@ def image_data_float32_0_1_to_float32_minus1_1(source_metadata, target_metadata)
             and target_metadata.get("data_type") == "float32(-1to1)"
     ):
         return "", "def convert(var):\n return var * 2.0 - 1"
+    return None
 
 
 def image_data_integer_to_float64_minus1_to_1(source_metadata, target_metadata) -> Conversion:
@@ -399,6 +456,7 @@ def image_data_integer_to_float64_minus1_to_1(source_metadata, target_metadata) 
             and target_metadata.get("data_type") == "float64(-1to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
+    return None
 
 
 def image_data_unsigned_integer_to_float64_0_to_1(source_metadata, target_metadata) -> Conversion:
@@ -407,6 +465,7 @@ def image_data_unsigned_integer_to_float64_0_to_1(source_metadata, target_metada
             and target_metadata.get("data_type") == "float64(0to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
+    return None
 
 
 factories_cluster_for_numpy: FactoriesCluster = (
@@ -432,6 +491,9 @@ factories_cluster_for_numpy: FactoriesCluster = (
         image_data_to_uint16_full_range,
         image_data_to_int16_full_range,
         convert_image_dtype_float_to_float,
+        image_data_integer_to_integer,
+        image_data_signed_integer_to_unsigned_integer,
+        image_data_unsigned_integer_to_signed_integer,
         image_data_unsigned_integer_to_float32_0_to_1,
         image_data_float32_full_range_to_float_0_to_1,
         image_data_float32_minus1_1_to_float32_0_1,
