@@ -55,7 +55,6 @@ def minibatch_true_to_false(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.squeeze(var, 0)",
         )
-    return None
 
 
 def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
@@ -66,7 +65,6 @@ def minibatch_false_to_true(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.expand_dims(var, 0)",
         )
-    return None
 
 
 def channel_none_to_channel_first(source_metadata, target_metadata) -> Conversion:
@@ -78,7 +76,6 @@ def channel_none_to_channel_first(source_metadata, target_metadata) -> Conversio
             "import tensorflow as tf",
             "def convert(var):\n  return tf.expand_dims(var, 0)",
         )
-    return None
 
 
 def channel_none_to_channel_last(source_metadata, target_metadata) -> Conversion:
@@ -90,7 +87,6 @@ def channel_none_to_channel_last(source_metadata, target_metadata) -> Conversion
             "import tensorflow as tf",
             "def convert(var):\n  return tf.expand_dims(var, -1)",
         )
-    return None
 
 
 def channel_last_to_none(source_metadata, target_metadata) -> Conversion:
@@ -102,7 +98,6 @@ def channel_last_to_none(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.squeeze(var, -1)",
         )
-    return None
 
 
 def channel_first_to_none(source_metadata, target_metadata) -> Conversion:
@@ -114,7 +109,6 @@ def channel_first_to_none(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.squeeze(var, 0)",
         )
-    return None
 
 
 def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversion:
@@ -131,7 +125,6 @@ def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversio
             "import tensorflow as tf",
             "def convert(var):\n  return tf.transpose(var, [2, 0, 1])",
         )
-    return None
 
 
 def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversion:
@@ -148,7 +141,6 @@ def channel_first_to_channel_last(source_metadata, target_metadata) -> Conversio
             "import tensorflow as tf",
             "def convert(var):\n   return tf.transpose(var, [1, 2, 0])",
         )
-    return None
 
 
 def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
@@ -163,7 +155,6 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.image.rgb_to_grayscale(var)",
         )
-    return None
 
 
 def channel_last_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
@@ -173,13 +164,14 @@ def channel_last_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
         source_metadata.get("channel_order") == "channel last"
         and source_metadata.get("color_channel") == "gray"
         and target_metadata.get("color_channel") == "rgb"
+        # tensorflow/core/framework/local_rendezvous.cc:404] Local rendezvous is aborting with status: UNIMPLEMENTED: TileOp : The input data type is not supported, DataType : uint16, Dimension : 4
+        and source_metadata.get("image_data_type") != "uint16"
         and source_metadata.get("minibatch_input")
     ):
         return (
             "import tensorflow as tf",
             "def convert(var):\n  return tf.image.grayscale_to_rgb(var)",
         )
-    return None
 
 
 def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
@@ -205,7 +197,6 @@ def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             f"def convert(var):\n return tf.image.convert_image_dtype(var, {target_dtype})",
         )
-    return None
 
 
 def gpu_to_cpu(source_metadata, target_metadata) -> Conversion:
@@ -217,7 +208,6 @@ def gpu_to_cpu(source_metadata, target_metadata) -> Conversion:
             "import tensorflow as tf",
             "def convert(var):\n  return tf.device('/cpu:0')(var)",
         )
-    return None
 
 
 def cpu_to_gpu(source_metadata, target_metadata) -> Conversion:

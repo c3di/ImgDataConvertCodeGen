@@ -10,6 +10,9 @@ class KnowledgeGraph:
     def __init__(self):
         self._graph = nx.DiGraph()
 
+    def clear(self):
+        self._graph.clear()
+
     @property
     def nodes(self):
         return self._graph.nodes

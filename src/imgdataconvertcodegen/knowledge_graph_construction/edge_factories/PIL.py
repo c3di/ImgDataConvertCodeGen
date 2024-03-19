@@ -39,13 +39,11 @@ def can_use_factories_in_cluster(source_metadata, target_metadata):
 def rgba_to_rgb(source_metadata, target_metadata) -> Conversion:
     if source_metadata.get("color_channel") == "rgba" and target_metadata.get("color_channel") == "rgb":
         return "", 'def convert(var):\n  return var.convert("RGB")'
-    return None
 
 
 def rgba_to_graya(source_metadata, target_metadata) -> Conversion:
     if source_metadata.get("color_channel") == "rgba" and target_metadata.get("color_channel") == "graya":
         return '', 'def convert(var):\n  return var.convert("LA")'
-    return None
 
 
 factories_cluster_for_pil : FactoriesCluster = (

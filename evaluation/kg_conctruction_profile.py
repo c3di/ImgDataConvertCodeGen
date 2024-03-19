@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     print("Loading from file")
     with cProfile.Profile() as profile:
-        constructor.build_from_file(constructor._know_graph_file_path)
+        constructor.load_knowledge_graph_from(constructor._know_graph_file_path)
         results = pstats.Stats(profile)
         results.sort_stats(pstats.SortKey.TIME)
         results.print_stats()

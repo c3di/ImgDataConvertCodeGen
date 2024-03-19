@@ -21,24 +21,29 @@ class KnowledgeGraphConstructor:
     def knowledge_graph(self):
         return self._graph
 
-    def save_knowledge_graph(self):
+    def clear_knowledge_graph(self):
+        self._graph.clear()
+
+    def save_knowledge_graph_to(self):
         self.knowledge_graph.save_to_file(self._know_graph_file_path)
+
+    def load_knowledge_graph_from(self, path):
+        self.clear_knowledge_graph()
+        self.knowledge_graph.load_from_file(path)
 
     def build(self) -> KnowledgeGraph:
         if os.path.exists(self._know_graph_file_path):
-            self.build_from_file(self._know_graph_file_path)
+            self.load_knowledge_graph_from(self._know_graph_file_path)
         else:
             self.build_from_scratch()
         return self.knowledge_graph
 
-    def build_from_file(self, path):
-        self.knowledge_graph.load_from_file(path)
-
     def build_from_scratch(self):
+        self.clear_knowledge_graph()
         self._create_edges_using_factories_clusters(self._metadata_values,
                                                     self._edge_factories_clusters)
         self._create_edges_from_manual_annotation(self._list_of_conversion_for_metadata_pair)
-        self.save_knowledge_graph()
+        self.save_knowledge_graph_to()
 
     def _create_edges_using_factories_clusters(self, metadata_values,
                                                factories_clusters: list[FactoriesCluster]):
@@ -74,15 +79,15 @@ class KnowledgeGraphConstructor:
     def add_edge_factory_cluster(self, factory_cluster: FactoriesCluster):
         self._edge_factories_clusters.append(factory_cluster)
         self._create_edges_using_factories_clusters(self._metadata_values, [factory_cluster])
-        self.save_knowledge_graph()
+        self.save_knowledge_graph_to()
 
     def add_metadata_values(self, new_metadata: MetadataValues):
         self._create_edges_using_factories_clusters(new_metadata, self._edge_factories_clusters)
-        self.save_knowledge_graph()
+        self.save_knowledge_graph_to()
 
     def add_conversion_for_metadata_pair(self, pair: ConversionForMetadataPair):
         if pair is None or len(pair) == 0:
             return
         for source_metadata, target_metadata, conversion in pair:
             self.knowledge_graph.add_edge(source_metadata, target_metadata, conversion=conversion, factory="manual")
-        self.save_knowledge_graph()
+        self.save_knowledge_graph_to()
