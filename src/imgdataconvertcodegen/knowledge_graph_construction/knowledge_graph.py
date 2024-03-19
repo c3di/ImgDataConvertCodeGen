@@ -45,8 +45,6 @@ class KnowledgeGraph:
         try:
             path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
                                  heuristic=self.heuristic)
-            if path is None:
-                return None
             return [decode_metadata(node) for node in path]
         except nx.NetworkXNoPath:
             return None
