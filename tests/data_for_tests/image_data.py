@@ -119,18 +119,15 @@ def get_numpy_image(source_metadata, target_metadata=None):
             img = ski.util.img_as_float64(img) * 2 - 1.0
         return img
 
-    def rgb_to_grayscale(rgb_img):
-        # rgb img [3, H, W]
-        img = rgb_img.copy()
+    def color_to_grayscale(color_img_channle_first, color_channel):
+        img = color_img_channle_first.copy()
         type_in = img.dtype
-        img = 0.299 * img[0] + 0.5870 * img[1] + 0.1140 * img[2]  # [H, W]
-        img = np.expand_dims(img, axis=0)  # [1, H, W]
-        return img.astype(type_in)
-
-    def bgr_to_grayscale(bgr_img):
-        img = bgr_img.copy()
-        type_in = img.dtype
-        img = 0.299 * img[2] + 0.5870 * img[1] + 0.1140 * img[0]
+        if color_channel == 'rgb':
+            img = 0.299 * img[0] + 0.587 * img[1] + 0.114 * img[2]
+        elif color_channel == 'bgr':
+            img = 0.299 * img[2] + 0.587 * img[1] + 0.114 * img[0]
+        else:
+            raise ValueError(f"Unsupported color channel: {color_channel}")
         img = np.expand_dims(img, axis=0)  # [1, H, W]
         return img.astype(type_in)
 
@@ -140,7 +137,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
 
     source_img = convert_numpy_uint8_to_dtype(img, source_metadata["image_data_type"])
     if source_metadata["color_channel"] == "gray":
-        source_img = rgb_to_grayscale(source_img)  # [1, H, W]
+        source_img = color_to_grayscale(source_img, 'rgb')  # [1, H, W]
     elif source_metadata["color_channel"] == "bgr":
         source_img = source_img[::-1, ...]
 
@@ -148,11 +145,15 @@ def get_numpy_image(source_metadata, target_metadata=None):
     if target_metadata is not None:
         if source_metadata["color_channel"] != "gray" and target_metadata["color_channel"] == "gray":
             if source_metadata['color_channel'] == 'bgr':
-                target_img = bgr_to_grayscale(source_img)  # [1, H, W]
+                target_img = color_to_grayscale(source_img, 'bgr')   # [1, H, W]
             else:
-                target_img = rgb_to_grayscale(source_img)  # [1, H, W]
+                target_img = color_to_grayscale(source_img, 'rgb')   # [1, H, W]
         elif source_metadata["color_channel"] == "gray" and target_metadata["color_channel"] != "gray":
             target_img = grayscale_to_rgb_or_bgr(source_img)
+        elif source_metadata["color_channel"] == "rgb" and target_metadata["color_channel"] == "bgr":
+            target_img = source_img[::-1, ...]
+        elif source_metadata["color_channel"] == "bgr" and target_metadata["color_channel"] == "rgb":
+            target_img = source_img[::-1, ...]
         else:
             target_img = source_img
             # one attribute change policy, if color chanel is not same, the image data type should be same
