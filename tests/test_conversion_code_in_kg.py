@@ -17,8 +17,7 @@ def code_generator():
     return code_generator
 
 
-def assert_exec_of_conversion_code_in_edge(edge, kg):
-    source_metadata, target_metadata = edge
+def assert_exec_of_conversion_code_in_edge(source_metadata, target_metadata, kg):
     edge_data = kg.get_edge_data(source_metadata, target_metadata)
     conversion = edge_data.get('conversion')
     assert conversion is not None, f"No conversion from {source_metadata} to {target_metadata}"
@@ -44,7 +43,8 @@ actual_image = {func_name}(source_image)""", scope)
     except Exception as e:
         raise AssertionError(f"Failed to execute conversion code from {error_message}") from e
 
-    assert is_image_equal(target_image, actual_image), f'expected {target_image}, but actual {actual_image}. {error_message}'
+    assert is_image_equal(target_image,
+                          actual_image), f'expected {target_image}, but actual {actual_image}. {error_message}'
 
 
 def is_code_exec_on_cpu(edge):
@@ -55,7 +55,7 @@ def test_all_conversion_code_exec_on_cpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
         if is_code_exec_on_cpu(edge):
-            assert_exec_of_conversion_code_in_edge(edge, kg)
+            assert_exec_of_conversion_code_in_edge(*edge, kg)
 
 
 def is_on_gpu_as_data_repr(edge, data_reprs: list):
@@ -83,7 +83,7 @@ def test_conversion_code_exec_using_pytorch_gpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
         if is_on_gpu_as_data_repr(edge, ['torch.tensor']):
-            assert_exec_of_conversion_code_in_edge(edge, kg)
+            assert_exec_of_conversion_code_in_edge(*edge, kg)
 
 
 @pytest.mark.skipif(not tensorflow_gpu_available(),
@@ -93,7 +93,7 @@ def test_conversion_code_exec_using_tensorflow_gpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
         if is_on_gpu_as_data_repr(edge, ['tf.Tensor']):
-            assert_exec_of_conversion_code_in_edge(edge, kg)
+            assert_exec_of_conversion_code_in_edge(*edge, kg)
 
 
 @pytest.mark.skipif(not tensorflow_gpu_available() or not pytorch_gpu_available(),
@@ -103,4 +103,4 @@ def test_conversion_code_exec_using_tensorflow_gpu_torch_gpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
         if is_on_gpu_as_data_repr(edge, ['tf.Tensor', 'torch.tensor']):
-            assert_exec_of_conversion_code_in_edge(edge, kg)
+            assert_exec_of_conversion_code_in_edge(*edge, kg)

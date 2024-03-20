@@ -144,6 +144,13 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
             )
 
 
+def between_uint8_and_float32_0to1(source_metadata, target_metadata) -> Conversion:
+    if source_metadata["image_data_type"] == "uint8" and target_metadata["image_data_type"] == "float32(0to1)":
+        return "", "def convert(var):\n  return var / 255.0"
+    elif source_metadata["image_data_type"] == "float32(0to1)" and target_metadata["image_data_type"] == "uint8":
+        return "import torch", "def convert(var):\n  return (var * 255).to(torch.uint8)"
+
+
 def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
     # image dtype conversion involves type convert, intensity range rescale and normalization for float point
     if is_differ_value_for_key(source_metadata, target_metadata, "image_data_type"):
@@ -151,6 +158,10 @@ def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
         if source_metadata.get("image_data_type") == "float32(0to1)" and target_metadata.get("image_data_type") in ['int32', 'int64']:
             return None
         if source_metadata.get("image_data_type") in ["float64(0to1)", "double(0to1)"] and target_metadata.get("image_data_type") == 'int64':
+            return None
+        if source_metadata["image_data_type"] == "uint8" and target_metadata["image_data_type"] == "float32(0to1)":
+            return None
+        elif source_metadata["image_data_type"] == "float32(0to1)" and target_metadata["image_data_type"] == "uint8":
             return None
         # https://pytorch.org/docs/stable/tensors.html
         # https://github.com/pytorch/vision/blob/ba64d65bc6811f2b173792a640cb4cbe5a750840/torchvision/transforms/v2/functional/_misc.py#L210-L259
@@ -199,6 +210,7 @@ factories_cluster_for_Pytorch: FactoriesCluster = (
         channel_last_to_channel_first,
         minibatch_true_to_false,
         minibatch_false_to_true,
+        between_uint8_and_float32_0to1,
         convert_image_dtype,
         gpu_to_cpu,
         cpu_to_gpu

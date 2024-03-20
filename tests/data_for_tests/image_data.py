@@ -156,9 +156,9 @@ def get_numpy_image(source_metadata, target_metadata=None):
             target_img = source_img[::-1, ...]
         else:
             target_img = source_img
-            # one attribute change policy, if color chanel is not same, the image data type should be same
-            if target_metadata['image_data_type'] != source_metadata['image_data_type']:
-                target_img = convert_numpy_uint8_to_dtype(target_img, target_metadata["image_data_type"])
+
+        if target_metadata['image_data_type'] != source_metadata['image_data_type']:
+            target_img = convert_numpy_uint8_to_dtype(target_img, target_metadata["image_data_type"])
 
     def convert_other_attributes(img, metadata):
         if metadata is None:
@@ -178,17 +178,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
 
 def get_torch_image(source_metadata, target_metadata=None):
     source_img = torch.stack([torch.from_numpy(r), torch.from_numpy(g), torch.from_numpy(b)], dim=0)  # [3, H, W] uint8
-    dtype_mapping = {
-        "uint8": torch.uint8,
-        "int8": torch.int8,
-        "int16": torch.int16,
-        "int32": torch.int32,
-        "int64": torch.int64,
-        "float32(0to1)": torch.float32,
-        "float64(0to1)": torch.double,
-        "double(0to1)": torch.double,
-    }
-    source_img = V2F.to_dtype(source_img, dtype_mapping[source_metadata["image_data_type"]], scale=True)
+    source_img = torch_to_dtype(source_img, source_metadata)
     if source_metadata["color_channel"] == "gray":
         source_img = V1F.rgb_to_grayscale(source_img)  # [1, H, W]
 
@@ -200,9 +190,8 @@ def get_torch_image(source_metadata, target_metadata=None):
             target_img = source_img.repeat(3, 1, 1)  # [3, H, W]
         else:
             target_img = source_img
-            # one attribute change policy, if color chanel is not same, the image data type should be same
-            if target_metadata['image_data_type'] != source_metadata['image_data_type']:
-                target_img = V2F.to_dtype(source_img, dtype_mapping[target_metadata["image_data_type"]], scale=True)
+        if target_metadata['image_data_type'] != source_metadata['image_data_type']:
+            target_img = torch_to_dtype(target_img, target_metadata)
 
     def convert_other_attributes(img, metadata):
         if metadata is None:
@@ -223,6 +212,26 @@ def get_torch_image(source_metadata, target_metadata=None):
         return img
 
     return convert_other_attributes(source_img, source_metadata), convert_other_attributes(target_img, target_metadata)
+
+
+def torch_to_dtype(source_img, metadata):
+    # Slightly different from V1F.to_dtype and this is more common conversion code between uint8 and float32
+    if source_img.dtype == torch.uint8 and metadata["image_data_type"] == "float32(0to1)":
+        return (source_img / 255.0).to(torch.float32)
+    elif source_img.dtype == torch.float32 and metadata["image_data_type"] == "uint8":
+        return (source_img * 255).to(torch.uint8)
+    else:
+        dtype_mapping = {
+            "uint8": torch.uint8,
+            "int8": torch.int8,
+            "int16": torch.int16,
+            "int32": torch.int32,
+            "int64": torch.int64,
+            "float32(0to1)": torch.float32,
+            "float64(0to1)": torch.double,
+            "double(0to1)": torch.double,
+        }
+        return V2F.to_dtype(source_img, dtype_mapping[metadata["image_data_type"]], scale=True)
 
 
 def get_tensorflow_image(source_metadata, target_metadata=None):
@@ -260,10 +269,9 @@ def get_tensorflow_image(source_metadata, target_metadata=None):
             target_img = tf.image.grayscale_to_rgb(source_img)
         else:
             target_img = source_img
-            # one attribute change policy, if color chanel is not same, the image data type should be same
-            if target_metadata['image_data_type'] != source_metadata['image_data_type']:
-                target_img = tf.image.convert_image_dtype(target_img,
-                                                          dtype=dtype_mapping[target_metadata["image_data_type"]])
+        if target_metadata['image_data_type'] != source_metadata['image_data_type']:
+            target_img = tf.image.convert_image_dtype(target_img,
+                                                      dtype=dtype_mapping[target_metadata["image_data_type"]])
 
     def convert_other_attributes(img, metadata):
         if metadata is None:

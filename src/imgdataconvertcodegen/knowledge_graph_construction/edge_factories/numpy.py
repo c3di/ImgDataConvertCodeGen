@@ -154,7 +154,7 @@ def channel_last_rgb_to_gray(source_metadata, target_metadata) -> Conversion:
                 "import numpy as np",
                 """def convert(var):
     type_in = var.dtype
-    var = np.expand_dims(np.dot(var[...,:3], [0.299, 0.587, 0.114]), axis=-1)
+    var = np.expand_dims(np.dot(var[..., :3], [0.299, 0.587, 0.114]), axis=-1)
     return var.astype(type_in)""")
         # [H, W, 3] -> [H, W, 1]
         return (
@@ -266,43 +266,6 @@ dtype_mapping = {
     "int16": "np.int16",
     "int32": "np.int32",
 }
-
-
-def image_data_integer_to_integer(source_metadata, target_metadata) -> Conversion:
-    if not is_differ_value_for_key(source_metadata, target_metadata, "image_data_type"):
-        return
-    if ((source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32"] and target_metadata.get(
-            "image_data_type") in ["uint8", "uint16", "uint32"]) or
-            (source_metadata.get("image_data_type") in ["int8", "int16", "int32"] and target_metadata.get(
-                "image_data_type") in ["int8", "int16", "int32"])):
-        source_np_type = dtype_mapping[source_metadata.get("image_data_type")]
-        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
-        source_range = f"np.iinfo({source_np_type}).max"
-        target_range = f"np.iinfo({target_np_type}).max"
-        return "import numpy as np", f"def convert(var):\n  return (var / {source_range} * {target_range}).astype({target_np_type})"
-
-
-def image_data_signed_integer_to_unsigned_integer(source_metadata, target_metadata) -> Conversion:
-    if (
-            source_metadata.get("image_data_type") in ["int8", "int16", "int32"]
-            and target_metadata.get("image_data_type") in ['uint8', 'uint16', 'uint32']
-            and source_metadata.get("image_data_type") == target_metadata.get("image_data_type")[1:]
-    ):
-        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
-        shift_value = f"np.iinfo({target_np_type}).max // 2 + 1"
-        return "import numpy as np", f"def convert(var):\n return (var + {shift_value}).astype({target_np_type})"
-
-
-def image_data_unsigned_integer_to_signed_integer(source_metadata, target_metadata) -> Conversion:
-    if (
-            source_metadata.get("image_data_type") in ['uint8', 'uint16', 'uint32']
-            and target_metadata.get("image_data_type") in ["int8", "int16", "int32"]
-            and target_metadata.get("image_data_type") == source_metadata.get("image_data_type")[1:]
-    ):
-        source_np_type = dtype_mapping[source_metadata.get("image_data_type")]
-        target_np_type = dtype_mapping[target_metadata.get("image_data_type")]
-        shift_value = f"np.iinfo({source_np_type}).max // 2 + 1"
-        return "import numpy as np", f"def convert(var):\n return (var - {shift_value}).astype({target_np_type})"
 
 
 def image_data_to_uint8_full_range(source_metadata, target_metadata) -> Conversion:
@@ -433,9 +396,6 @@ factories_cluster_for_numpy: FactoriesCluster = (
         image_data_to_uint16_full_range,
         image_data_to_int16_full_range,
         convert_image_dtype_float_to_float,
-        # image_data_integer_to_integer,
-        # image_data_signed_integer_to_unsigned_integer,
-        # image_data_unsigned_integer_to_signed_integer,
         image_data_unsigned_integer_to_float32_0_to_1,
         image_data_integer_to_float32_minus1_to_1,
         image_data_float32_minus1_1_to_float32_0_1,
