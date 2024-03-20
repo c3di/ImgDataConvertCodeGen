@@ -327,48 +327,48 @@ def convert_image_dtype_float_to_float(source_metadata, target_metadata) -> Conv
 
 def image_data_unsigned_integer_to_float32_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") in ["uint8", "uint16", "uint32"]
-            and target_metadata.get("data_type") == "float32(0to1)"
+            source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32"]
+            and target_metadata.get("image_data_type") == "float32(0to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
 
 
 def image_data_float32_minus1_1_to_float32_0_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") == "float32(-1to1)"
-            and target_metadata.get("data_type") == "float32(0to1)"
+            source_metadata.get("image_data_type") == "float32(-1to1)"
+            and target_metadata.get("image_data_type") == "float32(0to1)"
     ):
         return "", "def convert(var):\n return var * 0.5 + 0.5"
 
 
 def image_data_integer_to_float32_minus1_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") in ["int8", "int16", "int32"]
-            and target_metadata.get("data_type") == "float32(-1to1)"
+            source_metadata.get("image_data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("image_data_type") == "float32(-1to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float32(var)",
 
 
 def image_data_float32_0_1_to_float32_minus1_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") == "float32(0to1)"
-            and target_metadata.get("data_type") == "float32(-1to1)"
+            source_metadata.get("image_data_type") == "float32(0to1)"
+            and target_metadata.get("image_data_type") == "float32(-1to1)"
     ):
         return "", "def convert(var):\n return var * 2.0 - 1"
 
 
 def image_data_integer_to_float64_minus1_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") in ["int8", "int16", "int32"]
-            and target_metadata.get("data_type") == "float64(-1to1)"
+            source_metadata.get("image_data_type") in ["int8", "int16", "int32"]
+            and target_metadata.get("image_data_type") == "float64(-1to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
 
 
 def image_data_unsigned_integer_to_float64_0_to_1(source_metadata, target_metadata) -> Conversion:
     if (
-            source_metadata.get("data_type") in ["uint8", "uint16", "uint32"]
-            and target_metadata.get("data_type") == "float64(0to1)"
+            source_metadata.get("image_data_type") in ["uint8", "uint16", "uint32"]
+            and target_metadata.get("image_data_type") == "float64(0to1)"
     ):
         return "import skimage as ski", "def convert(var):\n return ski.util.img_as_float64(var)",
 
