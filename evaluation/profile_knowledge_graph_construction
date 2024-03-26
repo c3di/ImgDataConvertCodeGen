@@ -1,0 +1,137 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "8d866c4b-5863-4852-bdb9-73e2b3ee33b2",
+   "metadata": {},
+   "source": [
+    "# Profiling Knowledge Graph Construction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "998dadd7-aba4-4ca2-8276-69be6665fdbb",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "8 factories clusters, 62 factories in total,  8 manual edge creation.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import cProfile\n",
+    "import pstats\n",
+    "\n",
+    "from imgdataconvertcodegen.knowledge_graph_construction import (metadata_values, factories_clusters,\n",
+    "                                                                list_of_conversion_for_metadata_pair,\n",
+    "                                                                KnowledgeGraphConstructor)\n",
+    "\n",
+    "print(f\"{len(factories_clusters)} factories clusters, \"\n",
+    "      f\"{sum([len(cluster[1]) for cluster in factories_clusters])} factories in total, \",\n",
+    "      f\"{len(list_of_conversion_for_metadata_pair)} manual edge creation.\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "458fcc50-38a6-42a5-b556-d4e36e99cea4",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Construct Knowledge graph from the scratch\n",
+      "Knowledge Graph with 553 nodes and 6472 edges.\n",
+      "         2987942 function calls (2987929 primitive calls) in 1.890 seconds\n",
+      "\n",
+      "   Ordered by: internal time\n",
+      "   List reduced from 292 to 5 due to restriction <5>\n",
+      "\n",
+      "   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n",
+      "    80640    0.320    0.000    1.749    0.000 D:\\ImgDataConvertCodeGen\\src\\imgdataconvertcodegen\\knowledge_graph_construction\\constructor.py:59(_create_edge)\n",
+      "   184464    0.211    0.000    0.245    0.000 D:\\ImgDataConvertCodeGen\\src\\imgdataconvertcodegen\\knowledge_graph_construction\\edge_factories\\Tensorflow.py:5(is_attribute_value_valid_for_tensorflow)\n",
+      "   123792    0.152    0.000    0.176    0.000 D:\\ImgDataConvertCodeGen\\src\\imgdataconvertcodegen\\knowledge_graph_construction\\edge_factories\\PIL.py:5(is_attribute_value_valid_for_pil)\n",
+      "   102312    0.133    0.000    0.153    0.000 D:\\ImgDataConvertCodeGen\\src\\imgdataconvertcodegen\\knowledge_graph_construction\\edge_factories\\Pytorch.py:5(is_attribute_value_valid_for_torch)\n",
+      "   322560    0.130    0.000    0.202    0.000 D:\\ImgDataConvertCodeGen\\src\\imgdataconvertcodegen\\metadata_differ.py:1(are_both_same_data_repr)\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Construct Knowledge graph from the scratch\")\n",
+    "constructor = KnowledgeGraphConstructor(metadata_values, factories_clusters, list_of_conversion_for_metadata_pair)\n",
+    "with cProfile.Profile() as profile:\n",
+    "    constructor.build_from_scratch()\n",
+    "    results = pstats.Stats(profile)\n",
+    "    results.sort_stats(pstats.SortKey.TIME)\n",
+    "    print(constructor.knowledge_graph)\n",
+    "    results.print_stats(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "d8ffcf3d-40ad-4d56-8c36-94a960c6e252",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Construct Knowledge graph via loading from the file\n",
+      "Knowledge Graph with 553 nodes and 6472 edges.\n",
+      "         43171 function calls (43169 primitive calls) in 0.085 seconds\n",
+      "\n",
+      "   Ordered by: internal time\n",
+      "   List reduced from 141 to 5 due to restriction <5>\n",
+      "\n",
+      "   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n",
+      "        1    0.024    0.024    0.050    0.050 C:\\Users\\fech01-admin\\anaconda3\\envs\\kg4idr\\Lib\\site-packages\\networkx\\readwrite\\json_graph\\node_link.py:135(node_link_graph)\n",
+      "        1    0.024    0.024    0.024    0.024 C:\\Users\\fech01-admin\\anaconda3\\envs\\kg4idr\\Lib\\json\\__init__.py:299(loads)\n",
+      "     6472    0.015    0.000    0.019    0.000 C:\\Users\\fech01-admin\\anaconda3\\envs\\kg4idr\\Lib\\site-packages\\networkx\\classes\\digraph.py:643(add_edge)\n",
+      "        1    0.003    0.003    0.003    0.003 {built-in method _codecs.charmap_decode}\n",
+      "13544/13542    0.003    0.000    0.003    0.000 {built-in method builtins.isinstance}\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Construct Knowledge graph via loading from the file\")\n",
+    "with cProfile.Profile() as profile:\n",
+    "    constructor.load_knowledge_graph_from(constructor._know_graph_file_path)\n",
+    "    results = pstats.Stats(profile)\n",
+    "    results.sort_stats(pstats.SortKey.TIME)\n",
+    "    print(constructor.knowledge_graph)\n",
+    "    results.print_stats(5)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
