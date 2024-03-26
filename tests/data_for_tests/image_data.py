@@ -323,7 +323,6 @@ def get_pil_image(source_metadata, target_metadata=None):
 
 
 def is_tensorflow_image_equal(image1, image2, tolerance=1e-5):
-    # Check for exact equality first (works well for integer data types)
     equality = tf.math.equal(image1, image2)
     if image1.dtype.is_floating:
         close_enough = tf.less_equal(tf.abs(image1 - image2), tolerance)

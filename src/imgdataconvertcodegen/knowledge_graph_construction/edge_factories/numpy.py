@@ -208,6 +208,8 @@ def channel_last_to_channel_first(source_metadata, target_metadata) -> Conversio
 
 
 def channel_last_to_channel_none(source_metadata, target_metadata) -> Conversion:
+    # only one attribute change and when channel_order is none, the color channel must be gray, so we don't need to
+    # check color channel
     if source_metadata['channel_order'] == 'channel last' and target_metadata['channel_order'] == 'none':
         # [N, H, W, 1] -> [N, H, W] or [H, W, 1] -> [H, W]
         return "", "def convert(var):\n  return var.squeeze(-1)"

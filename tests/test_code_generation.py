@@ -39,7 +39,6 @@ def test_conversion_path(code_generator):
 
 
 def test_generate_conversion_no_path(code_generator):
-    kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
     generated_code = code_generator.get_conversion(source_var, new_node, target_var, test_nodes[0])
@@ -48,7 +47,6 @@ def test_generate_conversion_no_path(code_generator):
 
 
 def test_generate_conversion_same_type(code_generator):
-    kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
     generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, test_nodes[0])
@@ -59,7 +57,6 @@ def test_generate_conversion_same_type(code_generator):
 
 
 def test_generate_conversion_multiple_steps(code_generator):
-    kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
     with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
@@ -75,7 +72,6 @@ def test_generate_conversion_multiple_steps(code_generator):
 
 
 def test_generate_conversion_using_cache(code_generator):
-    kg = code_generator.knowledge_graph
     source_var = 'source_var'
     target_var = 'result'
     with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
