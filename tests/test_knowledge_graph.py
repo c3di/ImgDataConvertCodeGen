@@ -22,7 +22,7 @@ def test_knowledge_graph_init(kg):
 
 def test_add_new_node(kg):
     kg.add_node(new_node)
-    assert encode_metadata(new_node) in kg.nodes, f"New node was not added to the graph"
+    assert new_node in kg.nodes, f"New node was not added to the graph"
 
 
 def test_add_edge(kg):

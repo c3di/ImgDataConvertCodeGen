@@ -24,7 +24,7 @@ class KnowledgeGraphConstructor:
     def clear_knowledge_graph(self):
         self._graph.clear()
 
-    def save_knowledge_graph_to(self):
+    def save_knowledge_graph(self):
         self.knowledge_graph.save_to_file(self._know_graph_file_path)
 
     def load_knowledge_graph_from(self, path):
@@ -43,7 +43,7 @@ class KnowledgeGraphConstructor:
         self._create_edges_using_factories_clusters(self._metadata_values,
                                                     self._edge_factories_clusters)
         self._create_edges_from_manual_annotation(self._list_of_conversion_for_metadata_pair)
-        self.save_knowledge_graph_to()
+        self.save_knowledge_graph()
 
     def _create_edges_using_factories_clusters(self, metadata_values,
                                                factories_clusters: list[FactoriesCluster]):
@@ -79,15 +79,14 @@ class KnowledgeGraphConstructor:
     def add_edge_factory_cluster(self, factory_cluster: FactoriesCluster):
         self._edge_factories_clusters.append(factory_cluster)
         self._create_edges_using_factories_clusters(self._metadata_values, [factory_cluster])
-        self.save_knowledge_graph_to()
+        self.save_knowledge_graph()
 
     def add_metadata_values(self, new_metadata: MetadataValues):
         self._create_edges_using_factories_clusters(new_metadata, self._edge_factories_clusters)
-        self.save_knowledge_graph_to()
+        self.save_knowledge_graph()
 
-    def add_conversion_for_metadata_pair(self, pair: ConversionForMetadataPair):
-        if pair is None or len(pair) == 0:
+    def add_conversion_for_metadata_pairs(self, pairs: List[ConversionForMetadataPair] | ConversionForMetadataPair):
+        if pairs is None or (isinstance(pairs, list) and len(pairs) == 0):
             return
-        for source_metadata, target_metadata, conversion in pair:
-            self.knowledge_graph.add_edge(source_metadata, target_metadata, conversion=conversion, factory="manual")
-        self.save_knowledge_graph_to()
+        self._create_edges_from_manual_annotation(pairs if isinstance(pairs, list) else [pairs])
+        self.save_knowledge_graph()

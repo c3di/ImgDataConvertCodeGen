@@ -1,3 +1,5 @@
+from typing import List
+
 from .code_generation import ConvertCodeGenerator
 from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, MetadataValues, FactoriesCluster, \
     ConversionForMetadataPair
@@ -59,6 +61,6 @@ def add_edge_factory_cluster(factory_cluster: FactoriesCluster):
     _code_generator.knowledge_graph = _constructor.knowledge_graph
 
 
-def add_conversion_for_metadata_pair(self, pair: ConversionForMetadataPair):
-    _constructor.add_conversion_for_metadata_pair(pair)
+def add_conversion_for_metadata_pairs(pairs: List[ConversionForMetadataPair] | ConversionForMetadataPair):
+    _constructor.add_conversion_for_metadata_pairs(pairs)
     _code_generator.knowledge_graph = _constructor.knowledge_graph

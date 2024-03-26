@@ -15,7 +15,8 @@ class KnowledgeGraph:
 
     @property
     def nodes(self):
-        return self._graph.nodes
+        encoded_nodes = self._graph.nodes
+        return [decode_metadata(node) for node in encoded_nodes]
 
     @property
     def edges(self):
