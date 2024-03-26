@@ -43,16 +43,16 @@ class ConvertCodeGenerator:
         source_encode_str = encode_metadata(source_metadata)
         target_encode_str = encode_metadata(target_metadata)
         if (source_encode_str, target_encode_str) in self._cache:
-            return self._cache[(source_encode_str, target_encode_str)]
-
-        cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
+            cvt_path = self._cache[(source_encode_str, target_encode_str)]
+        else:
+            cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
+            self._cache[(source_encode_str, target_encode_str)] = cvt_path
         if cvt_path is None:
             result = None
         elif len(cvt_path) == 1:
             result = f"{target_var_name} = {source_var_name}"
         else:
             result = self._get_conversion_multiple_steps(cvt_path, source_var_name, target_var_name)
-        self._cache[(source_encode_str, target_encode_str)] = result
         return result
 
     def _get_conversion_multiple_steps(self, cvt_path_in_kg, source_var_name, target_var_name) -> str:
