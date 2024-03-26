@@ -1,53 +1,59 @@
 from typing import List
 
 from .code_generation import ConvertCodeGenerator
-from .knowledge_graph_construction import get_knowledge_graph_constructor, Metadata, MetadataValues, FactoriesCluster, \
-    ConversionForMetadataPair
+from .end_metadata_mapper import end_metadata_mapper, ImageDesc
+from .knowledge_graph_construction import get_knowledge_graph_constructor, MetadataValues, FactoriesCluster, \
+    ConversionForMetadataPair, Metadata
 
 _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
-def get_conversion(source_var_name: str, source_metadata: Metadata,
-                   target_var_name: str, target_metadata: Metadata) -> str | None:
+def get_conversion(source_var_name: str, source_image_desc: ImageDesc,
+                   target_var_name: str, target_image_desc: ImageDesc) -> str | None:
     """
     Generates Python code as a string that performs data conversion from a source variable to a target variable.
 
     Args:
         source_var_name (str): The name of the variable holding the source data.
-        source_metadata (Metadata): A dictionary containing metadata about the source data.
-            - `data_representation` (str): Description of data representation.
-            - `color_channel` (str): Description of color channels.
-            - `channel_order` (Literal['channel last', 'channel first', 'none']): Order of color channels.
-            - `minibatch_input` (bool): Indicates if input is a minibatch.
-            - `image_data_type` (str): Type of data ('uint8', 'uint16', 'uint32', 'uint64', 'float32', 'float64', 'double'
-              'float32(0to1)', 'float32(-1to1)', 'float64(0to1)', 'float64(-1to1)', 'double(0to1)', 'double(-1to1)'
-              'int8', 'int16', 'int32', 'int64').
-            - `device` (str): Device where the data is processed or stored.
+        source_image_desc (ImageDesc): A dictionary containing description about the source image data.
+            - `lib` (str): the library the image data comes from. Supported libraries are "numpy", "scikit-image", "opencv", "scipy", "matplotlib", "PIL", "torch", "kornia", "tensorflow".
+            - `color_channel` (Optional[Literal['gray', 'rgb', 'bgr', 'rgba', 'graya']]): Description of color channels.
+            - `image_dtype` (Optional[Literal['uint8', 'uint16', 'uint32', 'uint64', 'int8', 'int16', 'int32', 'int64', 'float32(0to1)', 'float32(-1to1)', 'float64(0to1)', 'float64(-1to1)', 'double(0to1)', 'double(-1to1)']])
+            - `device` (Optional[Literal['cpu', 'gpu']]): Device where the data is processed or stored.
         target_var_name (str): The name of the variable that will store the result of the conversion.
-        target_metadata (Metadata): Metadata about the target data, structured similarly to source_metadata.
+        target_image_desc (ImageDesc): Metadata about the target data, structured similarly to source_metadata.
 
     Returns:
         str | None: A string containing the Python code necessary to perform the conversion, or None if conversion is not possible.
 
     Examples:
-        >>> source_var_name = "source_image"
-        >>> source_metadata = {"color_channel": "bgr", "channel_order": "channel last", ...}
-        >>> target_var_name = "target_image"
-        >>> target_metadata = {"color_channel": "rgb", "channel_order": "channel first", ...}
-        >>> conversion_code = get_conversion(source_var_name, source_metadata, target_var_name, target_metadata)
+        >>> source_image_desc = {"lib": "numpy"}
+        >>> target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
+        >>> conversion_code = get_conversion("source_image", source_image_desc, "target_image", target_image_desc)
         >>> print(conversion_code)
-        # This example demonstrates converting an image from BGR color space with 'channel last' order to RGB color space with 'channel first' order.
-        # The conversion code might look like this:
-        # target_image = source_image[:, :, ::-1]  # Convert from BGR to RGB
-        # target_image = target_image.transpose((2, 0, 1))  # Change from 'channel last' to 'channel first'
+        #  import torch
+        #  var_first_uuid_hex = torch.from_numpy(source_image)
+        #  var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)
+        #  target_image = torch.unsqueeze(var_second_uuid_hex, 0)
     """
 
+    source_metadata, target_metadata = end_metadata_mapper(source_image_desc, target_image_desc)
+    return get_conversion_by_metadata(source_var_name, source_metadata, target_var_name, target_metadata)
+
+
+def get_conversion_by_metadata(source_var_name: str, source_metadata: Metadata,
+                               target_var_name: str, target_metadata: Metadata) -> str | None:
     return _code_generator.get_conversion(source_var_name, source_metadata,
                                           target_var_name, target_metadata)
 
 
-def get_convert_path(source_metadata: Metadata, target_metadata: Metadata):
+def get_convert_path(source_image_desc: ImageDesc, target_image_desc: ImageDesc):
+    source_metadata, target_metadata = end_metadata_mapper(source_image_desc, target_image_desc)
+    return get_convert_path_by_metadata(source_metadata, target_metadata)
+
+
+def get_convert_path_by_metadata(source_metadata: Metadata, target_metadata: Metadata):
     return _code_generator.get_convert_path(source_metadata, target_metadata)
 
 

@@ -43,6 +43,8 @@ new_node = {
     "device": "cpu"
 }
 
+all_nodes = test_nodes + [new_node]
+
 test_edges = [
     (test_nodes[0], test_nodes[1], ("", "def convert(var):\n  return var[:, :, ::-1]")),
     (test_nodes[0], test_nodes[2], ("import torch", "def convert(var):\n  return torch.from_numpy(var)")),
