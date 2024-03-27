@@ -58,7 +58,7 @@ For comprehensive insights, please refer to the `profiling notebooks <./profile>
 
 **Usability Evaluation**
 
-Pleas refer to `Usability Evaluation <https://github.com/c3di/ImgDataConvertCodeGen_Evaluation>`_.
+Please refer to `Usability Evaluation <https://github.com/c3di/ImgDataConvertCodeGen_Evaluation>`_.
 
 Development
 -----------
@@ -72,8 +72,6 @@ Cite
 if you use our tool or code in your research, please cite the following paper:
 
 # Todo
-
-```
 
 License
 -------
