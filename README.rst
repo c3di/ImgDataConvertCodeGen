@@ -15,17 +15,13 @@ By traversing the path from source to target data types within the graph, the pa
 Installation
 ------------
 
-Install the package via pip:
-
-.. code-block:: bash
+Install the package via pip::
 
     pip install imgdataconvertcodegen
 
 Usage
 -----
-One example from the image data in numpy to the image data in PyTorch
-
-.. code-block:: python
+One example from the image data in numpy to the image data in PyTorch::
 
     from imgdataconvertcodegen import get_conversion_code
 
@@ -33,9 +29,7 @@ One example from the image data in numpy to the image data in PyTorch
     target_image_desc = {"lib": "torch", "image_dtype": "uint8"}
     code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
 
-The generated conversion code will be as follows:
-
-.. code-block:: python
+The generated conversion code will be as follows::
 
     import torch
     image = torch.from_numpy(source_image)
