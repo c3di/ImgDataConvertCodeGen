@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
+from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from data_for_tests.nodes_edges import new_node, test_nodes, all_nodes
 
@@ -59,7 +59,7 @@ def test_generate_conversion_same_type(code_generator):
 def test_generate_conversion_multiple_steps(code_generator):
     source_var = 'source_var'
     target_var = 'result'
-    with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
+    with (patch('imgdataconvertcodegen.code_generator.uuid.uuid4') as mock_uuid):
         mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
         generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
 
@@ -74,7 +74,7 @@ def test_generate_conversion_multiple_steps(code_generator):
 def test_generate_conversion_using_cache(code_generator):
     source_var = 'source_var'
     target_var = 'result'
-    with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
+    with (patch('imgdataconvertcodegen.code_generator.uuid.uuid4') as mock_uuid):
         mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
         code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
 

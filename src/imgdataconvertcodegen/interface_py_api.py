@@ -1,6 +1,6 @@
 from typing import List
 
-from .code_generation import ConvertCodeGenerator
+from .code_generator import ConvertCodeGenerator
 from .end_metadata_mapper import end_metadata_mapper, ImageDesc
 from .knowledge_graph_construction import get_knowledge_graph_constructor, MetadataValues, FactoriesCluster, \
     ConversionForMetadataPair, Metadata
