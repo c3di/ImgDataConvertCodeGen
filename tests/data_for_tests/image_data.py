@@ -337,13 +337,13 @@ def is_image_equal(image1, image2, tolerance=1e-5):
         if type(image1) != type(image2):
             return False
         if isinstance(image1, np.ndarray):
-            return np.allclose(image1, image2)
+            return np.allclose(image1, image2, tolerance)
         elif isinstance(image1, torch.Tensor):
-            return torch.allclose(image1, image2, rtol=1e-05, atol=1e-08)
+            return torch.allclose(image1, image2, rtol=tolerance)
         elif isinstance(image1, tf.Tensor):
-            return is_tensorflow_image_equal(image1, image2)
+            return is_tensorflow_image_equal(image1, image2, tolerance)
         elif isinstance(image1, Image.Image):
-            return np.allclose(np.array(image1), np.array(image2))
+            return np.allclose(np.array(image1), np.array(image2), tolerance)
     except Exception:
         pass
     return False
