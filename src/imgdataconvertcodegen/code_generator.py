@@ -1,5 +1,3 @@
-import uuid
-
 from .util import extract_func_body
 from .knowledge_graph_construction import encode_metadata, Metadata
 
@@ -60,7 +58,7 @@ class ConvertCodeGenerator:
         main_body = []
         arg = source_var_name
         for i in range(len(cvt_path_in_kg) - 1):
-            return_name = f"var_{uuid.uuid4().hex}" if i != len(cvt_path_in_kg) - 2 else target_var_name
+            return_name = "image" if i != len(cvt_path_in_kg) - 2 else target_var_name
             imports_step, main_body_step = self._get_conversion_per_step(cvt_path_in_kg[i], cvt_path_in_kg[i + 1],
                                                                          arg, return_name)
             if imports_step != '':

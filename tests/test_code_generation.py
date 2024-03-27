@@ -1,5 +1,5 @@
 import os.path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -59,31 +59,27 @@ def test_generate_conversion_same_type(code_generator):
 def test_generate_conversion_multiple_steps(code_generator):
     source_var = 'source_var'
     target_var = 'result'
-    with (patch('imgdataconvertcodegen.code_generator.uuid.uuid4') as mock_uuid):
-        mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
-        generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
+    generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
 
-        expected_code = ('import torch\n'
-                         'var_first_uuid_hex = torch.from_numpy(source_var)\n'
-                         'var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)\n'
-                         'result = torch.unsqueeze(var_second_uuid_hex, 0)')
+    expected_code = ('import torch\n'
+                     'image = torch.from_numpy(source_var)\n'
+                     'image = image.permute(2, 0, 1)\n'
+                     'result = torch.unsqueeze(image, 0)')
 
-        assert generated_code == expected_code, f'Expected {expected_code}, but got {str(generated_code)}'
+    assert generated_code == expected_code, f'Expected {expected_code}, but got {str(generated_code)}'
 
 
 def test_generate_conversion_using_cache(code_generator):
     source_var = 'source_var'
     target_var = 'result'
-    with (patch('imgdataconvertcodegen.code_generator.uuid.uuid4') as mock_uuid):
-        mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
-        code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
 
-        assert list(code_generator._cache.values()) == [[all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]]], "Code not cached"
-        mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
-        code_from_cache = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
-        expected_code = ('import torch\n'
-                         'var_first_uuid_hex = torch.from_numpy(source_var)\n'
-                         'var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)\n'
-                         'result = torch.unsqueeze(var_second_uuid_hex, 0)')
+    code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
+    assert list(code_generator._cache.values()) == [[all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]]], "Code not cached"
 
-        assert code_from_cache == expected_code, f'Expected {expected_code}, but got {str(code_from_cache)}'
+    code_from_cache = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
+    expected_code = ('import torch\n'
+                     'image = torch.from_numpy(source_var)\n'
+                     'image = image.permute(2, 0, 1)\n'
+                     'result = torch.unsqueeze(image, 0)')
+
+    assert code_from_cache == expected_code, f'Expected {expected_code}, but got {str(code_from_cache)}'
