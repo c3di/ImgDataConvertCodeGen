@@ -3,7 +3,7 @@ import os
 import pytest
 
 from imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
-    get_conversion
+    get_conversion_code
 from imgdataconvertcodegen.code_generation import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from data_for_tests.nodes_edges import all_nodes
@@ -82,7 +82,7 @@ def test_get_conversion_code(mock_code_generator):
     target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
     with (patch('imgdataconvertcodegen.code_generation.uuid.uuid4') as mock_uuid):
         mock_uuid.side_effect = [MagicMock(hex='first_uuid_hex'), MagicMock(hex='second_uuid_hex')]
-        actual_code = get_conversion("source_image", source_image_desc, "target_image", target_image_desc)
+        actual_code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
         expected_code = ('import torch\n'
                          'var_first_uuid_hex = torch.from_numpy(source_image)\n'
                          'var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)\n'

@@ -9,8 +9,8 @@ _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
-def get_conversion(source_var_name: str, source_image_desc: ImageDesc,
-                   target_var_name: str, target_image_desc: ImageDesc) -> str | None:
+def get_conversion_code(source_var_name: str, source_image_desc: ImageDesc,
+                        target_var_name: str, target_image_desc: ImageDesc) -> str | None:
     """
     Generates Python code as a string that performs data conversion from a source variable to a target variable.
 
@@ -30,12 +30,12 @@ def get_conversion(source_var_name: str, source_image_desc: ImageDesc,
     Examples:
         >>> source_image_desc = {"lib": "numpy"}
         >>> target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
-        >>> conversion_code = get_conversion("source_image", source_image_desc, "target_image", target_image_desc)
+        >>> conversion_code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
         >>> print(conversion_code)
         #  import torch
-        #  var_first_uuid_hex = torch.from_numpy(source_image)
-        #  var_second_uuid_hex = var_first_uuid_hex.permute(2, 0, 1)
-        #  target_image = torch.unsqueeze(var_second_uuid_hex, 0)
+        #  image = torch.from_numpy(source_image)
+        #  image = image.permute(2, 0, 1)
+        #  target_image = torch.unsqueeze(image, 0)
     """
 
     source_metadata, target_metadata = end_metadata_mapper(source_image_desc, target_image_desc)

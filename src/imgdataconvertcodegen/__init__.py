@@ -1,5 +1,5 @@
 import sys
-from .interface_py_api import (get_conversion, get_convert_path, add_edge_factory_cluster,
+from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
                                add_meta_values_for_image, add_conversion_for_metadata_pairs)
 from .interface_py_api import _code_generator, _constructor
 from .knowledge_graph_construction import find_closest_metadata

@@ -1,91 +1,84 @@
 =====================================================
-Automatically Generating Conversion Code for In-memory Representations of Images using a Knowledge Graph of Data Types
+imgdataconvertcodegen
 =====================================================
 
 Introduction
 ------------
 
-#todo - Provide a brief description of the tool, its purpose, key features, and any unique benefits or innovative aspects it offers.
+The `imgdataconvertcodegen` package offers an automated approach to generate conversion code for in-memory image representations, such as `numpy.ndarray`, `torch.tensor`, `PIL.Image`, and
+others using a knowledge graph of data types.
+
+At the core of the package is a knowledge graph in which nodes represent data types and edges represent conversion code snippets between the data types.
+By traversing the path from source to target data types within the graph, the package collect each conversion code snippet along the path to generate the final conversion code.
 
 
 Installation
 ------------
 
-Install the tool directly using pip:
+Install the package via pip:
 
 .. code-block:: bash
 
     pip install imgdataconvertcodegen
-
-Or for manual installation:
-
-.. code-block:: bash
-
-    git clone git@github.com:c3di/ImgDataConvertCodeGen.git
-    cd imgdataconvertcodegen
-    python setup.py install
 
 Usage
 -----
 
 .. code-block:: python
 
-    #todo imgdataconvertcodegen example_command -option1 -option2
+    from imgdataconvertcodegen import get_conversion_code
 
+    source_image_desc = {"lib": "numpy"}
+    target_image_desc = {"lib": "torch", "image_dtype": "uint8"}
+    code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
+
+The generated conversion code from `source_image` to `target_image` will be as follows:
+
+.. code-block:: python
+
+    import torch
+    image = torch.from_numpy(source_image)
+    image = image.permute(2, 0, 1)
+    target_image = torch.unsqueeze(image, 0)
+
+
+Evaluation
+----------
+
+**Accuracy**
+
+All primitive conversion code snippets are stored within the edges of the knowledge graph.
+These snippets are verified through execution checks to guarantee their correctness.
+For a more in-depth examination, please refer to the `test_conversion_code_in_kg <./tests/test_conversion_code_in_kg.py>`_
+located in the tests directory
+
+**Performance profiling**
+
+The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module.
+For comprehensive insights, please refer to the profiling notebooks located in the profile directory.
+
+**Usability Evaluation**
+
+Pleas refer to `Usability Evaluation <https://github.com/c3di/ImgDataConvertCodeGen_Evaluation>`_.
 
 Development
+-----------
+
+For detailed instructions on developing, building, and publishing this package, please refer to the `ReadMe_Dev.rst`
+file located in the root directory.
+
+
+
+Cite
 -------
+if you use our tool or code in your research, please cite the following paper:
 
-Set Up Development Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Todo
 
-Clone the repository
-^^^^^^^^^^^^^^^^^^^
+```
 
-.. code-block:: bash
-
-    git clone git@github.com:c3di/ImgDataConvertCodeGen.git
-
-Installing Dependencies
-^^^^^^^^^^^^^^^^^^^
-
-Before installing dependencies, please ensure:
-
-- For TensorFlow CUDA support, confirm system compatibility at `TensorFlow's installation guide <https://www.tensorflow.org/install/pip>`_.
-- Use the correct path for ``path/to/requirements.txt`` in your project when running the installation command.
-
-With the python virtual environment activated, install the required dependencies
-
-.. code-block:: bash
-
-    pip install -r path/to/requirements.txt
-
-
-Run Tests
-~~~~~
-
-Navigate to the working directory of the project and install project in editable mode.
-
-.. code-block:: bash
-
-   pip install -e .
-
-Run the tests using the following command:
-
-.. code-block:: bash
-
-   pytest
-
-
-Build the Package
-~~~~~
-#todo
-
-publish
-~~~~~
-
-#todo
 License
 -------
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
+
