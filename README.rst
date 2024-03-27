@@ -5,11 +5,9 @@ imgdataconvertcodegen
 Introduction
 ------------
 
-The `imgdataconvertcodegen` package offers an automated approach to generate conversion code for in-memory image representations, such as `numpy.ndarray`, `torch.tensor`, `PIL.Image`, and
-others using a knowledge graph of data types.
+The `imgdataconvertcodegen` package offers an automated approach to generate conversion code for in-memory image representations, such as `numpy.ndarray`, `torch.tensor`, `PIL.Image`, and others using a knowledge graph of data types.
 
-At the core of the package is a knowledge graph in which nodes represent data types and edges represent conversion code snippets between the data types.
-By traversing the path from source to target data types within the graph, the package collect each conversion code snippet along the path to generate the final conversion code.
+At the core of the package is a knowledge graph in which nodes represent data types and edges represent conversion code snippets between the data types. By traversing the path from source to target data types within the graph, the package collect each conversion code snippet along the path to generate the final conversion code.
 
 
 Installation
@@ -42,14 +40,11 @@ Evaluation
 
 **Accuracy**
 
-All primitive conversion code snippets are stored within the edges of the knowledge graph.
-These snippets are verified through execution checks to guarantee their correctness.
-For a more in-depth examination, please refer to the `test_conversion_code_in_kg <./tests/test_conversion_code_in_kg.py>`_.
+All primitive conversion code snippets are stored within the edges of the knowledge graph. These snippets are verified through execution checks to guarantee their correctness. For a more in-depth examination, please refer to the `test_conversion_code_in_kg <./tests/test_conversion_code_in_kg.py>`_.
 
 **Performance profiling**
 
-The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module.
-For comprehensive insights, please refer to the `profiling notebooks <./profile>`_.
+The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module. For comprehensive insights, please refer to the `profiling notebooks <./profile>`_.
 
 **Usability Evaluation**
 
