@@ -49,13 +49,12 @@ Evaluation
 
 All primitive conversion code snippets are stored within the edges of the knowledge graph.
 These snippets are verified through execution checks to guarantee their correctness.
-For a more in-depth examination, please refer to the `test_conversion_code_in_kg <./tests/test_conversion_code_in_kg.py>`_
-located in the tests directory
+For a more in-depth examination, please refer to the `test_conversion_code_in_kg <./tests/test_conversion_code_in_kg.py>`_.
 
 **Performance profiling**
 
 The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module.
-For comprehensive insights, please refer to the profiling notebooks located in the profile directory.
+For comprehensive insights, please refer to the `profiling notebooks <./profile>`_.
 
 **Usability Evaluation**
 
@@ -64,8 +63,7 @@ Pleas refer to `Usability Evaluation <https://github.com/c3di/ImgDataConvertCode
 Development
 -----------
 
-For detailed instructions on developing, building, and publishing this package, please refer to the `ReadMe_Dev.rst`
-file located in the root directory.
+For detailed instructions on developing, building, and publishing this package, please refer to the `README_DEV <./README_Dev.rst>`_.
 
 
 
