@@ -23,6 +23,7 @@ Install the package via pip:
 
 Usage
 -----
+One example from the image data in numpy to the image data in PyTorch
 
 .. code-block:: python
 
@@ -32,7 +33,7 @@ Usage
     target_image_desc = {"lib": "torch", "image_dtype": "uint8"}
     code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
 
-The generated conversion code from `source_image` to `target_image` will be as follows:
+The generated conversion code will be as follows:
 
 .. code-block:: python
 
