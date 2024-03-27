@@ -36,9 +36,9 @@ def end_metadata_mapper(from_image_desc: ImageDesc, to_image_desc: ImageDesc):
         "matplotlib": matplotlib_imshow_metadata_mapper
     }
     if from_image_desc["lib"] not in mapper:
-        raise ValueError(f"Unsupported library: {from_image_desc["lib"]}. Supported libraries are {mapper.keys()}")
+        raise ValueError(f"Unsupported library: {from_image_desc['lib']}. Supported libraries are {mapper.keys()}")
     if to_image_desc["lib"] not in mapper:
-        raise ValueError(f"Unsupported library: {to_image_desc["lib"]}. Supported libraries are {mapper.keys()}")
+        raise ValueError(f"Unsupported library: {to_image_desc['lib']}. Supported libraries are {mapper.keys()}")
 
     from_metadata = mapper[from_image_desc["lib"]](from_image_desc)
     to_metadata = mapper[to_image_desc["lib"]](from_image_desc, to_image_desc, False)

@@ -97,7 +97,7 @@ def test_conversion_code_exec_using_tensorflow_gpu(code_generator):
 
 
 @pytest.mark.skipif(not tensorflow_gpu_available() or not pytorch_gpu_available(),
-                    reason=f"Test skipped because {"TensorFlow" if not tensorflow_gpu_available() else "Pytorch"} not"
+                    reason=f"Test skipped because {'TensorFlow' if not tensorflow_gpu_available() else 'Pytorch'} not"
                            f" configured for GPU acceleration or no CUDA-compatible GPU is available.")
 def test_conversion_code_exec_using_tensorflow_gpu_torch_gpu(code_generator):
     kg = code_generator.knowledge_graph

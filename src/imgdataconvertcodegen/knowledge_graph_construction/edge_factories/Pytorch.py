@@ -177,7 +177,7 @@ def convert_image_dtype(source_metadata, target_metadata) -> Conversion:
         }
         return (
             "import torch\nfrom torchvision.transforms.v2 import functional as F",
-            f"def convert(var):\n return F.to_dtype(var, {dtype_mapping.get(target_metadata.get("image_data_type"))}, scale=True)",
+            f"def convert(var):\n return F.to_dtype(var, {dtype_mapping.get(target_metadata.get('image_data_type'))}, scale=True)",
         )
 
 
