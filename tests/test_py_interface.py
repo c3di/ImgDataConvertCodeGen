@@ -6,7 +6,7 @@ from imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert
     get_conversion_code
 from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
-from data_for_tests.nodes_edges import all_nodes
+from .data_for_tests.nodes_edges import all_nodes
 
 
 @pytest.fixture

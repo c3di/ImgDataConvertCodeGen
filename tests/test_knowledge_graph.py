@@ -4,7 +4,7 @@ from unittest.mock import patch
 import networkx as nx
 import pytest
 
-from data_for_tests.nodes_edges import test_nodes, test_edges, new_node, new_edge
+from .data_for_tests.nodes_edges import test_nodes, test_edges, new_node, new_edge
 from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph, encode_metadata
 
 
