@@ -1,0 +1,76 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.14, pytest-8.1.1, pluggy-1.4.0 -- /opt/hostedtoolcache/Python/3.10.14/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen
+configfile: setup.cfg
+plugins: cov-5.0.0
+collecting ... collected 51 items
+
+tests/test_code_generation.py::test_convert_code_generator_init PASSED   [  1%]
+tests/test_code_generation.py::test_knowledge_graph_property PASSED      [  3%]
+tests/test_code_generation.py::test_conversion_path PASSED               [  5%]
+tests/test_code_generation.py::test_generate_conversion_no_path PASSED   [  7%]
+tests/test_code_generation.py::test_generate_conversion_same_type PASSED [  9%]
+tests/test_code_generation.py::test_generate_conversion_multiple_steps PASSED [ 11%]
+tests/test_code_generation.py::test_generate_conversion_using_cache PASSED [ 13%]
+tests/test_conversion_code_execution.py::test_code_generation_using_metadata PASSED [ 15%]
+tests/test_conversion_code_in_kg.py::test_all_conversion_code_exec_on_cpu PASSED [ 17%]
+tests/test_conversion_code_in_kg.py::test_conversion_code_exec_using_pytorch_gpu SKIPPED [ 19%]
+tests/test_conversion_code_in_kg.py::test_conversion_code_exec_using_tensorflow_gpu SKIPPED [ 21%]
+tests/test_conversion_code_in_kg.py::test_conversion_code_exec_using_tensorflow_gpu_torch_gpu SKIPPED [ 23%]
+tests/test_io.py::test_load_graph_from_file PASSED                       [ 25%]
+tests/test_io.py::test_load_graph_with_invalid_path PASSED               [ 27%]
+tests/test_io.py::test_save_graph_to_file PASSED                         [ 29%]
+tests/test_io.py::test_save_graph_with_invalid_path PASSED               [ 31%]
+tests/test_knowledge_graph.py::test_knowledge_graph_init PASSED          [ 33%]
+tests/test_knowledge_graph.py::test_add_new_node PASSED                  [ 35%]
+tests/test_knowledge_graph.py::test_add_edge PASSED                      [ 37%]
+tests/test_knowledge_graph.py::test_get_edge PASSED                      [ 39%]
+tests/test_knowledge_graph.py::test_edge_failure PASSED                  [ 41%]
+tests/test_knowledge_graph.py::test_save_to_file PASSED                  [ 43%]
+tests/test_knowledge_graph.py::test_get_shortest_path PASSED             [ 45%]
+tests/test_knowledge_graph.py::test_get_shortest_path_no_path PASSED     [ 47%]
+tests/test_knowledge_graph.py::test_get_shortest_path_same_node PASSED   [ 49%]
+tests/test_knowledge_graph.py::test_knowledge_graph_str PASSED           [ 50%]
+tests/test_metadata.py::test_encode_to_string PASSED                     [ 52%]
+tests/test_metadata.py::test_decode_to_dict PASSED                       [ 54%]
+tests/test_metadata.py::test_exact_match PASSED                          [ 56%]
+tests/test_metadata.py::test_representation_match_no_channel_match PASSED [ 58%]
+tests/test_metadata.py::test_no_representation_match PASSED              [ 60%]
+tests/test_metadata.py::test_rgb_bgr_match PASSED                        [ 62%]
+tests/test_metadata.py::test_empty_candidate_list PASSED                 [ 64%]
+tests/test_metadata.py::test_one_candidata PASSED                        [ 66%]
+tests/test_metadata_differ.py::test_both_metadata_match_data_repr PASSED [ 68%]
+tests/test_metadata_differ.py::test_one_metadata_missing_data_repr PASSED [ 70%]
+tests/test_metadata_differ.py::test_one_metadata_different_data_repr PASSED [ 72%]
+tests/test_metadata_differ.py::test_both_metadata_missing_data_repr PASSED [ 74%]
+tests/test_metadata_differ.py::test_both_metadata_different_data_repr PASSED [ 76%]
+tests/test_metadata_differ.py::test_is_differ_value_for_key_true PASSED  [ 78%]
+tests/test_metadata_differ.py::test_is_differ_value_for_key_false PASSED [ 80%]
+tests/test_py_interface.py::test_add_conversion_for_metadata_pair_single_value PASSED [ 82%]
+tests/test_py_interface.py::test_add_conversion_for_metadata_pair_list_values PASSED [ 84%]
+tests/test_py_interface.py::test_add_conversion_for_metadata_pair_empty PASSED [ 86%]
+tests/test_py_interface.py::test_add_conversion_for_metadata_pair_none PASSED [ 88%]
+tests/test_py_interface.py::test_get_convert_path PASSED                 [ 90%]
+tests/test_py_interface.py::test_get_conversion_code PASSED              [ 92%]
+tests/test_util.py::test_remove_intermediate_functon_call PASSED         [ 94%]
+tests/test_util.py::test_extract_func_body_fail PASSED                   [ 96%]
+tests/test_util.py::test_func_obj_to_str_function PASSED                 [ 98%]
+tests/test_util.py::test_exclude_key_from_list PASSED                    [100%]
+
+- generated xml file: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/pytest.xml -
+
+---------- coverage: platform linux, python 3.10.14-final-0 ----------
+Name                                                                      Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------------------------------------------------------------
+src/imgdataconvertcodegen/end_metadata_mapper.py                            131     90     52      7    26%   39, 41, 55, 67, 82-100, 112-125, 137-151, 163-177, 190-221, 238, 253, 259, 273-292, 304-336
+src/imgdataconvertcodegen/interface_cmd.py                                   11     11      0      0     0%   12-38
+src/imgdataconvertcodegen/interface_py_api.py                                25      4      0      0    84%   61-62, 66-67
+src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py        71      9     22      2    88%   31-32, 36, 75, 80-82, 85-86
+src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py      24      0     22      2    96%   24->27, 25->24
+---------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                       779    114    336     11    85%
+
+16 files skipped due to complete coverage.
+
+======================== 48 passed, 3 skipped in 15.97s ========================
