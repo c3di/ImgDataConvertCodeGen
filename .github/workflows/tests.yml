@@ -47,21 +47,19 @@ jobs:
         pytest-coverage-path: ./pytest-coverage.txt
         junitxml-path: ./pytest.xml
 
-    - name: Check the output coverage
-      run: |
-          echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}" 
-          echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}" 
-          echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}" 
-          echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
-          echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}" 
-          echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
-          echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
-          echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}" 
-          # Handle HTML content safely
-          echo "${{ steps.coverageComment.outputs.coverageHtml }}" > coverageHtml.html
-          echo "Coverage HTML output saved to coverageHtml.html"
-          echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}" 
-
+    #- name: Check the output coverage
+      #run: |
+          #echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}" 
+          #echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}" 
+          #echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}" 
+          #echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
+          #echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}" 
+          #echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
+          #echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
+          #echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}" 
+          #echo "${{ steps.coverageComment.outputs.coverageHtml }}" > coverageHtml.html
+          #echo "Coverage HTML output saved to coverageHtml.html"
+          #echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}" 
 
     - name: Create the Badge
       uses: schneegans/dynamic-badges-action@v1.6.0
