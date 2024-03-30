@@ -1,7 +1,7 @@
 
 .. Pytest Coverage Comment:Begin
 
-.. |coverage| image:: https://img.shields.io/badge/Coverage-85%%25-green.svg
+.. image:: https://img.shields.io/badge/Coverage-85%25-green.svg
    :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/master/README.rst#code-coverage
    :alt: Coverage
 
