@@ -53,7 +53,7 @@ jobs:
 
     - name: Save coverage content to a file
       run: |
-        echo "${{ steps.coverageComment.outputs.summaryReport }}" > coverageReport.html
+         printf "%s" "${{ steps.coverageComment.outputs.summaryReport }}" > coverageReport.html
 
 
     - name: Update Readme with Coverage Html
