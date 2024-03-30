@@ -1,5 +1,7 @@
 
+.. Pytest Coverage Comment:Begin
 |coverage| 
+.. Pytest Coverage Comment:End
 =====================================================
 imgdataconvertcodegen
 =====================================================
