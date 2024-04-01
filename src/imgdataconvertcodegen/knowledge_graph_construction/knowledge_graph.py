@@ -39,8 +39,10 @@ class KnowledgeGraph:
         self._graph = load_graph(path)
 
     def heuristic(self, u, v):
-        # todo: how to design the cost function for edge and the heuristic function for each node
-        return 0
+        # L1 distance between two metadata
+        u_metadata = u.split('-')
+        v_metadata = v.split('-')
+        return sum([1 for i in range(len(u_metadata)) if u_metadata[i] != v_metadata[i]])
 
     def get_shortest_path(self, source_metadata, target_metadata) -> list[str] | None:
         try:
