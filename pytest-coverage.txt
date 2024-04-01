@@ -3,14 +3,14 @@ platform linux -- Python 3.10.14, pytest-8.1.1, pluggy-1.4.0
 rootdir: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen
 configfile: pyproject.toml
 plugins: cov-5.0.0
-collected 51 items
+collected 52 items
 
 tests/test_code_generation.py .......                                    [ 13%]
 tests/test_conversion_code_execution.py .                                [ 15%]
 tests/test_conversion_code_in_kg.py .sss                                 [ 23%]
-tests/test_io.py ....                                                    [ 31%]
-tests/test_knowledge_graph.py ..........                                 [ 50%]
-tests/test_metadata.py ........                                          [ 66%]
+tests/test_io.py ....                                                    [ 30%]
+tests/test_knowledge_graph.py ...........                                [ 51%]
+tests/test_metadata.py ........                                          [ 67%]
 tests/test_metadata_differ.py .......                                    [ 80%]
 tests/test_py_interface.py ......                                        [ 92%]
 tests/test_util.py ....                                                  [100%]WARNING: Failed to generate report: No data to report.
@@ -21,4 +21,4 @@ tests/test_util.py ....                                                  [100%]W
 
 ---------- coverage: platform linux, python 3.10.14-final-0 ----------
 
-======================== 48 passed, 3 skipped in 12.50s ========================
+======================== 49 passed, 3 skipped in 13.36s ========================
