@@ -61,12 +61,12 @@ jobs:
     - name: Update README with Coverage Badge
       if: env.pytest_failed != 'true'
       run: |
-        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/master/README.rst#code-coverage\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
+        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |build|image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
       
     - name: Update README with Failed Status Badge
       if: env.pytest_failed == 'true'
       run: |
-        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push\n    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml\n    :alt: Tests Failed\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
+        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |build|image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push\n    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml\n    :alt: Tests Failed\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
       
     - name: Commit & Push changes to Readme
       uses: actions-js/push@master
