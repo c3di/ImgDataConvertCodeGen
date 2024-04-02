@@ -1,4 +1,4 @@
-|docs| |build| |pypi| 
+|docs|    |build|    |pypi| 
 
 =====================================================
 imgdataconvertcodegen
