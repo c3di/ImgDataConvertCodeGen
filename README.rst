@@ -1,14 +1,11 @@
-.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml/badge.svg
-    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml
-    :alt: tests
 
-.. Pytest Coverage Comment:Begin
+.. Pytest Coverage/Status Comment:Begin
 
 .. image:: https://img.shields.io/badge/Coverage-025-red.svg
    :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/master/README.rst#code-coverage
    :alt: Coverage
 
-.. Pytest Coverage Comment:End
+.. Pytest Coverage/Status Comment:End
 =====================================================
 imgdataconvertcodegen
 =====================================================
