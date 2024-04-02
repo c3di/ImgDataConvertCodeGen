@@ -1,9 +1,9 @@
 
 .. Pytest Coverage/Status Comment:Begin
 
-.. image:: https://img.shields.io/badge/Coverage-025-red.svg
-   :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/master/README.rst#code-coverage
-   :alt: Coverage
+.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push
+    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml
+    :alt: Tests Failed
 
 .. Pytest Coverage/Status Comment:End
 =====================================================
