@@ -76,17 +76,17 @@ def test_knowledge_graph_str(kg):
 def test_heuristic_function(kg):
     u = encode_metadata(test_nodes[0])
     v = encode_metadata(test_nodes[0])
-    assert kg.heuristic(u, v) == 0, f"Expected 0, got {kg.heuristic(u, v)}"
+    assert kg.heuristic_in_AStar(u, v) == 0, f"Expected 0, got {kg.heuristic_in_AStar(u, v)}"
 
     u = encode_metadata(test_nodes[0])
     v = encode_metadata(test_nodes[1])
-    assert kg.heuristic(u, v) == 1, f"Expected 1, got {kg.heuristic(u, v)}"
+    assert kg.heuristic_in_AStar(u, v) == 1, f"Expected 1, got {kg.heuristic_in_AStar(u, v)}"
 
     u = encode_metadata(test_nodes[0])
     v = encode_metadata(test_nodes[3])
-    assert kg.heuristic(u, v) == 2, f"Expected 2, got {kg.heuristic(u, v)}"
+    assert kg.heuristic_in_AStar(u, v) == 2, f"Expected 2, got {kg.heuristic_in_AStar(u, v)}"
 
     u = encode_metadata(test_nodes[0])
     v = encode_metadata(new_node)
-    assert kg.heuristic(u, v) == 3, f"Expected 3, got {kg.heuristic(u, v)}"
+    assert kg.heuristic_in_AStar(u, v) == 3, f"Expected 3, got {kg.heuristic_in_AStar(u, v)}"
 

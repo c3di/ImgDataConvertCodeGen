@@ -1,3 +1,6 @@
+import math
+import timeit
+import re
 import itertools
 import os.path
 from typing import List
@@ -6,9 +9,12 @@ from .knowledge_graph import KnowledgeGraph
 from .metedata import MetadataValues
 from .edge_factories import FactoriesCluster, ConversionForMetadataPair
 from ..util import exclude_key_from_list
+from ..image_data import get_input_image_and_expected_output
 
 
 class KnowledgeGraphConstructor:
+    _max_time_cost = 0
+
     def __init__(self, metadata_values: MetadataValues, edge_factories_clusters: list[FactoriesCluster],
                  list_of_conversion_for_metadata_pair: List[ConversionForMetadataPair]):
         self._metadata_values = metadata_values
@@ -43,6 +49,7 @@ class KnowledgeGraphConstructor:
         self._create_edges_using_factories_clusters(self._metadata_values,
                                                     self._edge_factories_clusters)
         self._create_edges_from_manual_annotation(self._list_of_conversion_for_metadata_pair)
+        self._normalize_time_costs()
         self.save_knowledge_graph()
 
     def _create_edges_using_factories_clusters(self, metadata_values,
@@ -67,14 +74,46 @@ class KnowledgeGraphConstructor:
             for factory in factories:
                 function = factory(source, target)
                 if function is not None:
-                    used_factory = f'{factory.__code__.co_name} in {factory.__code__.co_filename}'
-                    self.knowledge_graph.add_edge(source, target, conversion=function, factory=used_factory)
+                    self._add_edge(source, target, function, factory)
 
     def _create_edges_from_manual_annotation(self, list_of_conversion_for_metadata_pair: List[ConversionForMetadataPair]):
         if list_of_conversion_for_metadata_pair is None:
             return
-        for source_metadata, target_metadata, conversion in list_of_conversion_for_metadata_pair:
-            self.knowledge_graph.add_edge(source_metadata, target_metadata, conversion=conversion, factory="manual")
+        for source, target, conversion in list_of_conversion_for_metadata_pair:
+            self._add_edge(source, target, conversion, "manual")
+
+    def _add_edge(self, source, target, conversion, factory=None):
+        execution_time = self._execute_time_cost(source, target, conversion)
+        used_factory = factory if isinstance(factory, str) else f'{factory.__code__.co_name} in {factory.__code__.co_filename}'
+        self.knowledge_graph.add_edge(source, target,
+                                      conversion=conversion,
+                                      time_cost=execution_time,
+                                      factory=used_factory)
+        self._set_max_time_cost(execution_time)
+
+    def _execute_time_cost(self, source, target, conversion):
+        try:
+            source_image, _ = get_input_image_and_expected_output(source, target)
+        except Exception as e:
+            # If the conversion function cannot be executed, return infinity, for example, there is no tensorflow gpu
+            # support in the environment.
+            return math.inf
+        setup = f"{conversion[0]}\n{conversion[1]}"
+        func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
+        code = f"actual_image = {func_name}(source_image)"
+        execution_time = timeit.timeit(stmt=code, setup=setup, number=1000, globals=locals())
+        return execution_time
+
+    def _set_max_time_cost(self, execution_time):
+        if execution_time == math.inf:
+            return
+        if execution_time > self._max_time_cost:
+            self._max_time_cost = execution_time
+
+    def _normalize_time_costs(self):
+        for source, target in self.knowledge_graph.edges:
+            time_cost = self.knowledge_graph.get_edge_data(source, target)['time_cost']
+            self.knowledge_graph.set_edge_attribute(source, target, 'normalized_time_cost', round(time_cost / self._max_time_cost, 3))
 
     def add_edge_factory_cluster(self, factory_cluster: FactoriesCluster):
         self._edge_factories_clusters.append(factory_cluster)

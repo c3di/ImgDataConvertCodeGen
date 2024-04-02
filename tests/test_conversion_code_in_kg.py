@@ -4,7 +4,7 @@ import pytest
 import tensorflow as tf
 import torch
 
-from .data_for_tests.image_data import is_image_equal, get_input_image_and_expected_output
+from imgdataconvertcodegen.image_data import is_image_equal, get_input_image_and_expected_output
 from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
 from imgdataconvertcodegen.knowledge_graph_construction import get_knowledge_graph_constructor
 
