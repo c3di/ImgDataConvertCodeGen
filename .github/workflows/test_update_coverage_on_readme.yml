@@ -24,6 +24,9 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+        
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
@@ -64,9 +67,6 @@ jobs:
       if: env.pytest_failed == 'true'
       run: |
         sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push\n    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml\n    :alt: Tests Failed\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v6
       
     - name: Commit & Push changes to Readme
       uses: actions-js/push@master
