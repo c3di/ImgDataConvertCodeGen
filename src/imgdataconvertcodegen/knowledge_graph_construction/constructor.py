@@ -91,7 +91,7 @@ class KnowledgeGraphConstructor:
                                       factory=used_factory)
         self._set_max_time_cost(execution_time)
 
-    def _execute_time_cost(self, source, target, conversion):
+    def _execute_time_cost(self, source, target, conversion, repeat_count=10):
         try:
             source_image, _ = get_input_image_and_expected_output(source, target)
         except Exception as e:
@@ -101,8 +101,8 @@ class KnowledgeGraphConstructor:
         setup = f"{conversion[0]}\n{conversion[1]}"
         func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
         code = f"actual_image = {func_name}(source_image)"
-        execution_time = timeit.timeit(stmt=code, setup=setup, number=1000, globals=locals())
-        return execution_time
+        execution_time = timeit.timeit(stmt=code, setup=setup, number=repeat_count, globals=locals())
+        return execution_time / repeat_count
 
     def _set_max_time_cost(self, execution_time):
         if execution_time == math.inf:

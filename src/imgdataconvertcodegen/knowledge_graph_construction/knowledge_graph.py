@@ -45,6 +45,8 @@ class KnowledgeGraph:
         self._graph = load_graph(path)
 
     def cost_function_in_AStar(self, u, v, edge_attributes):
+        if 'normalized_time_cost' not in edge_attributes:
+            return 1
         time_cost = edge_attributes['normalized_time_cost']
         step_cost = 1
 
