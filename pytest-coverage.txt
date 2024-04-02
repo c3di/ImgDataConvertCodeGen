@@ -5,126 +5,22 @@ configfile: pyproject.toml
 plugins: cov-5.0.0
 collected 52 items
 
-tests/test_code_generation.py .....FF                                    [ 13%]
-tests/test_conversion_code_execution.py F                                [ 15%]
+tests/test_code_generation.py .......                                    [ 13%]
+tests/test_conversion_code_execution.py .                                [ 15%]
 tests/test_conversion_code_in_kg.py Fsss                                 [ 23%]
 tests/test_io.py ....                                                    [ 30%]
-tests/test_knowledge_graph.py ......FF...                                [ 51%]
+tests/test_knowledge_graph.py ...........                                [ 51%]
 tests/test_metadata.py ........                                          [ 67%]
 tests/test_metadata_differ.py .......                                    [ 80%]
-tests/test_py_interface.py ....FF                                        [ 92%]
+tests/test_py_interface.py ......                                        [ 92%]
 tests/test_util.py ....                                                  [100%]WARNING: Failed to generate report: No data to report.
 
 
 
 =================================== FAILURES ===================================
-___________________ test_generate_conversion_multiple_steps ____________________
-
-code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94dbafbc70>
-
-    def test_generate_conversion_multiple_steps(code_generator):
-        source_var = 'source_var'
-        target_var = 'result'
->       generated_code = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
-
-tests/test_code_generation.py:62: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/code_generator.py:46: in get_conversion
-    cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94db25d780>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ['', 'def convert(var):\n  return var[:, :, ::-1]'], 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
-_____________________ test_generate_conversion_using_cache _____________________
-
-code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94db26e290>
-
-    def test_generate_conversion_using_cache(code_generator):
-        source_var = 'source_var'
-        target_var = 'result'
-    
->       code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
-
-tests/test_code_generation.py:76: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/code_generator.py:46: in get_conversion
-    cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94db26e950>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ['', 'def convert(var):\n  return var[:, :, ::-1]'], 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
-_____________________ test_code_generation_using_metadata ______________________
-
-code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94db25d390>
-
-    def test_code_generation_using_metadata(code_generator):
-        kg = code_generator.knowledge_graph
-        source_image = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
-        expected_image = torch.from_numpy(source_image).permute(2, 0, 1).unsqueeze(0)
-    
-        # Prepare a custom scope that includes both global and local variables to ensure that the dynamically executed code
-        # has access to necessary pre-defined variables and can also store new variables such as 'target_result'.
-        # This is crucial in the pytest environment where test function scopes are isolated, and dynamically defined
-        # variables might not be directly accessible due to Python's scoping rules.
-        scope = globals().copy()
-        scope.update(locals())
-    
->       convert_code = code_generator.get_conversion('source_image', test_nodes[0],
-                                                     'target_image', new_node)
-
-tests/test_conversion_code_execution.py:31: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/code_generator.py:46: in get_conversion
-    cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94db25d9f0>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ['', 'def convert(var):\n  return var[:, :, ::-1]'], 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
 _____________________ test_all_conversion_code_exec_on_cpu _____________________
 
-code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94db15af50>
+code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7ff5b7fca770>
 
     def test_all_conversion_code_exec_on_cpu(code_generator):
         kg = code_generator.knowledge_graph
@@ -137,7 +33,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 source_metadata = {'channel_order': 'channel last', 'color_channel': 'rgb', 'data_representation': 'numpy.ndarray', 'device': 'cpu', ...}
 target_metadata = {'channel_order': 'channel last', 'color_channel': 'rgb', 'data_representation': 'numpy.ndarray', 'device': 'cpu', ...}
-kg = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f9561562e00>
+kg = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7ff63da6f070>
 
     def assert_exec_of_conversion_code_in_edge(source_metadata, target_metadata, kg):
         edge_data = kg.get_edge_data(source_metadata, target_metadata)
@@ -167,103 +63,103 @@ kg = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.Knowled
     
 >       assert is_image_equal(target_image,
                               actual_image), f'expected {target_image}, but actual {actual_image}. {error_message}'
-E       AssertionError: expected [[[[-1.1102362   0.52755904  0.79527557]
-E            [-2.574803   -1.0472441  -2.2913384 ]
-E            [ 0.27559054  0.9370079  -2.6535435 ]
+E       AssertionError: expected [[[[-2.543307   -2.511811   -2.1338582 ]
+E            [-2.1968503  -1.6771653  -0.8110236 ]
+E            [-2.1338582  -0.6692914   0.84251964]
 E            ...
-E            [-1.472441   -0.7637795  -1.4251969 ]
-E            [-1.5669291  -1.6456692  -3.        ]
-E            [-2.952756   -1.6771653  -0.24409449]]
+E            [-2.3228345  -1.0944881   0.22834647]
+E            [ 0.9527559  -1.0787401  -1.2834646 ]
+E            [ 0.60629916  0.90551186 -2.3700786 ]]
 E         
-E           [[-2.1653543   0.40157485 -0.96850395]
-E            [ 0.11811018 -0.7007874  -2.3228345 ]
-E            [-0.32283467 -1.4566929   0.08661413]
+E           [[ 0.3070866   0.88976383 -2.559055  ]
+E            [-0.9527559  -2.574803   -2.055118  ]
+E            [ 0.511811   -0.16535431 -1.976378  ]
 E            ...
-E            [ 0.7322835  -1.7086614  -0.05511808]
-E            [-1.2992126  -2.1811023   0.07086611]
-E            [-0.05511808  0.7637795  -1.1889764 ]]
+E            [-1.519685   -0.38582677 -1.6141732 ]
+E            [-0.3070866  -0.984252   -0.7637795 ]
+E            [ 0.54330707 -2.023622   -2.023622  ]]
 E         
-E           [[-0.63779527 -1.8188976  -0.38582677]
-E            [-2.5905511  -1.031496   -1.3307086 ]
-E            [ 0.11811018 -1.535433   -2.574803  ]
+E           [[-0.3070866  -2.7480316   0.7637795 ]
+E            [-1.9291339   0.3070866  -2.1338582 ]
+E            [ 0.1338582   0.7637795  -1.4566929 ]
 E            ...
-E            [-0.4015748  -2.7952757  -1.2519685 ]
-E            [-0.8582677  -0.6850394  -2.7795277 ]
-E            [-2.8267717   0.1338582  -2.937008  ]]
-E         
-E           ...
-E         
-E           [[-2.7007875  -1.5669291   0.40157485]
-E            [-2.2440944  -2.3070865  -2.5905511 ]
-E            [ 0.21259844 -0.9212598  -2.8267717 ]
-E            ...
-E            [ 0.54330707 -0.16535431 -1.7874016 ]
-E            [-2.007874   -0.13385826 -2.448819  ]
-E            [-2.1023622  -2.1338582  -2.968504  ]]
-E         
-E           [[-0.4015748  -0.7322835  -1.472441  ]
-E            [-2.7795277   0.33858263 -2.8267717 ]
-E            [-0.21259844 -0.03937006 -1.2047244 ]
-E            ...
-E            [-0.27559054 -2.6535435  -0.3385827 ]
-E            [-0.44881892  0.84251964 -1.3149606 ]
-E            [ 0.6692914  -0.6062992  -2.480315  ]]
-E         
-E           [[ 0.85826766  0.21259844 -2.3858268 ]
-E            [-0.14960629 -2.03937    -0.5905512 ]
-E            [-2.6535435  -0.37007874 -2.448819  ]
-E            ...
-E            [-2.8740158  -0.6535433  -2.7007875 ]
-E            [-1.7401575  -1.1889764   0.35433066]
-E            [ 0.33858263  0.03937006 -2.464567  ]]]], but actual [[[[-0.05511811  0.7637795   0.8976378 ]
-E            [-0.78740156 -0.02362205 -0.6456693 ]
-E            [ 0.63779527  0.96850395 -0.8267717 ]
-E            ...
-E            [-0.23622048  0.11811024 -0.21259843]
-E            [-0.28346455 -0.32283464 -1.        ]
-E            [-0.97637796 -0.33858266  0.37795275]]
-E         
-E           [[-0.5826772   0.7007874   0.01574803]
-E            [ 0.5590551   0.1496063  -0.6614173 ]
-E            [ 0.33858266 -0.22834645  0.54330707]
-E            ...
-E            [ 0.86614174 -0.35433072  0.47244096]
-E            [-0.1496063  -0.5905512   0.53543305]
-E            [ 0.47244096  0.88188976 -0.09448819]]
-E         
-E           [[ 0.18110237 -0.4094488   0.30708662]
-E            [-0.79527557 -0.01574803 -0.16535433]
-E            [ 0.5590551  -0.26771653 -0.78740156]
-E            ...
-E            [ 0.2992126  -0.8976378  -0.12598425]
-E            [ 0.07086614  0.15748031 -0.8897638 ]
-E            [-0.9133858   0.5669291  -0.96850395]]
+E            [-0.3385827  -0.9370079   0.7007874 ]
+E            [-2.1338582  -0.44881892 -1.519685  ]
+E            [ 0.90551186 -2.8740158   0.10236216]]
 E         
 E           ...
 E         
-E           [[-0.8503937  -0.28346455  0.7007874 ]
-E            [-0.62204725 -0.6535433  -0.79527557]
-E            [ 0.6062992   0.03937008 -0.9133858 ]
+E           [[ 0.08661413 -1.3149606  -1.2677165 ]
+E            [-0.87401575 -0.8110236  -0.7007874 ]
+E            [-0.9055118  -1.9133859  -1.7086614 ]
 E            ...
-E            [ 0.77165353  0.41732284 -0.39370078]
-E            [-0.503937    0.43307087 -0.72440946]
-E            [-0.5511811  -0.5669291  -0.984252  ]]
+E            [-1.5511811  -0.7480315  -0.19685042]
+E            [-1.1574804  -1.0472441  -2.7165356 ]
+E            [-1.8188976  -2.1811023   0.22834647]]
 E         
-E           [[ 0.2992126   0.13385826 -0.23622048]
-E            [-0.8897638   0.6692913  -0.9133858 ]
-E            [ 0.39370078  0.48031497 -0.1023622 ]
+E           [[-1.992126   -2.2125983  -0.11811024]
+E            [-1.4251969  -1.472441    0.3070866 ]
+E            [-0.5905512  -2.7165356   0.03937006]
 E            ...
-E            [ 0.36220473 -0.8267717   0.33070865]
-E            [ 0.27559054  0.9212598  -0.15748031]
-E            [ 0.8346457   0.19685039 -0.7401575 ]]
+E            [-0.6535433  -0.46456695  0.25984251]
+E            [-1.6299212  -2.8897638  -2.3385825 ]
+E            [-2.1811023  -0.79527557 -2.7322836 ]]
 E         
-E           [[ 0.92913383  0.6062992  -0.6929134 ]
-E            [ 0.42519686 -0.51968503  0.2047244 ]
-E            [-0.8267717   0.31496063 -0.72440946]
+E           [[ 0.5748031  -2.984252   -2.968504  ]
+E            [-1.2204725  -0.35433072 -0.44881892]
+E            [ 0.8740157  -1.1889764  -2.9212599 ]
 E            ...
-E            [-0.93700784  0.17322835 -0.8503937 ]
-E            [-0.37007874 -0.09448819  0.6771653 ]
-E            [ 0.6692913   0.51968503 -0.7322835 ]]]]. conversion from
+E            [-2.007874   -2.3543305   0.05511808]
+E            [-0.4173228  -1.1574804  -1.9448819 ]
+E            [-0.9527559  -2.1653543  -1.5669291 ]]]], but actual [[[[-0.77165353 -0.7559055  -0.5669291 ]
+E            [-0.5984252  -0.33858266  0.09448819]
+E            [-0.5669291   0.16535433  0.9212598 ]
+E            ...
+E            [-0.6614173  -0.04724409  0.61417323]
+E            [ 0.97637796 -0.03937008 -0.14173228]
+E            [ 0.8031496   0.9527559  -0.68503934]]
+E         
+E           [[ 0.6535433   0.9448819  -0.77952754]
+E            [ 0.02362205 -0.78740156 -0.52755904]
+E            [ 0.7559055   0.41732284 -0.48818898]
+E            ...
+E            [-0.25984251  0.30708662 -0.30708662]
+E            [ 0.3464567   0.00787402  0.11811024]
+E            [ 0.77165353 -0.511811   -0.511811  ]]
+E         
+E           [[ 0.3464567  -0.87401575  0.88188976]
+E            [-0.46456692  0.6535433  -0.5669291 ]
+E            [ 0.5669291   0.88188976 -0.22834645]
+E            ...
+E            [ 0.33070865  0.03149606  0.8503937 ]
+E            [-0.5669291   0.27559054 -0.25984251]
+E            [ 0.9527559  -0.93700784  0.5511811 ]]
+E         
+E           ...
+E         
+E           [[ 0.54330707 -0.15748031 -0.13385826]
+E            [ 0.06299213  0.09448819  0.1496063 ]
+E            [ 0.04724409 -0.4566929  -0.35433072]
+E            ...
+E            [-0.27559054  0.12598425  0.4015748 ]
+E            [-0.07874016 -0.02362205 -0.8582677 ]
+E            [-0.4094488  -0.5905512   0.61417323]]
+E         
+E           [[-0.496063   -0.6062992   0.44094488]
+E            [-0.21259843 -0.23622048  0.6535433 ]
+E            [ 0.2047244  -0.8582677   0.51968503]
+E            ...
+E            [ 0.17322835  0.26771653  0.62992126]
+E            [-0.31496063 -0.9448819  -0.6692913 ]
+E            [-0.5905512   0.1023622  -0.86614174]]
+E         
+E           [[ 0.78740156 -0.992126   -0.984252  ]
+E            [-0.11023622  0.32283464  0.27559054]
+E            [ 0.93700784 -0.09448819 -0.96062994]
+E            ...
+E            [-0.503937   -0.6771653   0.52755904]
+E            [ 0.2913386  -0.07874016 -0.47244096]
+E            [ 0.02362205 -0.5826772  -0.28346455]]]]. conversion from
 E          {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'int8', 'device': 'cpu'} to
 E          {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'float32(-1to1)', 'device': 'cpu'} failed
 E          imports: import skimage as ski
@@ -272,242 +168,111 @@ E          def convert(var):
 E          return ski.util.img_as_float32(var)
 E         from image_data_integer_to_float32_minus1_to_1 in /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py
 E       assert False
-E        +  where False = is_image_equal(array([[[[-1.1102362 ,  0.52755904,  0.79527557],\n         [-2.574803  , -1.0472441 , -2.2913384 ],\n         [ 0.27559...,\n         [-1.7401575 , -1.1889764 ,  0.35433066],\n         [ 0.33858263,  0.03937006, -2.464567  ]]]], dtype=float32), array([[[[-0.05511811,  0.7637795 ,  0.8976378 ],\n         [-0.78740156, -0.02362205, -0.6456693 ],\n         [ 0.63779...,\n         [-0.37007874, -0.09448819,  0.6771653 ],\n         [ 0.6692913 ,  0.51968503, -0.7322835 ]]]], dtype=float32))
+E        +  where False = is_image_equal(array([[[[-2.543307  , -2.511811  , -2.1338582 ],\n         [-2.1968503 , -1.6771653 , -0.8110236 ],\n         [-2.13385...,\n         [-0.4173228 , -1.1574804 , -1.9448819 ],\n         [-0.9527559 , -2.1653543 , -1.5669291 ]]]], dtype=float32), array([[[[-0.77165353, -0.7559055 , -0.5669291 ],\n         [-0.5984252 , -0.33858266,  0.09448819],\n         [-0.56692...,\n         [ 0.2913386 , -0.07874016, -0.47244096],\n         [ 0.02362205, -0.5826772 , -0.28346455]]]], dtype=float32))
 
 tests/test_conversion_code_in_kg.py:46: AssertionError
-____________________________ test_get_shortest_path ____________________________
-
-kg = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94daefde40>
-
-    def test_get_shortest_path(kg):
-        kg.add_node(new_node)
-        kg.add_edge(new_edge[0], new_edge[1], new_edge[2])
-    
->       path = kg.get_shortest_path(test_nodes[0], new_node)
-
-tests/test_knowledge_graph.py:56: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94daefde40>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ('', 'def convert(var):\n  return var[:, :, ::-1]'), 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
-________________________ test_get_shortest_path_no_path ________________________
-
-kg = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94daefc5e0>
-
-    def test_get_shortest_path_no_path(kg):
->       path = kg.get_shortest_path(test_nodes[2], test_nodes[0])
-
-tests/test_knowledge_graph.py:62: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94daefc5e0>
-u = 'torch.tensor_rgb_channel last_False_uint8_cpu'
-v = 'torch.tensor_rgb_channel first_False_uint8_cpu'
-edge_attributes = {'conversion': ('', 'def convert(var):\n  return var.permute(2, 0, 1)'), 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
-____________________________ test_get_convert_path _____________________________
-
-mock_code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94daefbd60>
-
-    def test_get_convert_path(mock_code_generator):
-        source_image_desc = {"lib": "numpy"}
-        target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
->       path = get_convert_path(source_image_desc, target_image_desc)
-
-tests/test_py_interface.py:76: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/interface_py_api.py:53: in get_convert_path
-    return get_convert_path_by_metadata(source_metadata, target_metadata)
-src/imgdataconvertcodegen/interface_py_api.py:57: in get_convert_path_by_metadata
-    return _code_generator.get_convert_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/code_generator.py:22: in get_convert_path
-    return self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94daefa320>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ['', 'def convert(var):\n  return var[:, :, ::-1]'], 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
-___________________________ test_get_conversion_code ___________________________
-
-mock_code_generator = <imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7f94da947e80>
-
-    def test_get_conversion_code(mock_code_generator):
-        source_image_desc = {"lib": "numpy"}
-        target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
-    
->       actual_code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
-
-tests/test_py_interface.py:84: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-src/imgdataconvertcodegen/interface_py_api.py:42: in get_conversion_code
-    return get_conversion_by_metadata(source_var_name, source_metadata, target_var_name, target_metadata)
-src/imgdataconvertcodegen/interface_py_api.py:47: in get_conversion_by_metadata
-    return _code_generator.get_conversion(source_var_name, source_metadata,
-src/imgdataconvertcodegen/code_generator.py:46: in get_conversion
-    cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:65: in get_shortest_path
-    path = nx.astar_path(self._graph, encode_metadata(source_metadata), encode_metadata(target_metadata),
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/utils/backends.py:412: in __call__
-    return self.orig_func(*args, **kwargs)
-/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/networkx/algorithms/shortest_paths/astar.py:141: in astar_path
-    cost = weight(curnode, neighbor, w)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-self = <imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7f94da946ef0>
-u = 'numpy.ndarray_rgb_channel last_False_uint8_cpu'
-v = 'numpy.ndarray_bgr_channel last_False_uint8_cpu'
-edge_attributes = {'conversion': ['', 'def convert(var):\n  return var[:, :, ::-1]'], 'factory': None, 'time_cost': inf}
-
-    def cost_function_in_AStar(self, u, v, edge_attributes):
->       time_cost = edge_attributes['normalized_time_cost']
-E       KeyError: 'normalized_time_cost'
-
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py:48: KeyError
 - generated xml file: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/pytest.xml -
 
 ---------- coverage: platform linux, python 3.10.14-final-0 ----------
 
 =========================== short test summary info ============================
-FAILED tests/test_code_generation.py::test_generate_conversion_multiple_steps - KeyError: 'normalized_time_cost'
-FAILED tests/test_code_generation.py::test_generate_conversion_using_cache - KeyError: 'normalized_time_cost'
-FAILED tests/test_conversion_code_execution.py::test_code_generation_using_metadata - KeyError: 'normalized_time_cost'
-FAILED tests/test_conversion_code_in_kg.py::test_all_conversion_code_exec_on_cpu - AssertionError: expected [[[[-1.1102362   0.52755904  0.79527557]
-     [-2.574803   -1.0472441  -2.2913384 ]
-     [ 0.27559054  0.9370079  -2.6535435 ]
+FAILED tests/test_conversion_code_in_kg.py::test_all_conversion_code_exec_on_cpu - AssertionError: expected [[[[-2.543307   -2.511811   -2.1338582 ]
+     [-2.1968503  -1.6771653  -0.8110236 ]
+     [-2.1338582  -0.6692914   0.84251964]
      ...
-     [-1.472441   -0.7637795  -1.4251969 ]
-     [-1.5669291  -1.6456692  -3.        ]
-     [-2.952756   -1.6771653  -0.24409449]]
+     [-2.3228345  -1.0944881   0.22834647]
+     [ 0.9527559  -1.0787401  -1.2834646 ]
+     [ 0.60629916  0.90551186 -2.3700786 ]]
   
-    [[-2.1653543   0.40157485 -0.96850395]
-     [ 0.11811018 -0.7007874  -2.3228345 ]
-     [-0.32283467 -1.4566929   0.08661413]
+    [[ 0.3070866   0.88976383 -2.559055  ]
+     [-0.9527559  -2.574803   -2.055118  ]
+     [ 0.511811   -0.16535431 -1.976378  ]
      ...
-     [ 0.7322835  -1.7086614  -0.05511808]
-     [-1.2992126  -2.1811023   0.07086611]
-     [-0.05511808  0.7637795  -1.1889764 ]]
+     [-1.519685   -0.38582677 -1.6141732 ]
+     [-0.3070866  -0.984252   -0.7637795 ]
+     [ 0.54330707 -2.023622   -2.023622  ]]
   
-    [[-0.63779527 -1.8188976  -0.38582677]
-     [-2.5905511  -1.031496   -1.3307086 ]
-     [ 0.11811018 -1.535433   -2.574803  ]
+    [[-0.3070866  -2.7480316   0.7637795 ]
+     [-1.9291339   0.3070866  -2.1338582 ]
+     [ 0.1338582   0.7637795  -1.4566929 ]
      ...
-     [-0.4015748  -2.7952757  -1.2519685 ]
-     [-0.8582677  -0.6850394  -2.7795277 ]
-     [-2.8267717   0.1338582  -2.937008  ]]
+     [-0.3385827  -0.9370079   0.7007874 ]
+     [-2.1338582  -0.44881892 -1.519685  ]
+     [ 0.90551186 -2.8740158   0.10236216]]
   
     ...
   
-    [[-2.7007875  -1.5669291   0.40157485]
-     [-2.2440944  -2.3070865  -2.5905511 ]
-     [ 0.21259844 -0.9212598  -2.8267717 ]
+    [[ 0.08661413 -1.3149606  -1.2677165 ]
+     [-0.87401575 -0.8110236  -0.7007874 ]
+     [-0.9055118  -1.9133859  -1.7086614 ]
      ...
-     [ 0.54330707 -0.16535431 -1.7874016 ]
-     [-2.007874   -0.13385826 -2.448819  ]
-     [-2.1023622  -2.1338582  -2.968504  ]]
+     [-1.5511811  -0.7480315  -0.19685042]
+     [-1.1574804  -1.0472441  -2.7165356 ]
+     [-1.8188976  -2.1811023   0.22834647]]
   
-    [[-0.4015748  -0.7322835  -1.472441  ]
-     [-2.7795277   0.33858263 -2.8267717 ]
-     [-0.21259844 -0.03937006 -1.2047244 ]
+    [[-1.992126   -2.2125983  -0.11811024]
+     [-1.4251969  -1.472441    0.3070866 ]
+     [-0.5905512  -2.7165356   0.03937006]
      ...
-     [-0.27559054 -2.6535435  -0.3385827 ]
-     [-0.44881892  0.84251964 -1.3149606 ]
-     [ 0.6692914  -0.6062992  -2.480315  ]]
+     [-0.6535433  -0.46456695  0.25984251]
+     [-1.6299212  -2.8897638  -2.3385825 ]
+     [-2.1811023  -0.79527557 -2.7322836 ]]
   
-    [[ 0.85826766  0.21259844 -2.3858268 ]
-     [-0.14960629 -2.03937    -0.5905512 ]
-     [-2.6535435  -0.37007874 -2.448819  ]
+    [[ 0.5748031  -2.984252   -2.968504  ]
+     [-1.2204725  -0.35433072 -0.44881892]
+     [ 0.8740157  -1.1889764  -2.9212599 ]
      ...
-     [-2.8740158  -0.6535433  -2.7007875 ]
-     [-1.7401575  -1.1889764   0.35433066]
-     [ 0.33858263  0.03937006 -2.464567  ]]]], but actual [[[[-0.05511811  0.7637795   0.8976378 ]
-     [-0.78740156 -0.02362205 -0.6456693 ]
-     [ 0.63779527  0.96850395 -0.8267717 ]
+     [-2.007874   -2.3543305   0.05511808]
+     [-0.4173228  -1.1574804  -1.9448819 ]
+     [-0.9527559  -2.1653543  -1.5669291 ]]]], but actual [[[[-0.77165353 -0.7559055  -0.5669291 ]
+     [-0.5984252  -0.33858266  0.09448819]
+     [-0.5669291   0.16535433  0.9212598 ]
      ...
-     [-0.23622048  0.11811024 -0.21259843]
-     [-0.28346455 -0.32283464 -1.        ]
-     [-0.97637796 -0.33858266  0.37795275]]
+     [-0.6614173  -0.04724409  0.61417323]
+     [ 0.97637796 -0.03937008 -0.14173228]
+     [ 0.8031496   0.9527559  -0.68503934]]
   
-    [[-0.5826772   0.7007874   0.01574803]
-     [ 0.5590551   0.1496063  -0.6614173 ]
-     [ 0.33858266 -0.22834645  0.54330707]
+    [[ 0.6535433   0.9448819  -0.77952754]
+     [ 0.02362205 -0.78740156 -0.52755904]
+     [ 0.7559055   0.41732284 -0.48818898]
      ...
-     [ 0.86614174 -0.35433072  0.47244096]
-     [-0.1496063  -0.5905512   0.53543305]
-     [ 0.47244096  0.88188976 -0.09448819]]
+     [-0.25984251  0.30708662 -0.30708662]
+     [ 0.3464567   0.00787402  0.11811024]
+     [ 0.77165353 -0.511811   -0.511811  ]]
   
-    [[ 0.18110237 -0.4094488   0.30708662]
-     [-0.79527557 -0.01574803 -0.16535433]
-     [ 0.5590551  -0.26771653 -0.78740156]
+    [[ 0.3464567  -0.87401575  0.88188976]
+     [-0.46456692  0.6535433  -0.5669291 ]
+     [ 0.5669291   0.88188976 -0.22834645]
      ...
-     [ 0.2992126  -0.8976378  -0.12598425]
-     [ 0.07086614  0.15748031 -0.8897638 ]
-     [-0.9133858   0.5669291  -0.96850395]]
+     [ 0.33070865  0.03149606  0.8503937 ]
+     [-0.5669291   0.27559054 -0.25984251]
+     [ 0.9527559  -0.93700784  0.5511811 ]]
   
     ...
   
-    [[-0.8503937  -0.28346455  0.7007874 ]
-     [-0.62204725 -0.6535433  -0.79527557]
-     [ 0.6062992   0.03937008 -0.9133858 ]
+    [[ 0.54330707 -0.15748031 -0.13385826]
+     [ 0.06299213  0.09448819  0.1496063 ]
+     [ 0.04724409 -0.4566929  -0.35433072]
      ...
-     [ 0.77165353  0.41732284 -0.39370078]
-     [-0.503937    0.43307087 -0.72440946]
-     [-0.5511811  -0.5669291  -0.984252  ]]
+     [-0.27559054  0.12598425  0.4015748 ]
+     [-0.07874016 -0.02362205 -0.8582677 ]
+     [-0.4094488  -0.5905512   0.61417323]]
   
-    [[ 0.2992126   0.13385826 -0.23622048]
-     [-0.8897638   0.6692913  -0.9133858 ]
-     [ 0.39370078  0.48031497 -0.1023622 ]
+    [[-0.496063   -0.6062992   0.44094488]
+     [-0.21259843 -0.23622048  0.6535433 ]
+     [ 0.2047244  -0.8582677   0.51968503]
      ...
-     [ 0.36220473 -0.8267717   0.33070865]
-     [ 0.27559054  0.9212598  -0.15748031]
-     [ 0.8346457   0.19685039 -0.7401575 ]]
+     [ 0.17322835  0.26771653  0.62992126]
+     [-0.31496063 -0.9448819  -0.6692913 ]
+     [-0.5905512   0.1023622  -0.86614174]]
   
-    [[ 0.92913383  0.6062992  -0.6929134 ]
-     [ 0.42519686 -0.51968503  0.2047244 ]
-     [-0.8267717   0.31496063 -0.72440946]
+    [[ 0.78740156 -0.992126   -0.984252  ]
+     [-0.11023622  0.32283464  0.27559054]
+     [ 0.93700784 -0.09448819 -0.96062994]
      ...
-     [-0.93700784  0.17322835 -0.8503937 ]
-     [-0.37007874 -0.09448819  0.6771653 ]
-     [ 0.6692913   0.51968503 -0.7322835 ]]]]. conversion from
+     [-0.503937   -0.6771653   0.52755904]
+     [ 0.2913386  -0.07874016 -0.47244096]
+     [ 0.02362205 -0.5826772  -0.28346455]]]]. conversion from
    {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'int8', 'device': 'cpu'} to
    {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'float32(-1to1)', 'device': 'cpu'} failed
    imports: import skimage as ski
@@ -516,9 +281,5 @@ FAILED tests/test_conversion_code_in_kg.py::test_all_conversion_code_exec_on_cpu
    return ski.util.img_as_float32(var)
   from image_data_integer_to_float32_minus1_to_1 in /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py
 assert False
- +  where False = is_image_equal(array([[[[-1.1102362 ,  0.52755904,  0.79527557],\n         [-2.574803  , -1.0472441 , -2.2913384 ],\n         [ 0.27559...,\n         [-1.7401575 , -1.1889764 ,  0.35433066],\n         [ 0.33858263,  0.03937006, -2.464567  ]]]], dtype=float32), array([[[[-0.05511811,  0.7637795 ,  0.8976378 ],\n         [-0.78740156, -0.02362205, -0.6456693 ],\n         [ 0.63779...,\n         [-0.37007874, -0.09448819,  0.6771653 ],\n         [ 0.6692913 ,  0.51968503, -0.7322835 ]]]], dtype=float32))
-FAILED tests/test_knowledge_graph.py::test_get_shortest_path - KeyError: 'normalized_time_cost'
-FAILED tests/test_knowledge_graph.py::test_get_shortest_path_no_path - KeyError: 'normalized_time_cost'
-FAILED tests/test_py_interface.py::test_get_convert_path - KeyError: 'normalized_time_cost'
-FAILED tests/test_py_interface.py::test_get_conversion_code - KeyError: 'normalized_time_cost'
-============= 8 failed, 41 passed, 3 skipped in 442.47s (0:07:22) ==============
+ +  where False = is_image_equal(array([[[[-2.543307  , -2.511811  , -2.1338582 ],\n         [-2.1968503 , -1.6771653 , -0.8110236 ],\n         [-2.13385...,\n         [-0.4173228 , -1.1574804 , -1.9448819 ],\n         [-0.9527559 , -2.1653543 , -1.5669291 ]]]], dtype=float32), array([[[[-0.77165353, -0.7559055 , -0.5669291 ],\n         [-0.5984252 , -0.33858266,  0.09448819],\n         [-0.56692...,\n         [ 0.2913386 , -0.07874016, -0.47244096],\n         [ 0.02362205, -0.5826772 , -0.28346455]]]], dtype=float32))
+=================== 1 failed, 48 passed, 3 skipped in 29.98s ===================
