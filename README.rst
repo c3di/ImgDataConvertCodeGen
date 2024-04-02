@@ -1,5 +1,5 @@
-.. image:: https://img.shields.io/badge/view-docs-blue?style=plastic&link=https%3A%2F%2Fgithub.com%2Fc3di%2FImgDataConvertCodeGen%2Fblob%2F145c885014beeae7d0e17bd23113ac2072e71e44%2FREADME.rst
-   :alt: Docs
+.. image:: https://img.shields.io/badge/view-docs-blue?link=https%3A%2F%2Fgithub.com%2Fc3di%2FImgDataConvertCodeGen%2Fblob%2F145c885014beeae7d0e17bd23113ac2072e71e44%2FREADME.rst
+   :alt: Documentation
 .. Pytest Coverage/Status Comment:Begin
 
 .. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push
