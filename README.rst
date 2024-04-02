@@ -1,4 +1,4 @@
-|docs|    |build|    |pypi| 
+|docs| |nbspc| |build|  |nbspc|  |pypi| 
 
 =====================================================
 imgdataconvertcodegen
@@ -83,3 +83,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
         :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/main/README.rst
         :alt: Documentation 
 
+.. |nbspc| unicode:: U+00A0 .. non-breaking space
