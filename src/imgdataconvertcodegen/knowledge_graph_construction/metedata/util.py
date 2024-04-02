@@ -27,12 +27,16 @@ def find_closest_metadata(source_metadata, candidates):
     return targets[0]
 
 
+def decode_separator():
+    return '_'
+
+
 def encode_metadata(metadata: dict) -> str:
-    return '-'.join([str(metadata[key]) for key in Metadata.__annotations__.keys()])
+    return decode_separator().join([str(metadata[key]) for key in Metadata.__annotations__.keys()])
 
 
 def decode_metadata(metadata_str: str) -> dict:
-    metadata_list = metadata_str.split('-')
+    metadata_list = metadata_str.split(decode_separator())
     metadata = {k: v for k, v in zip(list(Metadata.__annotations__.keys()), metadata_list)}
     metadata['minibatch_input'] = True if metadata['minibatch_input'] == 'True' else False
     return metadata

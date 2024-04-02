@@ -14,18 +14,18 @@ def test_encode_to_string():
         "device": 'gpu'
     }
     encoded = encode_metadata(metadata)
-    assert encoded == 'torch.tensor-rgb-channel first-True-uint8-gpu'
+    assert encoded == 'torch.tensor_rgb_channel first_True_uint8_gpu'
 
 
 def test_decode_to_dict():
-    metadata_str = 'torch.tensor-rgb-channel first-True-uint8-gpu'
+    metadata_str = 'torch.tensor_rgb_channel first_True_float64(-1to1)_gpu'
     decoded = decode_metadata(metadata_str)
     assert decoded == {
         "data_representation": "torch.tensor",
         "color_channel": 'rgb',
         "channel_order": 'channel first',
         "minibatch_input": True,
-        "image_data_type": 'uint8',
+        "image_data_type": 'float64(-1to1)',
         "device": 'gpu'
     }
 
