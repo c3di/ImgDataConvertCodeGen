@@ -43,11 +43,11 @@ jobs:
       run: |
         pip install pytest pytest-cov
         pip install -e .
-        pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=ImgDataConvertCodeGen tests/ > pytest-coverage.txt || echo "::set-output name=pytest_failed::true"
+        pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src tests/ > pytest-coverage.txt || echo "pytest_failed=true" >> $GITHUB_ENV
 
 
     - name: Pytest coverage comment
-      if: steps.test.outputs.pytest_failed != 'true' 
+      if: env.pytest_failed != 'true'
       id: coverageComment
       uses: MishaKav/pytest-coverage-comment@main
       with:
@@ -56,12 +56,12 @@ jobs:
         hide-report: true
 
     - name: Update README with Coverage Badge
-      if: steps.test.outputs.pytest_failed != 'true'
+      if: env.pytest_failed != 'true'
       run: |
         sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/master/README.rst#code-coverage\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
       
     - name: Update README with Failed Status Badge
-      if: steps.test.outputs.pytest_failed == 'true'
+      if: env.pytest_failed == 'true'
       run: |
         sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push\n    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml\n    :alt: Tests Failed\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
 
