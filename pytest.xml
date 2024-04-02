@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="3" tests="52" time="31.283" timestamp="2024-04-02T16:16:39.184196" hostname="fv-az1712-669"><testcase classname="tests.test_code_generation" name="test_convert_code_generator_init" time="0.002" /><testcase classname="tests.test_code_generation" name="test_knowledge_graph_property" time="0.001" /><testcase classname="tests.test_code_generation" name="test_conversion_path" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_no_path" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_same_type" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_multiple_steps" time="0.002" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_using_cache" time="0.001" /><testcase classname="tests.test_conversion_code_execution" name="test_code_generation_using_metadata" time="0.001" /><testcase classname="tests.test_conversion_code_in_kg" name="test_all_conversion_code_exec_on_cpu" time="9.812"><failure message="AssertionError: expected [[[[ 0.6692914  -1.1102362  -0.984252  ]&#10;     [-0.9055118   0.96850395 -0.35433072]&#10;     [ 0.29133856  0.14960635 -2.8267717 ]&#10;     ...&#10;     [-0.10236222  0.77952754 -0.6850394 ]&#10;     [-0.07086617 -0.8582677  -1.3307086 ]&#10;     [ 0.19685042 -2.480315   -1.3622048 ]]&#10;  &#10;    [[ 0.496063   -2.2913384  -2.496063  ]&#10;     [-0.5590551  -2.6692915  -1.1889764 ]&#10;     [-1.7086614  -2.6220472  -0.9527559 ]&#10;     ...&#10;     [-1.535433   -0.19685042 -2.7637796 ]&#10;     [-1.7874016   0.48031497 -0.4015748 ]&#10;     [-1.7401575  -1.6771653  -1.2677165 ]]&#10;  &#10;    [[-2.8582678   0.79527557 -1.        ]&#10;     [-1.7244095   0.3070866  -1.2992126 ]&#10;     [-1.6141732  -1.503937   -1.503937  ]&#10;     ...&#10;     [ 0.35433066 -2.8740158  -1.        ]&#10;     [-1.6456692  -1.3622048  -2.952756  ]&#10;     [-1.7401575  -1.976378   -1.3307086 ]]&#10;  &#10;    ...&#10;  &#10;    [[-1.6771653   0.7322835   0.511811  ]&#10;     [-2.464567   -2.3543305   0.22834647]&#10;     [-0.6850394   0.984252   -1.0787401 ]&#10;     ...&#10;     [ 0.03937006 -0.19685042 -0.52755904]&#10;     [-2.8897638  -0.3070866  -2.8897638 ]&#10;     [-1.1417322  -2.7637796  -1.9606299 ]]&#10;  &#10;    [[-0.7007874  -0.00787401 -1.        ]&#10;     [ 0.00787401 -0.3070866   0.25984251]&#10;     [-1.8661418  -2.5905511  -1.9606299 ]&#10;     ...&#10;     [-2.1653543  -0.32283467  0.496063  ]&#10;     [-2.4173229  -1.5669291   0.00787401]&#10;     [-2.480315    0.46456695 -2.7952757 ]]&#10;  &#10;    [[-0.7322835   0.03937006  0.05511808]&#10;     [-0.79527557 -0.08661419 -2.574803  ]&#10;     [-2.6377952  -0.48031497 -0.02362204]&#10;     ...&#10;     [-1.2047244  -0.07086617 -1.6929134 ]&#10;     [-1.9291339   0.5748031   0.16535437]&#10;     [ 0.10236216 -2.2598424  -1.8661418 ]]]], but actual [[[[ 0.8346457  -0.05511811  0.00787402]&#10;     [ 0.04724409  0.984252    0.32283464]&#10;     [ 0.6456693   0.5748032  -0.9133858 ]&#10;     ...&#10;     [ 0.4488189   0.8897638   0.15748031]&#10;     [ 0.46456692  0.07086614 -0.16535433]&#10;     [ 0.5984252  -0.7401575  -0.18110237]]&#10;  &#10;    [[ 0.7480315  -0.6456693  -0.7480315 ]&#10;     [ 0.22047244 -0.8346457  -0.09448819]&#10;     [-0.35433072 -0.8110236   0.02362205]&#10;     ...&#10;     [-0.26771653  0.4015748  -0.88188976]&#10;     [-0.39370078  0.7401575   0.2992126 ]&#10;     [-0.37007874 -0.33858266 -0.13385826]]&#10;  &#10;    [[-0.92913383  0.8976378   0.        ]&#10;     [-0.36220473  0.6535433  -0.1496063 ]&#10;     [-0.30708662 -0.2519685  -0.2519685 ]&#10;     ...&#10;     [ 0.6771653  -0.93700784  0.        ]&#10;     [-0.32283464 -0.18110237 -0.97637796]&#10;     [-0.37007874 -0.48818898 -0.16535433]]&#10;  &#10;    ...&#10;  &#10;    [[-0.33858266  0.86614174  0.7559055 ]&#10;     [-0.7322835  -0.6771653   0.61417323]&#10;     [ 0.15748031  0.992126   -0.03937008]&#10;     ...&#10;     [ 0.51968503  0.4015748   0.23622048]&#10;     [-0.9448819   0.3464567  -0.9448819 ]&#10;     [-0.07086614 -0.88188976 -0.48031497]]&#10;  &#10;    [[ 0.1496063   0.496063    0.        ]&#10;     [ 0.503937    0.3464567   0.62992126]&#10;     [-0.43307087 -0.79527557 -0.48031497]&#10;     ...&#10;     [-0.5826772   0.33858266  0.7480315 ]&#10;     [-0.70866144 -0.28346455  0.503937  ]&#10;     [-0.7401575   0.7322835  -0.8976378 ]]&#10;  &#10;    [[ 0.13385826  0.51968503  0.52755904]&#10;     [ 0.1023622   0.4566929  -0.78740156]&#10;     [-0.8188976   0.25984251  0.48818898]&#10;     ...&#10;     [-0.1023622   0.46456692 -0.3464567 ]&#10;     [-0.46456692  0.78740156  0.5826772 ]&#10;     [ 0.5511811  -0.62992126 -0.43307087]]]]. conversion from&#10;   {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'int8', 'device': 'cpu'} to&#10;   {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'float32(-1to1)', 'device': 'cpu'} failed&#10;   imports: import skimage as ski&#10;  conversion function: &#10;   def convert(var):&#10;   return ski.util.img_as_float32(var)&#10;  from image_data_integer_to_float32_minus1_to_1 in /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py&#10;assert False&#10; +  where False = is_image_equal(array([[[[ 0.6692914 , -1.1102362 , -0.984252  ],\n         [-0.9055118 ,  0.96850395, -0.35433072],\n         [ 0.29133...,\n         [-1.9291339 ,  0.5748031 ,  0.16535437],\n         [ 0.10236216, -2.2598424 , -1.8661418 ]]]], dtype=float32), array([[[[ 0.8346457 , -0.05511811,  0.00787402],\n         [ 0.04724409,  0.984252  ,  0.32283464],\n         [ 0.64566...,\n         [-0.46456692,  0.78740156,  0.5826772 ],\n         [ 0.5511811 , -0.62992126, -0.43307087]]]], dtype=float32))">code_generator = &lt;imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7fc3b5f60df0&gt;
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="3" tests="52" time="29.028" timestamp="2024-04-02T16:36:02.848136" hostname="fv-az1715-101"><testcase classname="tests.test_code_generation" name="test_convert_code_generator_init" time="0.002" /><testcase classname="tests.test_code_generation" name="test_knowledge_graph_property" time="0.001" /><testcase classname="tests.test_code_generation" name="test_conversion_path" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_no_path" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_same_type" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_multiple_steps" time="0.001" /><testcase classname="tests.test_code_generation" name="test_generate_conversion_using_cache" time="0.001" /><testcase classname="tests.test_conversion_code_execution" name="test_code_generation_using_metadata" time="0.001" /><testcase classname="tests.test_conversion_code_in_kg" name="test_all_conversion_code_exec_on_cpu" time="9.840"><failure message="AssertionError: expected [[[[-1.7244095  -0.11811024  0.8740157 ]&#10;     [-2.1653543  -1.7874016   0.7480315 ]&#10;     [-2.8425198  -2.3858268   0.7637795 ]&#10;     ...&#10;     [-0.13385826 -1.3937008  -1.2362205 ]&#10;     [-1.6929134   0.48031497 -2.3543305 ]&#10;     [-1.8661418  -1.7244095   0.05511808]]&#10;  &#10;    [[ 0.71653545 -0.7480315  -0.6850394 ]&#10;     [-2.559055   -1.7559055   0.16535437]&#10;     [ 0.7637795  -2.0866141   0.8740157 ]&#10;     ...&#10;     [-1.5511811  -0.3385827  -1.8188976 ]&#10;     [-2.7952757   0.1338582   0.4330709 ]&#10;     [-0.16535431 -0.6062992  -2.543307  ]]&#10;  &#10;    [[-0.37007874 -0.19685042 -0.3070866 ]&#10;     [-1.2677165  -2.7952757   0.71653545]&#10;     [-1.3149606  -0.29133856 -0.79527557]&#10;     ...&#10;     [ 0.90551186 -2.0866141   0.9370079 ]&#10;     [-1.8661418   0.38582683  0.03937006]&#10;     [ 0.511811   -2.511811   -0.10236222]]&#10;  &#10;    ...&#10;  &#10;    [[-0.87401575 -0.77952754  0.03937006]&#10;     [ 0.21259844 -2.7165356  -2.1338582 ]&#10;     [-2.464567    0.21259844  0.90551186]&#10;     ...&#10;     [-0.6535433  -3.          0.25984251]&#10;     [-0.4330709  -2.511811    0.8740157 ]&#10;     [-2.7322836   0.16535437 -1.8661418 ]]&#10;  &#10;    [[-0.4015748  -1.7716535   0.71653545]&#10;     [-0.25984251  0.6692914  -2.7007875 ]&#10;     [-1.2677165   1.          0.14960635]&#10;     ...&#10;     [-0.984252   -2.3543305   0.60629916]&#10;     [ 0.8267716   0.6220472  -2.543307  ]&#10;     [ 0.71653545 -3.         -1.6141732 ]]&#10;  &#10;    [[-2.3700786  -2.952756    0.984252  ]&#10;     [-2.4015749  -1.031496   -1.9448819 ]&#10;     [-0.5748031  -1.8503938   0.40157485]&#10;     ...&#10;     [-0.8582677   0.88976383 -0.96850395]&#10;     [-2.6377952  -1.2362205  -0.8267716 ]&#10;     [ 0.37007868 -2.9055119  -1.8031496 ]]]], but actual [[[[-0.36220473  0.44094488  0.93700784]&#10;     [-0.5826772  -0.39370078  0.87401575]&#10;     [-0.9212598  -0.6929134   0.88188976]&#10;     ...&#10;     [ 0.43307087 -0.19685039 -0.11811024]&#10;     [-0.3464567   0.7401575  -0.6771653 ]&#10;     [-0.43307087 -0.36220473  0.52755904]]&#10;  &#10;    [[ 0.8582677   0.12598425  0.15748031]&#10;     [-0.77952754 -0.37795275  0.5826772 ]&#10;     [ 0.88188976 -0.54330707  0.93700784]&#10;     ...&#10;     [-0.27559054  0.33070865 -0.4094488 ]&#10;     [-0.8976378   0.5669291   0.71653545]&#10;     [ 0.41732284  0.19685039 -0.77165353]]&#10;  &#10;    [[ 0.31496063  0.4015748   0.3464567 ]&#10;     [-0.13385826 -0.8976378   0.8582677 ]&#10;     [-0.15748031  0.35433072  0.1023622 ]&#10;     ...&#10;     [ 0.9527559  -0.54330707  0.96850395]&#10;     [-0.43307087  0.6929134   0.51968503]&#10;     [ 0.7559055  -0.7559055   0.4488189 ]]&#10;  &#10;    ...&#10;  &#10;    [[ 0.06299213  0.11023622  0.51968503]&#10;     [ 0.6062992  -0.8582677  -0.5669291 ]&#10;     [-0.7322835   0.6062992   0.9527559 ]&#10;     ...&#10;     [ 0.17322835 -1.          0.62992126]&#10;     [ 0.28346455 -0.7559055   0.93700784]&#10;     [-0.86614174  0.5826772  -0.43307087]]&#10;  &#10;    [[ 0.2992126  -0.38582677  0.8582677 ]&#10;     [ 0.37007874  0.8346457  -0.8503937 ]&#10;     [-0.13385826  1.          0.5748032 ]&#10;     ...&#10;     [ 0.00787402 -0.6771653   0.8031496 ]&#10;     [ 0.9133858   0.8110236  -0.77165353]&#10;     [ 0.8582677  -1.         -0.30708662]]&#10;  &#10;    [[-0.68503934 -0.97637796  0.992126  ]&#10;     [-0.7007874  -0.01574803 -0.47244096]&#10;     [ 0.21259843 -0.42519686  0.7007874 ]&#10;     ...&#10;     [ 0.07086614  0.9448819   0.01574803]&#10;     [-0.8188976  -0.11811024  0.08661418]&#10;     [ 0.68503934 -0.9527559  -0.4015748 ]]]]. conversion from&#10;   {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'int8', 'device': 'cpu'} to&#10;   {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'float32(-1to1)', 'device': 'cpu'} failed&#10;   imports: import skimage as ski&#10;  conversion function: &#10;   def convert(var):&#10;   return ski.util.img_as_float32(var)&#10;  from image_data_integer_to_float32_minus1_to_1 in /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py&#10;assert False&#10; +  where False = is_image_equal(array([[[[-1.7244095 , -0.11811024,  0.8740157 ],\n         [-2.1653543 , -1.7874016 ,  0.7480315 ],\n         [-2.84251...,\n         [-2.6377952 , -1.2362205 , -0.8267716 ],\n         [ 0.37007868, -2.9055119 , -1.8031496 ]]]], dtype=float32), array([[[[-0.36220473,  0.44094488,  0.93700784],\n         [-0.5826772 , -0.39370078,  0.87401575],\n         [-0.92125...,\n         [-0.8188976 , -0.11811024,  0.08661418],\n         [ 0.68503934, -0.9527559 , -0.4015748 ]]]], dtype=float32))">code_generator = &lt;imgdataconvertcodegen.code_generator.ConvertCodeGenerator object at 0x7fa85b2a61d0&gt;
 
     def test_all_conversion_code_exec_on_cpu(code_generator):
         kg = code_generator.knowledge_graph
@@ -11,7 +11,7 @@ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 source_metadata = {'channel_order': 'channel last', 'color_channel': 'rgb', 'data_representation': 'numpy.ndarray', 'device': 'cpu', ...}
 target_metadata = {'channel_order': 'channel last', 'color_channel': 'rgb', 'data_representation': 'numpy.ndarray', 'device': 'cpu', ...}
-kg = &lt;imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7fc42bab30a0&gt;
+kg = &lt;imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.KnowledgeGraph object at 0x7fa8e14c2e90&gt;
 
     def assert_exec_of_conversion_code_in_edge(source_metadata, target_metadata, kg):
         edge_data = kg.get_edge_data(source_metadata, target_metadata)
@@ -41,103 +41,103 @@ kg = &lt;imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.Know
     
 &gt;       assert is_image_equal(target_image,
                               actual_image), f'expected {target_image}, but actual {actual_image}. {error_message}'
-E       AssertionError: expected [[[[ 0.6692914  -1.1102362  -0.984252  ]
-E            [-0.9055118   0.96850395 -0.35433072]
-E            [ 0.29133856  0.14960635 -2.8267717 ]
+E       AssertionError: expected [[[[-1.7244095  -0.11811024  0.8740157 ]
+E            [-2.1653543  -1.7874016   0.7480315 ]
+E            [-2.8425198  -2.3858268   0.7637795 ]
 E            ...
-E            [-0.10236222  0.77952754 -0.6850394 ]
-E            [-0.07086617 -0.8582677  -1.3307086 ]
-E            [ 0.19685042 -2.480315   -1.3622048 ]]
+E            [-0.13385826 -1.3937008  -1.2362205 ]
+E            [-1.6929134   0.48031497 -2.3543305 ]
+E            [-1.8661418  -1.7244095   0.05511808]]
 E         
-E           [[ 0.496063   -2.2913384  -2.496063  ]
-E            [-0.5590551  -2.6692915  -1.1889764 ]
-E            [-1.7086614  -2.6220472  -0.9527559 ]
+E           [[ 0.71653545 -0.7480315  -0.6850394 ]
+E            [-2.559055   -1.7559055   0.16535437]
+E            [ 0.7637795  -2.0866141   0.8740157 ]
 E            ...
-E            [-1.535433   -0.19685042 -2.7637796 ]
-E            [-1.7874016   0.48031497 -0.4015748 ]
-E            [-1.7401575  -1.6771653  -1.2677165 ]]
+E            [-1.5511811  -0.3385827  -1.8188976 ]
+E            [-2.7952757   0.1338582   0.4330709 ]
+E            [-0.16535431 -0.6062992  -2.543307  ]]
 E         
-E           [[-2.8582678   0.79527557 -1.        ]
-E            [-1.7244095   0.3070866  -1.2992126 ]
-E            [-1.6141732  -1.503937   -1.503937  ]
+E           [[-0.37007874 -0.19685042 -0.3070866 ]
+E            [-1.2677165  -2.7952757   0.71653545]
+E            [-1.3149606  -0.29133856 -0.79527557]
 E            ...
-E            [ 0.35433066 -2.8740158  -1.        ]
-E            [-1.6456692  -1.3622048  -2.952756  ]
-E            [-1.7401575  -1.976378   -1.3307086 ]]
-E         
-E           ...
-E         
-E           [[-1.6771653   0.7322835   0.511811  ]
-E            [-2.464567   -2.3543305   0.22834647]
-E            [-0.6850394   0.984252   -1.0787401 ]
-E            ...
-E            [ 0.03937006 -0.19685042 -0.52755904]
-E            [-2.8897638  -0.3070866  -2.8897638 ]
-E            [-1.1417322  -2.7637796  -1.9606299 ]]
-E         
-E           [[-0.7007874  -0.00787401 -1.        ]
-E            [ 0.00787401 -0.3070866   0.25984251]
-E            [-1.8661418  -2.5905511  -1.9606299 ]
-E            ...
-E            [-2.1653543  -0.32283467  0.496063  ]
-E            [-2.4173229  -1.5669291   0.00787401]
-E            [-2.480315    0.46456695 -2.7952757 ]]
-E         
-E           [[-0.7322835   0.03937006  0.05511808]
-E            [-0.79527557 -0.08661419 -2.574803  ]
-E            [-2.6377952  -0.48031497 -0.02362204]
-E            ...
-E            [-1.2047244  -0.07086617 -1.6929134 ]
-E            [-1.9291339   0.5748031   0.16535437]
-E            [ 0.10236216 -2.2598424  -1.8661418 ]]]], but actual [[[[ 0.8346457  -0.05511811  0.00787402]
-E            [ 0.04724409  0.984252    0.32283464]
-E            [ 0.6456693   0.5748032  -0.9133858 ]
-E            ...
-E            [ 0.4488189   0.8897638   0.15748031]
-E            [ 0.46456692  0.07086614 -0.16535433]
-E            [ 0.5984252  -0.7401575  -0.18110237]]
-E         
-E           [[ 0.7480315  -0.6456693  -0.7480315 ]
-E            [ 0.22047244 -0.8346457  -0.09448819]
-E            [-0.35433072 -0.8110236   0.02362205]
-E            ...
-E            [-0.26771653  0.4015748  -0.88188976]
-E            [-0.39370078  0.7401575   0.2992126 ]
-E            [-0.37007874 -0.33858266 -0.13385826]]
-E         
-E           [[-0.92913383  0.8976378   0.        ]
-E            [-0.36220473  0.6535433  -0.1496063 ]
-E            [-0.30708662 -0.2519685  -0.2519685 ]
-E            ...
-E            [ 0.6771653  -0.93700784  0.        ]
-E            [-0.32283464 -0.18110237 -0.97637796]
-E            [-0.37007874 -0.48818898 -0.16535433]]
+E            [ 0.90551186 -2.0866141   0.9370079 ]
+E            [-1.8661418   0.38582683  0.03937006]
+E            [ 0.511811   -2.511811   -0.10236222]]
 E         
 E           ...
 E         
-E           [[-0.33858266  0.86614174  0.7559055 ]
-E            [-0.7322835  -0.6771653   0.61417323]
-E            [ 0.15748031  0.992126   -0.03937008]
+E           [[-0.87401575 -0.77952754  0.03937006]
+E            [ 0.21259844 -2.7165356  -2.1338582 ]
+E            [-2.464567    0.21259844  0.90551186]
 E            ...
-E            [ 0.51968503  0.4015748   0.23622048]
-E            [-0.9448819   0.3464567  -0.9448819 ]
-E            [-0.07086614 -0.88188976 -0.48031497]]
+E            [-0.6535433  -3.          0.25984251]
+E            [-0.4330709  -2.511811    0.8740157 ]
+E            [-2.7322836   0.16535437 -1.8661418 ]]
 E         
-E           [[ 0.1496063   0.496063    0.        ]
-E            [ 0.503937    0.3464567   0.62992126]
-E            [-0.43307087 -0.79527557 -0.48031497]
+E           [[-0.4015748  -1.7716535   0.71653545]
+E            [-0.25984251  0.6692914  -2.7007875 ]
+E            [-1.2677165   1.          0.14960635]
 E            ...
-E            [-0.5826772   0.33858266  0.7480315 ]
-E            [-0.70866144 -0.28346455  0.503937  ]
-E            [-0.7401575   0.7322835  -0.8976378 ]]
+E            [-0.984252   -2.3543305   0.60629916]
+E            [ 0.8267716   0.6220472  -2.543307  ]
+E            [ 0.71653545 -3.         -1.6141732 ]]
 E         
-E           [[ 0.13385826  0.51968503  0.52755904]
-E            [ 0.1023622   0.4566929  -0.78740156]
-E            [-0.8188976   0.25984251  0.48818898]
+E           [[-2.3700786  -2.952756    0.984252  ]
+E            [-2.4015749  -1.031496   -1.9448819 ]
+E            [-0.5748031  -1.8503938   0.40157485]
 E            ...
-E            [-0.1023622   0.46456692 -0.3464567 ]
-E            [-0.46456692  0.78740156  0.5826772 ]
-E            [ 0.5511811  -0.62992126 -0.43307087]]]]. conversion from
+E            [-0.8582677   0.88976383 -0.96850395]
+E            [-2.6377952  -1.2362205  -0.8267716 ]
+E            [ 0.37007868 -2.9055119  -1.8031496 ]]]], but actual [[[[-0.36220473  0.44094488  0.93700784]
+E            [-0.5826772  -0.39370078  0.87401575]
+E            [-0.9212598  -0.6929134   0.88188976]
+E            ...
+E            [ 0.43307087 -0.19685039 -0.11811024]
+E            [-0.3464567   0.7401575  -0.6771653 ]
+E            [-0.43307087 -0.36220473  0.52755904]]
+E         
+E           [[ 0.8582677   0.12598425  0.15748031]
+E            [-0.77952754 -0.37795275  0.5826772 ]
+E            [ 0.88188976 -0.54330707  0.93700784]
+E            ...
+E            [-0.27559054  0.33070865 -0.4094488 ]
+E            [-0.8976378   0.5669291   0.71653545]
+E            [ 0.41732284  0.19685039 -0.77165353]]
+E         
+E           [[ 0.31496063  0.4015748   0.3464567 ]
+E            [-0.13385826 -0.8976378   0.8582677 ]
+E            [-0.15748031  0.35433072  0.1023622 ]
+E            ...
+E            [ 0.9527559  -0.54330707  0.96850395]
+E            [-0.43307087  0.6929134   0.51968503]
+E            [ 0.7559055  -0.7559055   0.4488189 ]]
+E         
+E           ...
+E         
+E           [[ 0.06299213  0.11023622  0.51968503]
+E            [ 0.6062992  -0.8582677  -0.5669291 ]
+E            [-0.7322835   0.6062992   0.9527559 ]
+E            ...
+E            [ 0.17322835 -1.          0.62992126]
+E            [ 0.28346455 -0.7559055   0.93700784]
+E            [-0.86614174  0.5826772  -0.43307087]]
+E         
+E           [[ 0.2992126  -0.38582677  0.8582677 ]
+E            [ 0.37007874  0.8346457  -0.8503937 ]
+E            [-0.13385826  1.          0.5748032 ]
+E            ...
+E            [ 0.00787402 -0.6771653   0.8031496 ]
+E            [ 0.9133858   0.8110236  -0.77165353]
+E            [ 0.8582677  -1.         -0.30708662]]
+E         
+E           [[-0.68503934 -0.97637796  0.992126  ]
+E            [-0.7007874  -0.01574803 -0.47244096]
+E            [ 0.21259843 -0.42519686  0.7007874 ]
+E            ...
+E            [ 0.07086614  0.9448819   0.01574803]
+E            [-0.8188976  -0.11811024  0.08661418]
+E            [ 0.68503934 -0.9527559  -0.4015748 ]]]]. conversion from
 E          {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'int8', 'device': 'cpu'} to
 E          {'data_representation': 'numpy.ndarray', 'color_channel': 'rgb', 'channel_order': 'channel last', 'minibatch_input': True, 'image_data_type': 'float32(-1to1)', 'device': 'cpu'} failed
 E          imports: import skimage as ski
@@ -146,6 +146,6 @@ E          def convert(var):
 E          return ski.util.img_as_float32(var)
 E         from image_data_integer_to_float32_minus1_to_1 in /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py
 E       assert False
-E        +  where False = is_image_equal(array([[[[ 0.6692914 , -1.1102362 , -0.984252  ],\n         [-0.9055118 ,  0.96850395, -0.35433072],\n         [ 0.29133...,\n         [-1.9291339 ,  0.5748031 ,  0.16535437],\n         [ 0.10236216, -2.2598424 , -1.8661418 ]]]], dtype=float32), array([[[[ 0.8346457 , -0.05511811,  0.00787402],\n         [ 0.04724409,  0.984252  ,  0.32283464],\n         [ 0.64566...,\n         [-0.46456692,  0.78740156,  0.5826772 ],\n         [ 0.5511811 , -0.62992126, -0.43307087]]]], dtype=float32))
+E        +  where False = is_image_equal(array([[[[-1.7244095 , -0.11811024,  0.8740157 ],\n         [-2.1653543 , -1.7874016 ,  0.7480315 ],\n         [-2.84251...,\n         [-2.6377952 , -1.2362205 , -0.8267716 ],\n         [ 0.37007868, -2.9055119 , -1.8031496 ]]]], dtype=float32), array([[[[-0.36220473,  0.44094488,  0.93700784],\n         [-0.5826772 , -0.39370078,  0.87401575],\n         [-0.92125...,\n         [-0.8188976 , -0.11811024,  0.08661418],\n         [ 0.68503934, -0.9527559 , -0.4015748 ]]]], dtype=float32))
 
-tests/test_conversion_code_in_kg.py:46: AssertionError</failure></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_pytorch_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because PyTorch is not installed with CUDA support or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:79: Test skipped because PyTorch is not installed with CUDA support or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_tensorflow_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:89: Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_tensorflow_gpu_torch_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:99: Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_io" name="test_load_graph_from_file" time="0.001" /><testcase classname="tests.test_io" name="test_load_graph_with_invalid_path" time="0.001" /><testcase classname="tests.test_io" name="test_save_graph_to_file" time="0.005" /><testcase classname="tests.test_io" name="test_save_graph_with_invalid_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_knowledge_graph_init" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_add_new_node" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_add_edge" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_edge" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_edge_failure" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_save_to_file" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path_no_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path_same_node" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_knowledge_graph_str" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_heuristic_function" time="0.001" /><testcase classname="tests.test_metadata" name="test_encode_to_string" time="0.001" /><testcase classname="tests.test_metadata" name="test_decode_to_dict" time="0.001" /><testcase classname="tests.test_metadata" name="test_exact_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_representation_match_no_channel_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_no_representation_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_rgb_bgr_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_empty_candidate_list" time="0.001" /><testcase classname="tests.test_metadata" name="test_one_candidata" time="0.001" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_match_data_repr" time="0.001" /><testcase classname="tests.test_metadata_differ" name="test_one_metadata_missing_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_one_metadata_different_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_missing_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_different_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_is_differ_value_for_key_true" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_is_differ_value_for_key_false" time="0.000" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_single_value" time="0.005" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_list_values" time="0.001" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_empty" time="0.001" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_none" time="0.001" /><testcase classname="tests.test_py_interface" name="test_get_convert_path" time="0.001" /><testcase classname="tests.test_py_interface" name="test_get_conversion_code" time="0.001" /><testcase classname="tests.test_util" name="test_remove_intermediate_functon_call" time="0.001" /><testcase classname="tests.test_util" name="test_extract_func_body_fail" time="0.000" /><testcase classname="tests.test_util" name="test_func_obj_to_str_function" time="0.001" /><testcase classname="tests.test_util" name="test_exclude_key_from_list" time="0.001" /></testsuite></testsuites>
+tests/test_conversion_code_in_kg.py:46: AssertionError</failure></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_pytorch_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because PyTorch is not installed with CUDA support or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:79: Test skipped because PyTorch is not installed with CUDA support or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_tensorflow_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:89: Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_conversion_code_in_kg" name="test_conversion_code_exec_using_tensorflow_gpu_torch_gpu" time="0.000"><skipped type="pytest.skip" message="Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.">/home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/tests/test_conversion_code_in_kg.py:99: Test skipped because TensorFlow not configured for GPU acceleration or no CUDA-compatible GPU is available.</skipped></testcase><testcase classname="tests.test_io" name="test_load_graph_from_file" time="0.001" /><testcase classname="tests.test_io" name="test_load_graph_with_invalid_path" time="0.001" /><testcase classname="tests.test_io" name="test_save_graph_to_file" time="0.005" /><testcase classname="tests.test_io" name="test_save_graph_with_invalid_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_knowledge_graph_init" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_add_new_node" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_add_edge" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_edge" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_edge_failure" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_save_to_file" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path_no_path" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_get_shortest_path_same_node" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_knowledge_graph_str" time="0.001" /><testcase classname="tests.test_knowledge_graph" name="test_heuristic_function" time="0.001" /><testcase classname="tests.test_metadata" name="test_encode_to_string" time="0.001" /><testcase classname="tests.test_metadata" name="test_decode_to_dict" time="0.000" /><testcase classname="tests.test_metadata" name="test_exact_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_representation_match_no_channel_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_no_representation_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_rgb_bgr_match" time="0.001" /><testcase classname="tests.test_metadata" name="test_empty_candidate_list" time="0.000" /><testcase classname="tests.test_metadata" name="test_one_candidata" time="0.001" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_match_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_one_metadata_missing_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_one_metadata_different_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_missing_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_both_metadata_different_data_repr" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_is_differ_value_for_key_true" time="0.000" /><testcase classname="tests.test_metadata_differ" name="test_is_differ_value_for_key_false" time="0.000" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_single_value" time="0.005" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_list_values" time="0.001" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_empty" time="0.001" /><testcase classname="tests.test_py_interface" name="test_add_conversion_for_metadata_pair_none" time="0.001" /><testcase classname="tests.test_py_interface" name="test_get_convert_path" time="0.001" /><testcase classname="tests.test_py_interface" name="test_get_conversion_code" time="0.001" /><testcase classname="tests.test_util" name="test_remove_intermediate_functon_call" time="0.001" /><testcase classname="tests.test_util" name="test_extract_func_body_fail" time="0.000" /><testcase classname="tests.test_util" name="test_func_obj_to_str_function" time="0.001" /><testcase classname="tests.test_util" name="test_exclude_key_from_list" time="0.001" /></testsuite></testsuites>
