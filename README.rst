@@ -73,8 +73,8 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 .. Pytest Coverage/Status Comment:Begin
 
-.. image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push
-    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml
+.. |build|image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push
+    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml
     :alt: Tests Failed
 
 .. Pytest Coverage/Status Comment:End
