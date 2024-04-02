@@ -44,6 +44,13 @@ jobs:
         pip install pytest pytest-cov
         pip install -e .
         pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
+
+    - name: Verify Coverage Report Format
+      run: |
+        if ! grep -q 'coverage: ' ./pytest-coverage.txt; then
+          echo "Coverage report format is incorrect or missing."
+          exit 1
+        fi
         
     - name: Pytest coverage comment
       if: steps.test.outcome == 'success'  
