@@ -325,7 +325,8 @@ def get_tensorflow_image(source_metadata, target_metadata=None):
             img = tf.expand_dims(img, 0)
 
         if metadata['device'] == 'gpu':
-            img = img.gpu()
+            with tf.device('/GPU:0'):
+                img = tf.identity(img)
         return img
 
     return convert_other_attributes(source_img, source_metadata), convert_other_attributes(target_img, target_metadata)

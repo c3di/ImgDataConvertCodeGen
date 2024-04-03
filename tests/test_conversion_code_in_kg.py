@@ -92,7 +92,7 @@ def test_conversion_code_exec_using_pytorch_gpu(code_generator):
 def test_conversion_code_exec_using_tensorflow_gpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
-        if is_on_gpu_as_data_repr(edge, ['tf.Tensor']):
+        if is_on_gpu_as_data_repr(edge, ['tf.tensor']):
             assert_exec_of_conversion_code_in_edge(*edge, kg)
 
 
@@ -102,5 +102,5 @@ def test_conversion_code_exec_using_tensorflow_gpu(code_generator):
 def test_conversion_code_exec_using_tensorflow_gpu_torch_gpu(code_generator):
     kg = code_generator.knowledge_graph
     for edge in kg.edges:
-        if is_on_gpu_as_data_repr(edge, ['tf.Tensor', 'torch.tensor']):
+        if is_on_gpu_as_data_repr(edge, ['tf.tensor', 'torch.tensor']):
             assert_exec_of_conversion_code_in_edge(*edge, kg)

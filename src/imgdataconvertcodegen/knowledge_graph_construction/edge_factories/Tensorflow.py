@@ -206,7 +206,9 @@ def gpu_to_cpu(source_metadata, target_metadata) -> Conversion:
     ):
         return (
             "import tensorflow as tf",
-            "def convert(var):\n  return tf.device('/cpu:0')(var)",
+            """def convert(var):
+    with tf.device('/cpu:0'):
+        return tf.identity(var)""",
         )
 
 
