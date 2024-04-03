@@ -11,16 +11,16 @@ from .data_for_tests.nodes_edges import all_nodes
 
 @pytest.fixture
 def conversion_for_metadata_pairs():
-    return [({"color_channel": "bgr", "channel_order": "channel last", "minibatch_input": True,
+    return [({"color_channel": "bgr", "channel_order": "channel first", "minibatch_input": False,
               "image_data_type": "uint8", "device": "gpu", "data_representation": "torch.tensor"},
-             {"color_channel": "rgb", "channel_order": "channel first", "minibatch_input": True,
+             {"color_channel": "rgb", "channel_order": "channel first", "minibatch_input": False,
               "image_data_type": "uint8", "device": "gpu", "data_representation": "torch.tensor"},
-             ("", "def convert(var)\n  return var[:, :, ::-1]")),
-            ({"color_channel": "rgb", "channel_order": "channel first", "minibatch_input": True,
+             ("", "def convert(var):\n  return var[[2, 1, 0], :, :]")),
+            ( {"color_channel": "bgr", "channel_order": "channel first", "minibatch_input": False,
               "image_data_type": "uint8", "device": "gpu", "data_representation": "torch.tensor"},
-             {"color_channel": "bgr", "channel_order": "channel last", "minibatch_input": True,
+             {"color_channel": "rgb", "channel_order": "channel first", "minibatch_input": False,
               "image_data_type": "uint8", "device": "gpu", "data_representation": "torch.tensor"},
-             ("", "def convert(var)\n  return var[:, :, ::-1]"))
+             ("", "def convert(var):\n  return var[[2, 1, 0], :, :]"))
             ]
 
 
