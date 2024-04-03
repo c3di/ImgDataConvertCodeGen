@@ -42,7 +42,7 @@ def convert_to_another_repr(source_metadata, src_img, target_metadata):
         "tf.tensor":
             {
                 "numpy.ndarray": lambda x: x.numpy(),
-                "PIL.Image": lambda x: V1F.to_pil_image(x),  # to check?
+                "PIL.Image": lambda x: V1F.to_pil_image(x),
             }
     }
     return mapping[source_metadata["data_representation"]][target_metadata["data_representation"]](src_img)
@@ -92,7 +92,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
 
     img = np.stack([r, g, b], axis=0)  # [3, H, W] uint8 rgb channel first
 
-    def convert_numpy_uint8_to_dtype(img, dtype):
+    def convert_numpy_uint8_to_dtype(img, img_dtype, dtype):
         if dtype == "uint8":
             img = ski.util.img_as_ubyte(img)
         elif dtype == "uint16":
@@ -106,17 +106,56 @@ def get_numpy_image(source_metadata, target_metadata=None):
         elif dtype == "int32":
             img = image_data_convert_with_scaled(img.dtype, np.int32, img)
         elif dtype == "float32(0to1)":
-            img = ski.util.img_as_float32(img)
+            if img_dtype == "float32(-1to1)":
+                img = img * 0.5 + 0.5
+            elif img_dtype == "float64(0to1)" or img_dtype == "double(0to1)":
+                img = img.astype(np.float32)
+            else:
+                # from the unsigned integer type
+                img = ski.util.img_as_float32(img)
         elif dtype == "float32(-1to1)":
-            img = ski.util.img_as_float32(img) * 2 - 1.0
+            # from the signed integer type
+            if img.dtype.kind == 'u' or img_dtype == "float32(0to1)":
+                img = ski.util.img_as_float32(img)
+                img = img * 2 - 1
+            elif img_dtype == "float64(-1to1)" or img_dtype == "double(-1to1)":  # from the double type
+                img = img.astype(np.float32)
+            else:
+                img = ski.util.img_as_float32(img)
         elif dtype == "float64(0to1)":
-            img = ski.util.img_as_float64(img)
+            if img_dtype == "float64(-1to1)":
+                img = img * 0.5 + 0.5
+            elif img_dtype == "float32(0to1)" or img_dtype == "double(0to1)":
+                img = img.astype(np.float64)
+            else:
+                # from the unsigned integer type
+                img = ski.util.img_as_float64(img)
         elif dtype == "float64(-1to1)":
-            img = ski.util.img_as_float64(img) * 2 - 1.0
+            # from the signed integer type
+            if img.dtype.kind == 'u' or img_dtype == "float64(0to1)":
+                img = ski.util.img_as_float64(img)
+                img = img * 2 - 1
+            elif img_dtype == "float32(-1to1)" or img_dtype == "double(-1to1)":
+                img = img.astype(np.float64)
+            else:
+                img = ski.util.img_as_float64(img)
         elif dtype == "double(0to1)":
-            img = ski.util.img_as_float64(img)
+            if img_dtype == "double(-1to1)":
+                img = img * 0.5 + 0.5
+            elif img_dtype == "float32(0to1)" or img_dtype == "float64(0to1)":
+                img = img.astype(np.float64)
+            else:
+                # from the unsigned integer type
+                img = ski.util.img_as_float64(img)
         elif dtype == "double(-1to1)":
-            img = ski.util.img_as_float64(img) * 2 - 1.0
+            # from the signed integer type
+            if img.dtype.kind == 'u' or img_dtype == "float64(0to1)":
+                img = ski.util.img_as_float64(img)
+                img = img * 2 - 1
+            elif img_dtype == "float32(-1to1)" or img_dtype == "float64(-1to1)":
+                img = img.astype(np.float64)
+            else:
+                img = ski.util.img_as_float64(img)
         return img
 
     def color_to_grayscale(color_img_channle_first, color_channel):
@@ -135,7 +174,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
         img = np.repeat(img, repeats=3, axis=0)
         return img
 
-    source_img = convert_numpy_uint8_to_dtype(img, source_metadata["image_data_type"])
+    source_img = convert_numpy_uint8_to_dtype(img, 'uint8', source_metadata["image_data_type"])
     if source_metadata["color_channel"] == "gray":
         source_img = color_to_grayscale(source_img, 'rgb')  # [1, H, W]
     elif source_metadata["color_channel"] == "bgr":
@@ -158,7 +197,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
             target_img = source_img
 
         if target_metadata['image_data_type'] != source_metadata['image_data_type']:
-            target_img = convert_numpy_uint8_to_dtype(target_img, target_metadata["image_data_type"])
+            target_img = convert_numpy_uint8_to_dtype(target_img, source_metadata["image_data_type"], target_metadata["image_data_type"])
 
     def convert_other_attributes(img, metadata):
         if metadata is None:
