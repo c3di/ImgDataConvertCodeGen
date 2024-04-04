@@ -1,4 +1,4 @@
-|docs| |nbspc| |build|  |nbspc|  |PyPI|
+|docs| |nbspc| |PythonVersion| |nbspc| |build|  |nbspc|  |PyPI|
 
 =====================================================
 imgdataconvertcodegen
@@ -88,3 +88,6 @@ This project is licensed under the MIT License. See the LICENSE file for details
 .. |PyPI| image:: https://img.shields.io/pypi/v/imgdataconvertcodegen
         :alt: PyPI - Version
         :target: https://pypi.org/project/imgdataconvertcodegen/
+
+.. |PythonVersion| image:: https://img.shields.io/pypi/pyversions/imgdataconvertcodegen
+        :alt: PyPI - Python Version
