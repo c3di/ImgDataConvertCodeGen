@@ -58,7 +58,7 @@ jobs:
 
     - name: Update README with Coverage Badge
       run: |
-        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |build| image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}25-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/update_coverage_on_readme.yml\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
+        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |coverage| image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}25-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/update_coverage_on_readme.yml\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
 
       
     - name: Commit & Push changes to Readme
