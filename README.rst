@@ -79,8 +79,10 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 .. Pytest Coverage Comment:End
 
-.. Pytest Test:Begin
-.. Pytest Test:End
+.. |test| image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests%20with%20python%203.9-3.11.yml/badge.svg?branch=main
+        :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests%20with%20python%203.9-3.11.yml
+        :alt: Test
+
 
 .. |docs| image:: https://img.shields.io/badge/doc-blue
         :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/main/README.rst
