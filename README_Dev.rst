@@ -35,9 +35,26 @@ or run the tests through test runner interface of IDE like PyCharm or Visual Stu
 Build
 --------------------------------------
 
-# todo
+To build the package, use the following command::
+
+    tox -e build
+
+Also you can remove old distribution files and temporary build artifacts (./build and ./dist) using the following command::
+
+    tox -e clean
 
 Publish
 --------------------------------------
+The version number of this project is automatically determined based on the latest git tag through ``setuptools_scm``."
+To create a new version, create a new tag and push it to the repository::
 
-# todo
+    git tag -a v0.1.0 -m "Version 0.1.0"
+    git push origin v0.1.0
+
+To publish the package to a package index server, use the following command::
+
+    tox -e publish
+
+By default, it uses ``testpypi``. If you want to publish the package
+to be publicly accessible in PyPI, use the ``-- --repository pypi`` option
+
