@@ -1,166 +1,35 @@
 ============================= test session starts ==============================
-platform linux -- Python 3.9.19, pytest-8.1.1, pluggy-1.4.0
+platform linux -- Python 3.10.14, pytest-8.1.1, pluggy-1.4.0
 rootdir: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen
 configfile: pyproject.toml
 plugins: cov-5.0.0
-collected 12 items / 7 errors
+collected 52 items
 
-==================================== ERRORS ====================================
-________________ ERROR collecting tests/test_code_generation.py ________________
-tests/test_code_generation.py:6: in <module>
-    from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-___________ ERROR collecting tests/test_conversion_code_execution.py ___________
-tests/test_conversion_code_execution.py:7: in <module>
-    from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-_____________ ERROR collecting tests/test_conversion_code_in_kg.py _____________
-tests/test_conversion_code_in_kg.py:7: in <module>
-    from imgdataconvertcodegen.image_data import is_image_equal, get_input_image_and_expected_output
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-------------------------------- Captured stderr --------------------------------
-2024-04-04 11:59:55.791035: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 11:59:55.794158: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 11:59:55.832262: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-04-04 11:59:57.249814: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-______________________ ERROR collecting tests/test_io.py _______________________
-tests/test_io.py:7: in <module>
-    from imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, load_graph
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-________________ ERROR collecting tests/test_knowledge_graph.py ________________
-tests/test_knowledge_graph.py:8: in <module>
-    from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph, encode_metadata
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-________________ ERROR collecting tests/test_metadata_differ.py ________________
-tests/test_metadata_differ.py:1: in <module>
-    from imgdataconvertcodegen import are_both_same_data_repr, is_differ_value_for_key
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-_________________ ERROR collecting tests/test_py_interface.py __________________
-tests/test_py_interface.py:5: in <module>
-    from imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
-src/imgdataconvertcodegen/__init__.py:2: in <module>
-    from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,
-src/imgdataconvertcodegen/interface_py_api.py:3: in <module>
-    from .code_generator import ConvertCodeGenerator
-src/imgdataconvertcodegen/code_generator.py:2: in <module>
-    from .knowledge_graph_construction import encode_metadata, Metadata
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py:1: in <module>
-    from .edge_factories import (Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair,
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py:1: in <module>
-    from .type import Conversion, EdgeFactory, FactoriesCluster, ConversionForMetadataPair
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6: in <module>
-    Conversion = Tuple[import_code, convert_code] | None
-E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
+tests/test_code_generation.py .......                                    [ 13%]
+tests/test_conversion_code_execution.py .                                [ 15%]
+tests/test_conversion_code_in_kg.py .sss                                 [ 23%]
+tests/test_io.py ....                                                    [ 30%]
+tests/test_knowledge_graph.py ...........                                [ 51%]
+tests/test_metadata.py ........                                          [ 67%]
+tests/test_metadata_differ.py .......                                    [ 80%]
+tests/test_py_interface.py ......                                        [ 92%]
+tests/test_util.py ....                                                  [100%]
+
 - generated xml file: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/pytest.xml -
 
----------- coverage: platform linux, python 3.9.19-final-0 -----------
-Name                                                                                  Stmts   Miss Branch BrPart  Cover   Missing
----------------------------------------------------------------------------------------------------------------------------------
-src/imgdataconvertcodegen/__init__.py                                                    10      8      0      0    20%   4-22
-src/imgdataconvertcodegen/code_generator.py                                              46     44     10      0     4%   5-74
-src/imgdataconvertcodegen/end_metadata_mapper.py                                        131    131     52      0     0%   10-336
-src/imgdataconvertcodegen/image_data.py                                                 254    254    166      0     0%   1-389
-src/imgdataconvertcodegen/interface_cmd.py                                               11     11      0      0     0%   12-38
-src/imgdataconvertcodegen/interface_py_api.py                                            25     23      0      0     8%   4-72
-src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py                        8      7      0      0    12%   3-13
-src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py                   100    100     28      0     0%   1-131
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/PIL.py             26     26     12      0     0%   1-61
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/Pytorch.py         74     74     50      0     0%   1-200
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/Tensorflow.py      61     61     36      0     0%   1-229
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py         8      7      0      0    12%   2-22
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/inter_libs.py      49     49     16      0     0%   1-214
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py          137    137    100      0     0%   1-378
-src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py             8      3      0      0    62%   7-9
-src/imgdataconvertcodegen/knowledge_graph_construction/io.py                             11     11      0      0     0%   1-15
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py                52     52     10      0     0%   1-74
-src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py                  26     21     22      0    10%   5-27, 31, 35, 39-42
-src/imgdataconvertcodegen/metadata_differ.py                                              4      4      0      0     0%   1-6
-src/imgdataconvertcodegen/util.py                                                        20     15      6      0    19%   31-43, 47, 62-63
----------------------------------------------------------------------------------------------------------------------------------
-TOTAL                                                                                  1079   1038    508      0     3%
+---------- coverage: platform linux, python 3.10.14-final-0 ----------
+Name                                                                        Stmts   Miss Branch BrPart  Cover   Missing
+-----------------------------------------------------------------------------------------------------------------------
+src/imgdataconvertcodegen/end_metadata_mapper.py                              131     90     52      7    26%   39, 41, 55, 67, 82-100, 112-125, 137-151, 163-177, 190-221, 238, 253, 259, 273-292, 304-336
+src/imgdataconvertcodegen/image_data.py                                       254     12    168     11    95%   61, 69, 91, 127, 144, 150->159, 158, 169, 342, 378, 387-389
+src/imgdataconvertcodegen/interface_cmd.py                                     11     11      0      0     0%   12-38
+src/imgdataconvertcodegen/interface_py_api.py                                  25      4      0      0    84%   61-62, 66-67
+src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py         100      9     28      2    91%   37-38, 42, 81, 119-121, 124-125
+src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py      52      6     10      1    89%   50-57
+src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py        26      0     22      2    96%   24->27, 25->24
+-----------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                        1079    132    514     23    88%
 
-2 files skipped due to complete coverage.
+15 files skipped due to complete coverage.
 
-=========================== short test summary info ============================
-ERROR tests/test_code_generation.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_conversion_code_execution.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_conversion_code_in_kg.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_io.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_knowledge_graph.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_metadata_differ.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-ERROR tests/test_py_interface.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
-!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
-============================== 7 errors in 5.18s ===============================
+======================== 49 passed, 3 skipped in 37.59s ========================
