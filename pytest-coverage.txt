@@ -55,11 +55,11 @@ src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6:
     Conversion = Tuple[import_code, convert_code] | None
 E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
 ------------------------------- Captured stderr --------------------------------
-2024-04-04 08:49:49.946754: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 08:49:49.949826: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 08:49:49.987521: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-04-04 11:59:55.791035: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-04-04 11:59:55.794158: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-04-04 11:59:55.832262: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-04-04 08:49:51.284821: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-04-04 11:59:57.249814: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 ______________________ ERROR collecting tests/test_io.py _______________________
 tests/test_io.py:7: in <module>
     from imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, load_graph
@@ -163,4 +163,4 @@ ERROR tests/test_knowledge_graph.py - TypeError: unsupported operand type(s) for
 ERROR tests/test_metadata_differ.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
 ERROR tests/test_py_interface.py - TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
 !!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
-============================== 7 errors in 4.79s ===============================
+============================== 7 errors in 5.18s ===============================
