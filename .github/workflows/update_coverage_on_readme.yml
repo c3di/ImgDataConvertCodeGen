@@ -17,10 +17,6 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    continue-on-error: true
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v4
@@ -31,10 +27,10 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-          python-version: ${{ matrix.python-version }}
+        python-version: "3.10"
 
     - name: Install dependencies
       run: |
@@ -49,11 +45,10 @@ jobs:
       run: |
         pip install pytest pytest-cov
         pip install -e .
-        pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src tests/ > pytest-coverage.txt || echo "pytest_failed=true" >> $GITHUB_ENV
+        pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src tests/ > pytest-coverage.txt 
 
 
     - name: Pytest coverage comment
-      if: env.pytest_failed != 'true'
       id: coverageComment
       uses: MishaKav/pytest-coverage-comment@main
       with:
@@ -62,14 +57,9 @@ jobs:
         hide-report: true
 
     - name: Update README with Coverage Badge
-      if: env.pytest_failed != 'true'
       run: |
         sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |build| image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}25-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml\n   :alt: Coverage\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
-      
-    - name: Update README with Failed Status Badge
-      if: env.pytest_failed == 'true'
-      run: |
-        sed -i '/.. Pytest Coverage\/Status Comment:Begin/,/.. Pytest Coverage\/Status Comment:End/c\.. Pytest Coverage\/Status Comment:Begin\n\n.. |build| image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests.yml/badge.svg?event=push\n    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/test_update_coverage_on_readme.yml\n    :alt: Tests Failed\n\n.. Pytest Coverage\/Status Comment:End' ./README.rst
+
       
     - name: Commit & Push changes to Readme
       uses: actions-js/push@master
