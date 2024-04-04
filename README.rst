@@ -1,4 +1,4 @@
-|docs| |nbspc| |PythonVersion| |nbspc| |build|  |nbspc|  |PyPI|
+|docs| |nbspc| |PythonVersion| |nbspc| |test| |nbspc| |coverage|  |nbspc|  |PyPI|
 
 =====================================================
 imgdataconvertcodegen
@@ -71,13 +71,16 @@ License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 
-.. Pytest Coverage/Status Comment:Begin
+.. Pytest Coverage Comment:Begin
 
 .. |build| image:: https://img.shields.io/badge/Coverage-88%25-green.svg
    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/update_coverage_on_readme.yml
    :alt: Coverage
 
-.. Pytest Coverage/Status Comment:End
+.. Pytest Coverage Comment:End
+
+.. Pytest Test:Begin
+.. Pytest Test:End
 
 .. |docs| image:: https://img.shields.io/badge/doc-blue
         :target: https://github.com/c3di/ImgDataConvertCodeGen/blob/main/README.rst
