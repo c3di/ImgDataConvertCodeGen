@@ -10,7 +10,8 @@ on:
     branches: [ "main" ]
 
 permissions:
-    contents: read
+    pull-requests: write
+    contents: write
 
 jobs:
   tests:
@@ -40,4 +41,17 @@ jobs:
       run: |
         pip install pytest pytest-cov
         pip install -e .
-        pytest 
+        pytest
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
+
+    - name: Update README with test Badge
+      run: |
+        sed -i '/.. Pytest Test:Begin/,/.. Pytest Test:End/c\.. Pytest Test:Begin\n\n.. |test| image:: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests%20with%20python%203.9-3.11.yml/badge.svg?branch=main\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/tests%20with%20python%203.9-3.11.yml\n   :alt: test\n\n.. Pytest Test:End' ./README.rst
+      
+    - name: Commit & Push changes to Readme
+      uses: actions-js/push@master
+      with:
+        message: Update test result on Readme
+        github_token: ${{ secrets.GITHUB_TOKEN }}
