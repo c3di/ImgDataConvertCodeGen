@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="7" failures="0" skipped="0" tests="7" time="5.403" timestamp="2024-04-04T08:32:19.919952" hostname="fv-az1528-392"><testcase classname="" name="tests.test_code_generation" time="0.000"><error message="collection failure">tests/test_code_generation.py:6: in &lt;module&gt;
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="7" failures="0" skipped="0" tests="7" time="5.408" timestamp="2024-04-04T08:39:17.284798" hostname="fv-az1795-13"><testcase classname="" name="tests.test_code_generation" time="0.000"><error message="collection failure">tests/test_code_generation.py:6: in &lt;module&gt;
     from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
 src/imgdataconvertcodegen/__init__.py:2: in &lt;module&gt;
     from .interface_py_api import (get_conversion_code, get_convert_path, add_edge_factory_cluster,

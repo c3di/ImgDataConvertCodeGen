@@ -55,11 +55,11 @@ src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py:6:
     Conversion = Tuple[import_code, convert_code] | None
 E   TypeError: unsupported operand type(s) for |: '_GenericAlias' and 'NoneType'
 ------------------------------- Captured stderr --------------------------------
-2024-04-04 08:32:21.745900: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 08:32:21.748984: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-04-04 08:32:21.786764: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-04-04 08:39:19.020894: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-04-04 08:39:19.024073: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-04-04 08:39:19.062299: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-04-04 08:32:23.234753: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-04-04 08:39:20.509567: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 ______________________ ERROR collecting tests/test_io.py _______________________
 tests/test_io.py:7: in <module>
     from imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, load_graph
