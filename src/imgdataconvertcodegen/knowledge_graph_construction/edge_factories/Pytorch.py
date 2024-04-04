@@ -134,12 +134,12 @@ def channel_first_gray_to_rgb(source_metadata, target_metadata) -> Conversion:
     ):
         if source_metadata.get("minibatch_input"):
             return (
-                "import torch",
+                "",
                 "def convert(var):\n  return var.repeat(1, 3, 1, 1)",
             )
         else:
             return (
-                "import torch",
+                "",
                 "def convert(var):\n  return var.repeat(3, 1, 1)",
             )
 
