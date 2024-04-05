@@ -60,12 +60,13 @@ jobs:
       
     - name: Commit & Push changes to Readme
       run: |
-        git config --global user.name 'Abandonalo'
-        git config --global user.email 'alo.rast7@icloud.com'
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
         git checkout main
         git pull origin main
         git add README.rst
-        git commit -m "Update coverage on Readme" || echo "No changes to commit"
+        # Ignore error cases with `|| true`
+        git commit -m "Update coverage on Readme" || true
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
