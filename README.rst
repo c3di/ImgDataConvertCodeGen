@@ -1,8 +1,8 @@
-|docs| |nbspc| |PythonVersion| |nbspc| |test| |nbspc| |coverage|  |nbspc|  |PyPI|
-
 =====================================================
 imgdataconvertcodegen
 =====================================================
+
+|docs| |nbspc| |PythonVersion| |nbspc| |test| |nbspc| |coverage|  |nbspc|  |PyPI|
 
 Introduction
 ------------
