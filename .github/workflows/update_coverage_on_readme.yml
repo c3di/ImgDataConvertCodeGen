@@ -41,7 +41,7 @@ jobs:
       id: test
       run: |
         pip install pytest pytest-cov
-        pip install -e .
+        pip install .
         pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=src tests/ > pytest-coverage.txt 
 
 
