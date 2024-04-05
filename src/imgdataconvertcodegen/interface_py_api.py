@@ -1,16 +1,25 @@
-from typing import List
+from typing import List, Union
 
 from .code_generator import ConvertCodeGenerator
 from .end_metadata_mapper import end_metadata_mapper, ImageDesc
-from .knowledge_graph_construction import get_knowledge_graph_constructor, MetadataValues, FactoriesCluster, \
-    ConversionForMetadataPair, Metadata
+from .knowledge_graph_construction import (
+    get_knowledge_graph_constructor,
+    MetadataValues,
+    FactoriesCluster,
+    ConversionForMetadataPair,
+    Metadata,
+)
 
 _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
-def get_conversion_code(source_var_name: str, source_image_desc: ImageDesc,
-                        target_var_name: str, target_image_desc: ImageDesc) -> str | None:
+def get_conversion_code(
+    source_var_name: str,
+    source_image_desc: ImageDesc,
+    target_var_name: str,
+    target_image_desc: ImageDesc,
+) -> Union[str, None]:
     """
     Generates Python code as a string that performs data conversion from a source variable to a target variable.
 
@@ -38,18 +47,29 @@ def get_conversion_code(source_var_name: str, source_image_desc: ImageDesc,
         #  target_image = torch.unsqueeze(image, 0)
     """
 
-    source_metadata, target_metadata = end_metadata_mapper(source_image_desc, target_image_desc)
-    return get_conversion_by_metadata(source_var_name, source_metadata, target_var_name, target_metadata)
+    source_metadata, target_metadata = end_metadata_mapper(
+        source_image_desc, target_image_desc
+    )
+    return get_conversion_by_metadata(
+        source_var_name, source_metadata, target_var_name, target_metadata
+    )
 
 
-def get_conversion_by_metadata(source_var_name: str, source_metadata: Metadata,
-                               target_var_name: str, target_metadata: Metadata) -> str | None:
-    return _code_generator.get_conversion(source_var_name, source_metadata,
-                                          target_var_name, target_metadata)
+def get_conversion_by_metadata(
+    source_var_name: str,
+    source_metadata: Metadata,
+    target_var_name: str,
+    target_metadata: Metadata,
+) -> Union[str, None]:
+    return _code_generator.get_conversion(
+        source_var_name, source_metadata, target_var_name, target_metadata
+    )
 
 
 def get_convert_path(source_image_desc: ImageDesc, target_image_desc: ImageDesc):
-    source_metadata, target_metadata = end_metadata_mapper(source_image_desc, target_image_desc)
+    source_metadata, target_metadata = end_metadata_mapper(
+        source_image_desc, target_image_desc
+    )
     return get_convert_path_by_metadata(source_metadata, target_metadata)
 
 
@@ -67,6 +87,8 @@ def add_edge_factory_cluster(factory_cluster: FactoriesCluster):
     _code_generator.knowledge_graph = _constructor.knowledge_graph
 
 
-def add_conversion_for_metadata_pairs(pairs: List[ConversionForMetadataPair] | ConversionForMetadataPair):
+def add_conversion_for_metadata_pairs(
+    pairs: Union[List[ConversionForMetadataPair], ConversionForMetadataPair]
+):
     _constructor.add_conversion_for_metadata_pairs(pairs)
     _code_generator.knowledge_graph = _constructor.knowledge_graph
