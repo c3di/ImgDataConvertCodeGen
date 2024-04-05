@@ -23,13 +23,13 @@ Name                                                                        Stmt
 src/imgdataconvertcodegen/end_metadata_mapper.py                              131     90     52      7    26%   39, 41, 55, 67, 82-100, 112-125, 137-151, 163-177, 190-221, 238, 253, 259, 273-292, 304-336
 src/imgdataconvertcodegen/image_data.py                                       254     12    168     11    95%   61, 69, 91, 127, 144, 150->159, 158, 169, 342, 378, 387-389
 src/imgdataconvertcodegen/interface_cmd.py                                     11     11      0      0     0%   12-38
-src/imgdataconvertcodegen/interface_py_api.py                                  25      4      0      0    84%   61-62, 66-67
-src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py         100      9     28      2    91%   37-38, 42, 81, 119-121, 124-125
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py      52      6     10      1    89%   50-57
+src/imgdataconvertcodegen/interface_py_api.py                                  25      4      0      0    84%   81-82, 86-87
+src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py         100      9     28      2    91%   45-46, 50, 104, 156-160, 163-166
+src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py      53      6     10      1    89%   68-75
 src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py        26      0     22      2    96%   24->27, 25->24
 -----------------------------------------------------------------------------------------------------------------------
-TOTAL                                                                        1079    132    514     23    88%
+TOTAL                                                                        1081    132    514     23    88%
 
 15 files skipped due to complete coverage.
 
-======================== 49 passed, 3 skipped in 35.71s ========================
+======================== 49 passed, 3 skipped in 36.95s ========================
