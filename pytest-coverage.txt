@@ -18,18 +18,31 @@ tests/test_util.py ....                                                  [100%]
 - generated xml file: /home/runner/work/ImgDataConvertCodeGen/ImgDataConvertCodeGen/pytest.xml -
 
 ---------- coverage: platform linux, python 3.10.14-final-0 ----------
-Name                                                                        Stmts   Miss Branch BrPart  Cover   Missing
------------------------------------------------------------------------------------------------------------------------
-src/imgdataconvertcodegen/end_metadata_mapper.py                              131     90     52      7    26%   39, 41, 55, 67, 82-100, 112-125, 137-151, 163-177, 190-221, 238, 253, 259, 273-292, 304-336
-src/imgdataconvertcodegen/image_data.py                                       254     12    168     11    95%   61, 69, 91, 127, 144, 150->159, 158, 169, 342, 378, 387-389
-src/imgdataconvertcodegen/interface_cmd.py                                     11     11      0      0     0%   12-38
-src/imgdataconvertcodegen/interface_py_api.py                                  25      4      0      0    84%   81-82, 86-87
-src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py         100      9     28      2    91%   45-46, 50, 104, 156-160, 163-166
-src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py      53      6     10      1    89%   68-75
-src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py        26      0     22      2    96%   24->27, 25->24
------------------------------------------------------------------------------------------------------------------------
-TOTAL                                                                        1081    132    514     23    88%
+Name                                                                                  Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------------------------------------
+src/imgdataconvertcodegen/__init__.py                                                    10     10     0%   1-22
+src/imgdataconvertcodegen/code_generator.py                                              47     47     0%   1-94
+src/imgdataconvertcodegen/end_metadata_mapper.py                                        131    131     0%   10-336
+src/imgdataconvertcodegen/image_data.py                                                 254    254     0%   1-389
+src/imgdataconvertcodegen/interface_cmd.py                                               11     11     0%   12-38
+src/imgdataconvertcodegen/interface_py_api.py                                            25     25     0%   1-94
+src/imgdataconvertcodegen/knowledge_graph_construction/__init__.py                        8      8     0%   1-13
+src/imgdataconvertcodegen/knowledge_graph_construction/constructor.py                   100    100     0%   1-176
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/PIL.py             26     26     0%   1-61
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/Pytorch.py         74     74     0%   1-200
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/Tensorflow.py      61     61     0%   1-229
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/__init__.py         8      8     0%   1-22
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/inter_libs.py      49     49     0%   1-214
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/numpy.py          137    137     0%   1-378
+src/imgdataconvertcodegen/knowledge_graph_construction/edge_factories/type.py             8      8     0%   1-9
+src/imgdataconvertcodegen/knowledge_graph_construction/io.py                             11     11     0%   1-15
+src/imgdataconvertcodegen/knowledge_graph_construction/knowledge_graph.py                53     53     0%   1-101
+src/imgdataconvertcodegen/knowledge_graph_construction/metedata/__init__.py               3      3     0%   1-4
+src/imgdataconvertcodegen/knowledge_graph_construction/metedata/type.py                  15     15     0%   1-21
+src/imgdataconvertcodegen/knowledge_graph_construction/metedata/util.py                  26     26     0%   1-42
+src/imgdataconvertcodegen/metadata_differ.py                                              4      4     0%   1-6
+src/imgdataconvertcodegen/util.py                                                        20     20     0%   1-63
+-------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                  1081   1081     0%
 
-15 files skipped due to complete coverage.
-
-======================== 49 passed, 3 skipped in 37.28s ========================
+======================== 49 passed, 3 skipped in 34.76s ========================

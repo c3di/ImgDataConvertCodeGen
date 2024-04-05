@@ -73,7 +73,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 .. Pytest Coverage Comment:Begin
 
-.. |coverage| image:: https://img.shields.io/badge/Coverage-88%25-green.svg
+.. |coverage| image:: https://img.shields.io/badge/Coverage-0%25-red.svg
    :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/update_coverage_on_readme.yml
    :alt: Coverage
 
