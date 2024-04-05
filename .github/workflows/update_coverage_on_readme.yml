@@ -59,6 +59,7 @@ jobs:
 
       
     - name: Commit & Push changes to Readme
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: actions-js/push@master
       with:
-       commit_message: Updated coverage badge
+        message: Update coverage on Readme
+        github_token: ${{ secrets.GITHUB_TOKEN }}
