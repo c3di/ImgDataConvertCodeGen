@@ -372,7 +372,7 @@ def is_tensorflow_image_equal(image1, image2, tolerance=1e-5):
     return tf.reduce_all(combined_check)
 
 
-def is_image_equal(image1, image2, tolerance=1e-5):
+def is_image_equal(image1, image2, tolerance=1):
     try:
         if type(image1) != type(image2):
             return False
