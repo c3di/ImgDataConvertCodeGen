@@ -53,16 +53,19 @@ jobs:
         junitxml-path: ./pytest.xml
         hide-report: true
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v6
-
     - name: Update README with Coverage Badge
       run: |
         sed -i '/.. Pytest Coverage Comment:Begin/,/.. Pytest Coverage Comment:End/c\.. Pytest Coverage Comment:Begin\n\n.. |coverage| image:: https://img.shields.io/badge/Coverage-${{ steps.coverageComment.outputs.coverage }}25-${{ steps.coverageComment.outputs.color }}.svg\n   :target: https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/update_coverage_on_readme.yml\n   :alt: Coverage\n\n.. Pytest Coverage Comment:End' ./README.rst
 
       
     - name: Commit & Push changes to Readme
-      uses: actions-js/push@master
-      with:
-        message: Update coverage on Readme
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name 'Abandonalo'
+        git config --global user.email 'alo.rast7@icloud.com'
+        git checkout main
+        git pull origin main
+        git add README.rst
+        git commit -m "Update coverage on Readme" || echo "No changes to commit"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
