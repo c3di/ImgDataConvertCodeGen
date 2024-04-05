@@ -2,7 +2,7 @@
 imgdataconvertcodegen
 =====================================================
 
-|docs| |nbspc| |PythonVersion| |nbspc| |test| |nbspc| |coverage|  |nbspc|  |PyPI|
+|docs| |nbspc| |PythonVersion| |nbspc| |PyPI| |nbspc| |test| |nbspc| |coverage| |nbspc|  
 
 Introduction
 ------------
