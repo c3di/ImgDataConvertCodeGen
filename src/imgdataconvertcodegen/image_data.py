@@ -7,10 +7,19 @@ from torchvision.transforms import functional as V1F
 from torchvision.transforms.v2 import functional as V2F
 
 h, w = 20, 20
-r = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
-g = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
-b = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
 
+
+def set_image_dim(new_w, new_h):
+    global w, h
+    w = new_w
+    h = new_h
+
+
+def get_r_g_b():
+    r = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+    g = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+    b = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+    return r, g, b
 
 def get_input_image_and_expected_output(source_metadata, target_metadata):
     if source_metadata["data_representation"] == target_metadata["data_representation"]:
@@ -89,7 +98,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
     if is_invalid_numpy_metadata(source_metadata) or (
             target_metadata is not None and is_invalid_numpy_metadata(target_metadata)):
         raise ValueError(f"Unsupported metadata for numpy.ndarray: {source_metadata} or {target_metadata}")
-
+    r, g, b = get_r_g_b()
     img = np.stack([r, g, b], axis=0)  # [3, H, W] uint8 rgb channel first
 
     def convert_numpy_uint8_to_dtype(img, img_dtype, dtype):
@@ -216,6 +225,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
 
 
 def get_torch_image(source_metadata, target_metadata=None):
+    r, g, b = get_r_g_b()
     source_img = torch.stack([torch.from_numpy(r), torch.from_numpy(g), torch.from_numpy(b)], dim=0)  # [3, H, W] uint8
     source_img = torch_to_dtype(source_img, source_metadata)
     if source_metadata["color_channel"] == "gray":
@@ -274,6 +284,7 @@ def torch_to_dtype(source_img, metadata):
 
 
 def get_tensorflow_image(source_metadata, target_metadata=None):
+    r, g, b = get_r_g_b()
     source_img = tf.stack([tf.convert_to_tensor(r / 255.0, dtype=tf.float32),
                            tf.convert_to_tensor(g / 255.0, dtype=tf.float32),
                            tf.convert_to_tensor(b / 255.0, dtype=tf.float32), ],
@@ -342,6 +353,7 @@ def get_pil_image(source_metadata, target_metadata=None):
         raise ValueError(
             f"Unsupported metadata for PIL.Image: {source_metadata} or {target_metadata}"
         )
+    r, g, b = get_r_g_b()
     img_array = np.stack([r, g, b], axis=-1)
     base_img = Image.fromarray(img_array, mode='RGB')  # [H, W, 3] uint8 rgb channel last
 

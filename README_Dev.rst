@@ -22,13 +22,9 @@ With the Python virtual environment activated, install the required dependencies
 
 **Running Tests**
 
-Navigate to the project's working directory and install the project in editable mode::
+Navigate to the root directory and run the tests in the tests folder using the following command::
 
-    pip install -e .
-
-To run the tests, use the following command::
-
-    pytest
+    pytest tests
 
 or run the tests through test runner interface of IDE like PyCharm or Visual Studio Code.
 

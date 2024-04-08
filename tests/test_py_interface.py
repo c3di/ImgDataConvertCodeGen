@@ -1,11 +1,10 @@
 import os
-
 import pytest
 
-from imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
+from src.imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
     get_conversion_code
-from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
+from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import all_nodes
 
 
@@ -25,6 +24,10 @@ def conversion_for_metadata_pairs():
 
 
 def test_add_conversion_for_metadata_pair_single_value(conversion_for_metadata_pairs):
+    def noop():
+        pass
+    _constructor.save_knowledge_graph = noop
+
     _constructor.clear_knowledge_graph()
     pair = conversion_for_metadata_pairs[0]
     add_conversion_for_metadata_pairs(pair)
@@ -36,6 +39,10 @@ def test_add_conversion_for_metadata_pair_single_value(conversion_for_metadata_p
 
 
 def test_add_conversion_for_metadata_pair_list_values(conversion_for_metadata_pairs):
+    def noop():
+        pass
+    _constructor.save_knowledge_graph = noop
+
     _constructor.clear_knowledge_graph()
     add_conversion_for_metadata_pairs(conversion_for_metadata_pairs)
     for pair in conversion_for_metadata_pairs:
@@ -48,6 +55,10 @@ def test_add_conversion_for_metadata_pair_list_values(conversion_for_metadata_pa
 
 
 def test_add_conversion_for_metadata_pair_empty():
+    def noop():
+        pass
+    _constructor.save_knowledge_graph = noop
+
     _constructor.clear_knowledge_graph()
     add_conversion_for_metadata_pairs([])
     assert _code_generator.knowledge_graph.nodes == []
@@ -55,6 +66,10 @@ def test_add_conversion_for_metadata_pair_empty():
 
 
 def test_add_conversion_for_metadata_pair_none():
+    def noop():
+        pass
+    _constructor.save_knowledge_graph = noop
+
     _constructor.clear_knowledge_graph()
     add_conversion_for_metadata_pairs(None)
     assert _code_generator.knowledge_graph.nodes == []
@@ -66,7 +81,7 @@ def mock_code_generator(monkeypatch):
     kg = KnowledgeGraph()
     kg.load_from_file(os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json'))
     mock = ConvertCodeGenerator(kg)
-    monkeypatch.setattr('imgdataconvertcodegen.interface_py_api._code_generator', mock)
+    monkeypatch.setattr('src.imgdataconvertcodegen.interface_py_api._code_generator', mock)
     return mock
 
 

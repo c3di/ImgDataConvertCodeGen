@@ -1,4 +1,4 @@
-from imgdataconvertcodegen.util import extract_func_body, func_obj_to_str, exclude_key_from_list
+from src.imgdataconvertcodegen.util import extract_func_body, func_obj_to_str, exclude_key_from_list
 
 
 def test_remove_intermediate_functon_call():
