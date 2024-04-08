@@ -1,4 +1,4 @@
-name: Run Tests with Python 3.9-3.11
+name: Tests
 
 on: [push, pull_request]
 
@@ -22,9 +22,21 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements_cpu.txt
+        pip install pytest pytest-cov
 
     - name: Run pytest
       id: test
-      run: |
-        pip install pytest
-        pytest
+      run: pytest tests/
+
+    - name: Run tests with coverage (Python ${{ matrix.python-version }})
+      if: matrix.python-version == '3.10'  # Choose one version for coverage
+      run: pytest --cov=imgdataconvertcodegen tests/
+      env:
+        COVERAGE: true
+
+    - name: Upload coverage reports to Codecov
+      if: env.COVERAGE == 'true'
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: c3di/ImgDataConvertCodeGen
