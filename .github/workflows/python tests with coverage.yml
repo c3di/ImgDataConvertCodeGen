@@ -30,7 +30,7 @@ jobs:
 
     - name: Run tests with coverage (Python ${{ matrix.python-version }})
       if: matrix.python-version == '3.10'  # Choose one version for coverage
-      run: pytest --cov=imgdataconvertcodegen tests/
+      run: pytest --cov=src.imgdataconvertcodegen tests/
       env:
         COVERAGE: true
 
