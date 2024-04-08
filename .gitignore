@@ -56,3 +56,7 @@ MANIFEST
 
 # Project temp files
 knowledge_graph.json
+
+# Pytest
+pytest.xml
+pytest-coverage.txt
