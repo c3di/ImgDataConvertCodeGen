@@ -9,11 +9,17 @@
 from setuptools import setup
 
 if __name__ == "__main__":
+
+    def custom_version_scheme(version):
+        if version.exact:
+            return version.format_with("")
+        else:
+            return version.format_with("{tag}")
+
+
     try:
-        setup(use_scm_version=False,
-              version="0.0.1"
-              # To specify here
-        )
+        setup(use_scm_version={"version_scheme": custom_version_scheme,
+                               "local_scheme": "no-local-version", })
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
