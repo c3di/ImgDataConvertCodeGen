@@ -40,11 +40,11 @@ target_image = torch.unsqueeze(image, 0)
 
 **Accuracy**
 
-All primitive conversion code snippets are stored within the edges of the knowledge graph. These snippets are verified through execution checks to guarantee their correctness. For a more in-depth examination, please refer to the [`test_conversion_code_in_kg.py`](./tests/test_conversion_code_in_kg.py).
+All primitive conversion code snippets are stored within the edges of the knowledge graph. These snippets are verified through execution checks to guarantee their correctness. For a more in-depth examination, please refer to the [`test_conversion_code_in_kg.py`](https://github.com/c3di/ImgDataConvertCodeGen/blob/main/tests/test_conversion_code_in_kg.py).
 
 **Performance profiling**
 
-The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module. For comprehensive insights, please refer to the [`profiling notebooks`](./profile).
+The performance of knowledge graph construction and code generation processes is meticulously analyzed using the cProfile module. For comprehensive insights, please refer to the [`profiling notebooks`](https://github.com/c3di/ImgDataConvertCodeGen/blob/main/profile).
 
 **Usability Evaluation**
 
@@ -53,7 +53,7 @@ Please refer to [Usability Evaluation](https://github.com/c3di/ImgDataConvertCod
 ## Development
 
 
-For detailed instructions on developing, building, and publishing this package, please refer to the [README_DEV](./README_Dev.md).
+For detailed instructions on developing, building, and publishing this package, please refer to the [README_DEV](https://github.com/c3di/ImgDataConvertCodeGen/blob/main/README_Dev.md).
 
 
 ## Cite
