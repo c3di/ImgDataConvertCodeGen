@@ -4,7 +4,7 @@ from unittest.mock import patch, mock_open
 import networkx as nx
 import pytest
 
-from imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, load_graph
+from src.imgdataconvertcodegen.knowledge_graph_construction.io import save_graph, load_graph
 
 
 def test_load_graph_from_file():

@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
+from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import new_node, test_nodes, all_nodes
 
 
@@ -74,7 +74,8 @@ def test_generate_conversion_using_cache(code_generator):
     target_var = 'result'
 
     code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
-    assert list(code_generator._cache.values()) == [[all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]]], "Code not cached"
+    assert list(code_generator._cache.values()) == [
+        [all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]]], "Code not cached"
 
     code_from_cache = code_generator.get_conversion(source_var, test_nodes[0], target_var, new_node)
     expected_code = ('import torch\n'
