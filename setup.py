@@ -10,19 +10,8 @@ from setuptools import setup
 
 if __name__ == "__main__":
 
-    def custom_local_scheme(version):
-        return ""
-
-
-    def custom_version_scheme(version):
-        # If the current commit is not tagged, return a base version without .devN
-        return version.format_with("{tag}")
-
-
     try:
-        setup(use_scm_version={"version_scheme": custom_version_scheme,
-                               "local_scheme": custom_local_scheme,
-                               })
+        setup()
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
