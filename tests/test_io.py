@@ -14,7 +14,7 @@ def test_load_graph_from_file():
     graph = load_graph(json_file_path)
 
     assert isinstance(graph, nx.DiGraph)
-    assert len(graph.nodes) == 75, "Graph should have 5 nodes, but it has " + str(len(graph.nodes))
+    assert len(graph.nodes) == 5, "Graph should have 5 nodes, but it has " + str(len(graph.nodes))
     assert len(graph.edges) == 4, "Graph should have 4 edges, but it has " + str(len(graph.edges))
 
 
