@@ -27,6 +27,14 @@ or run the tests through test runner interface of IDE like PyCharm or Visual Stu
 
 ## Build
 
+The version number of this project is automatically determined based on the latest git tag through `setuptools_scm`.
+To create a new version, create a new tag and push it to the repository:
+```bash
+git tag -a v0.1.0 -m "Version 0.1.0"
+git push origin v0.1.0
+```
+Please change the version number accordingly.
+
 To build the package, use the following command:
 ```bash
 tox -e build
@@ -39,12 +47,6 @@ tox -e clean
 
 ## Publish
 
-The version number of this project is automatically determined based on the latest git tag through `setuptools_scm`.
-To create a new version, create a new tag and push it to the repository:
-```bash
-git tag -a v0.1.0 -m "Version 0.1.0"
-git push origin v0.1.0
-```
 To publish the package to a package index server, use the following command:
 ```bash
 tox -e publish
