@@ -7,11 +7,14 @@
     Learn more under: https://pyscaffold.org/
 """
 from setuptools import setup
+import setuptools_scm
 
 if __name__ == "__main__":
 
+    version = setuptools_scm.get_version()
+
     try:
-        setup()
+        setup(version=version,)
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
