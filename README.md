@@ -1,7 +1,7 @@
 # imgdataconvertcodegen
 
 [![PyPI - Version](https://img.shields.io/pypi/v/imgdataconvertcodegen.svg)](https://pypi.org/project/imgdataconvertcodegen/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/imgdataconvertcodegen)](https://pypi.org/project/imgdataconvertcodegen/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ImgDataConvertCodeGen)](https://pypi.org/project/imgdataconvertcodegen/)
 [![Documentation](https://img.shields.io/badge/Doc-ReadMe-blue)](https://github.com/c3di/ImgDataConvertCodeGen/blob/main/README.md)
 [![Tests](https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/python%20tests%20with%20coverage.yml/badge.svg)](https://github.com/c3di/ImgDataConvertCodeGen/actions/workflows/python%20tests%20with%20coverage.yml)
 [![codecov](https://codecov.io/github/c3di/ImgDataConvertCodeGen/graph/badge.svg?token=BWBXANX8W7)](https://codecov.io/github/c3di/ImgDataConvertCodeGen)
