@@ -34,7 +34,8 @@ def test_conversion_path(code_generator):
     actual = code_generator.get_convert_path({"source": "source_metadata"}, {"target": "target_metadata"})
 
     code_generator.knowledge_graph.get_shortest_path.assert_called_once_with({"source": "source_metadata"},
-                                                                             {"target": "target_metadata"})
+                                                                             {"target": "target_metadata"},
+                                                                             code_generator._goal_function_for_AStar)
     assert actual == expected_path, "The returned path does not match the expected path."
 
 

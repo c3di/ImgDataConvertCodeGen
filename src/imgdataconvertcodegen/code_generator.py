@@ -1,16 +1,32 @@
+import math
 from typing import Union
 from .util import extract_func_body
 from .knowledge_graph_construction import encode_metadata, Metadata
-
+from .code_exec import time_cost_in_kg
 
 
 class ConvertCodeGenerator:
-    _knowledge_graph = None
-    _cache = {}
 
     def __init__(self, knowledge_graph):
         self._knowledge_graph = knowledge_graph
         self._cache = {}
+        self._cpu_penalty = 0
+        self._gpu_penalty = 0
+        self._normalize_time_cost = lambda u, v: 0
+
+    def config_astar_goal_function(self, cpu_penalty: float, gpu_penalty: float,
+                                   include_time_cost: bool = False, test_img_size=(256, 256)):
+        self._cpu_penalty = cpu_penalty
+        self._gpu_penalty = gpu_penalty
+        if include_time_cost:
+            all_time_cost = time_cost_in_kg(self.knowledge_graph, test_img_size)
+            max_time_cost = max(time_cost for time_cost in all_time_cost.values() if time_cost < math.inf)
+            if max_time_cost == 0:
+                self._normalize_time_cost = lambda u, v: 0
+            else:
+                self._normalize_time_cost = lambda u, v: round(all_time_cost.get((u, v), math.inf) / max_time_cost, 3)
+        else:
+            self._normalize_time_cost = lambda: 0
 
     @property
     def knowledge_graph(self):
@@ -21,7 +37,7 @@ class ConvertCodeGenerator:
         self._knowledge_graph = value
 
     def get_convert_path(self, source_metadata: Metadata, target_metadata: Metadata):
-        return self.knowledge_graph.get_shortest_path(source_metadata, target_metadata)
+        return self.knowledge_graph.get_shortest_path(source_metadata, target_metadata, self._goal_function_for_AStar)
 
     def get_conversion(
         self,
@@ -50,9 +66,8 @@ class ConvertCodeGenerator:
         if (source_encode_str, target_encode_str) in self._cache:
             cvt_path = self._cache[(source_encode_str, target_encode_str)]
         else:
-            cvt_path = self.knowledge_graph.get_shortest_path(
-                source_metadata, target_metadata
-            )
+            cvt_path = self.knowledge_graph.get_shortest_path(source_metadata, target_metadata,
+                                                              self._goal_function_for_AStar)
             self._cache[(source_encode_str, target_encode_str)] = cvt_path
         if cvt_path is None:
             result = None
@@ -86,9 +101,15 @@ class ConvertCodeGenerator:
         )
 
     def _get_conversion_per_step(self, source, target, arg, return_name):
-        conversion_on_edge = self.knowledge_graph.get_edge_data(source, target)[
-            "conversion"
-        ]
+        conversion_on_edge = self.knowledge_graph.get_edge_data(source, target)["conversion"]
         imports = conversion_on_edge[0]
         main_body = extract_func_body(conversion_on_edge[1], arg, return_name)
         return imports, main_body
+
+    def _goal_function_for_AStar(self, u, v, edge_attributes):
+        step_cost = 1
+        total_cost = (step_cost +
+                      self._cpu_penalty +
+                      self._gpu_penalty +
+                      self._normalize_time_cost(u, v))
+        return total_cost
