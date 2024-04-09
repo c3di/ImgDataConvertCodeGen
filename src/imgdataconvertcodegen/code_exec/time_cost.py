@@ -14,10 +14,10 @@ def time_cost(source, target, conversion, test_img_size=(256, 256), repeat_count
     setup = f"{conversion[0]}\n{conversion[1]}"
     func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
     code = f"actual_image = {func_name}(source_image)"
-    try:
-        execution_time = timeit.timeit(stmt=code, setup=setup, number=repeat_count, globals=locals())
-    except Exception as e:
-        raise RuntimeError(f'{e}, \ncode is {code}\nsetup is {setup}')
+    #try:
+    execution_time = timeit.timeit(stmt=code, setup=setup, number=repeat_count, globals=locals())
+    #except Exception as e:
+    #    raise RuntimeError(f'{e}, \ncode is {code}\nsetup is {setup}')
     return execution_time / repeat_count
 
 

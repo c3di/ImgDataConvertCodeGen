@@ -189,9 +189,7 @@ def test_config_astar_goal_function_no_time_cost(code_generator):
 
     arbitrary_source = "any_source_node"
     arbitrary_target = "any_target_node"
-    normalized_cost = code_generator._normalize_time_cost(
-        arbitrary_source, arbitrary_target
-    )
+    normalized_cost = code_generator._normalize_time_cost()
 
     assert (
         normalized_cost == 0
