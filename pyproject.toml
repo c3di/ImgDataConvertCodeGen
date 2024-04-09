@@ -10,3 +10,10 @@ version_scheme = "no-guess-dev"
 
 [tool.pytest.ini_options]
 norecursedirs = [".ipynb_checkpoints"]
+
+[project]
+classifiers = [
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
