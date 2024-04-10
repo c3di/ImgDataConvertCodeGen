@@ -8,11 +8,8 @@ git clone git@github.com:c3di/im2im.git
 
 **Installing Dependencies**
 
-Before installing dependencies, please ensure:
-- For TensorFlow with CUDA support, verify system compatibility at [TensorFlow's installation guide](https://www.tensorflow.org/install/pip>).
-- Use the correct path for `path/to/requirements.txt` in your project when executing the installation command.
+With your Python virtual environment active, choose the appropriate file—either `requirements_cpu.txt` or `requirements_gpu.txt`, both located in the root folder of your project, and use its correct path to install the necessary dependencies. For those requiring TensorFlow with CUDA support, it's crucial to confirm system compatibility by consulting the [TensorFlow Installation Guide](https://www.tensorflow.org/install/pip).
 
-With the Python virtual environment activated, install the required dependencies:
 ```bash
 pip install -r path/to/requirements.txt
 ```
