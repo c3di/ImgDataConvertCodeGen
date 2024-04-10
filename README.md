@@ -6,12 +6,10 @@
 [![Tests](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml/badge.svg)](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml)
 [![codecov](https://codecov.io/github/c3di/im2im/graph/badge.svg?token=BWBXANX8W7)](https://codecov.io/github/c3di/im2im)
 
-The `im2im` package provides an automated approach for converting in-memory image representations across a variety of image processing libraries, including `numpy`, `opencv-python`, `torch`, `PIL`, and `Tensorflow`. It handles the nuances inherent to each library's image representation, such as data formats (numpy arrays, PIL images, torch tensors, and so on), color channel (RGB or grayscale), channel order (channel first or last or none), device (CPU/GPU), and pixel intensity ranges.
+The `im2im` package provides an automated approach for converting in-memory image representations across a variety of image processing libraries, including `numpy`, `opencv-python`, `torch`, `PIL`, `Matplotlib.plt.imshow`, and `Tensorflow`. It handles the nuances inherent to each library's image representation, such as data formats (numpy arrays, PIL images, torch tensors, and so on), color channel (RGB or grayscale), channel order (channel first or last or none), device (CPU/GPU), and pixel intensity ranges.
 
 
 At the core of the package is a knowledge graph, where each node encapsulates metadata detailing an image representation, and the edges between nodes represent code snippets for converting images from one representation to another. When converting from the source to the target, the `im2im` package identifies the shortest path within the graph,  it gathers all relevant conversion snippets encountered along the path. These snippets are then combined to formulate the final conversion code, which is subsequently employed to transform the source images into the desired target format.
-
-
 
 
 ## Installation
@@ -20,32 +18,24 @@ Install the package via pip:
 ```bash
 pip install im2im
 ```
+
+
 ## Usage
 
 One example from the image data in numpy to the image data in PyTorch:
 ```python
+import numpy as np
 from im2im import im2im
 
-source_image_desc = {"lib": "numpy"}
-target_image_desc = {"lib": "torch", "image_dtype": "uint8"}
-code = im2im("source_image", source_image_desc, "target_image", target_image_desc)
-```
-The generated conversion code will be as follows:
-```python
-import torch
-image = torch.from_numpy(source_image)
-image = image.permute(2, 0, 1)
-target_image = torch.unsqueeze(image, 0)
+source = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
+target = im2im(source, {"lib": "numpy"}, {"lib": "torch", "color_channel":"gray", "image_dtype": "uint8"})
 ```
 
+For other APIs like `im2im_code`, and `im2im_path`, please refer to [tutorials](https://github.com/c3di/im2im/blob/main/tutorial.ipynb) or [public APIs](https://github.com/c3di/im2im/blob/main/src/im2im/interface_py_api.py).
 
+## Knowledge Graph Extension
 
-We use A* to find the shortest path in the knowledge graph. The goal function is only step cost by default. You can call `config_astar_goal_function` to set `cpu penalty`, `gpu penalty`  or enable `execution time cost` to the goal function. 
-
-```python
-...
-config_astar_goal_function(cpu_penalty, gpu_penalty, include_time_cost, test_img_size=(256, 256))
-```
+Our package is designed for easy knowledge graph extension. Once you are familiar with the mechanisms behind the construction of the knowledge graph, you can leverage a suite of functions designed for various extension requirements including `add_meta_values_for_image`, `add_edge_factory_cluster`, and `add_conversion_for_metadata_pairs`, each tailored for different extension needs. 
 
 ## Evaluation
 
@@ -63,11 +53,11 @@ The performance of knowledge graph construction and code generation processes is
 Please refer to [Usability Evaluation](https://github.com/c3di/im2im_evaluation).
 
 ## Contribution
+
 We welcome all contributions to this project! If you have suggestions, feature requests, or want to contribute in any other way, please feel free to open an issue or submit a pull request.
 
 
 For detailed instructions on developing, building, and publishing this package, please refer to the [README_DEV](https://github.com/c3di/im2im/blob/main/README_Dev.md).
-
 
 ## Cite
 
