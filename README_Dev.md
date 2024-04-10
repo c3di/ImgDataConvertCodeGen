@@ -1,9 +1,9 @@
-# imgdataconvertcodegen Development
+# im2im Development
 ## Setup Dev Environment
 **Clone the Repository**
 
 ```bash
-git clone git@github.com:c3di/ImgDataConvertCodeGen.git
+git clone git@github.com:c3di/im2im.git
 ```
 
 **Installing Dependencies**

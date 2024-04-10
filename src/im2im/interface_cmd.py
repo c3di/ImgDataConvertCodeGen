@@ -4,7 +4,7 @@ console script. To run this script uncomment the following lines in the
 ``[options.entry_points]`` section in ``setup.cfg``::
 
     console_scripts =
-         fibonacci = imgdataconvertcodegen.interface_cmd:run
+         fibonacci = im2im.interface_cmd:run
 
 
 """
@@ -12,7 +12,7 @@ console script. To run this script uncomment the following lines in the
 import argparse
 import sys
 
-from imgdataconvertcodegen import __version__
+from im2im import __version__
 
 
 def parse_args(args):
@@ -21,7 +21,7 @@ def parse_args(args):
     parser.add_argument(
         "--version",
         action="version",
-        version=f"ImgDataConvertCodeGen {__version__}",
+        version=f"im2im {__version__}",
     )
     return parser.parse_args(args)
 
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     # After installing your project with pip, users can also run your Python
     # modules as scripts via the ``-m`` flag, as defined in PEP 338::
     #
-    #     python -m imgdataconvertcodegen.interface_cmd
+    #     python -m im2im.interface_cmd
     #
     run()

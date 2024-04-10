@@ -4,9 +4,9 @@ import pytest
 import tensorflow as tf
 import torch
 
-from src.imgdataconvertcodegen import is_image_equal, random_test_image_and_expected
-from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction import get_knowledge_graph_constructor
+from src.im2im import is_image_equal, random_test_image_and_expected
+from src.im2im.code_generator import ConvertCodeGenerator
+from src.im2im.knowledge_graph_construction import get_knowledge_graph_constructor
 
 
 @pytest.fixture(scope="session")

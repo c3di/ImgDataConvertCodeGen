@@ -4,7 +4,7 @@ from unittest.mock import patch
 import networkx as nx
 import pytest
 
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph, encode_metadata
+from src.im2im.knowledge_graph_construction import KnowledgeGraph, encode_metadata
 from .data_for_tests.nodes_edges import test_nodes, test_edges, new_node, new_edge
 
 
@@ -43,7 +43,7 @@ def test_edge_failure(kg):
 
 
 def test_save_to_file(kg):
-    with patch('src.imgdataconvertcodegen.knowledge_graph_construction.knowledge_graph.save_graph') as mock_save_graph:
+    with patch('src.im2im.knowledge_graph_construction.knowledge_graph.save_graph') as mock_save_graph:
         expected_file_path = os.path.join('data_for_tests', 'kg_5nodes_4edges.json')
         kg.save_to_file(expected_file_path)
         mock_save_graph.assert_called_once_with(kg._graph, expected_file_path)
