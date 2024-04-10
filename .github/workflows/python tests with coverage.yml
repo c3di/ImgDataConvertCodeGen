@@ -32,11 +32,11 @@ jobs:
       if: matrix.python-version == '3.10'  # Choose one version for coverage
       run: |
         echo "COVERAGE=true" >> $GITHUB_ENV
-        pytest --cov=src.imgdataconvertcodegen tests/
+        pytest --cov=src.im2im tests/
     
     - name: Upload coverage reports to Codecov
       if: env.COVERAGE == 'true'
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        slug: c3di/ImgDataConvertCodeGen
+        slug: c3di/im2im

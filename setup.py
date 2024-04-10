@@ -1,5 +1,5 @@
 """
-    Setup file for ImgDataConvertCodeGen.
+    Setup file for im2im.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 4.5.

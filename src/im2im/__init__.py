@@ -10,7 +10,7 @@ from .metadata_differ import *
 
 try:
     # Change here if project is renamed and does not equal the package name
-    dist_name = "ImgDataConvertCodeGen"
+    dist_name = "im2im"
     __version__ = version(dist_name)
 except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"

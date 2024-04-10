@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 import pytest
 
-from src.imgdataconvertcodegen.code_exec.time_cost_measure import time_cost, time_cost_in_kg
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph, encode_metadata
+from src.im2im.code_exec.time_cost_measure import time_cost, time_cost_in_kg
+from src.im2im.knowledge_graph_construction import KnowledgeGraph, encode_metadata
 from .data_for_tests.nodes_edges import test_edges
 
 
@@ -15,7 +15,7 @@ def test_time_cost(source_node, target_node, conversion):
     assert result != math.inf, "time_cost should return a finite value when conversion is successful"
 
 
-@patch("src.imgdataconvertcodegen.code_exec.test_image_util.random_test_image_and_expected")
+@patch("src.im2im.code_exec.test_image_util.random_test_image_and_expected")
 def test_infinite_time_cost(mock_random_test_image):
     mock_random_test_image.side_effect = Exception("Failed to generate image")
     result = time_cost("source_node", "target_node", ("", "def convert(var):\n  return var"))
@@ -41,7 +41,7 @@ def test_time_cost_to_throw_exception(kg):
 
 def test_time_cost_in_kg(kg):
     costs = [1, 2, 3, 4]
-    with patch('src.imgdataconvertcodegen.code_exec.time_cost_measure.time_cost') as mock_time_cost:
+    with patch('src.im2im.code_exec.time_cost_measure.time_cost') as mock_time_cost:
         mock_time_cost.side_effect = costs
 
         actual = time_cost_in_kg(kg, test_img_size=(256, 256), repeat_count=10)

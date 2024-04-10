@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from src.im2im.code_generator import ConvertCodeGenerator
+from src.im2im.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import new_node, test_nodes, all_nodes
 
 
@@ -134,7 +134,7 @@ def test_config_astar_goal_function_without_time_cost(code_generator):
     assert actual_lambda_expr == "lambda u, v: 0", f"Expected lambda u, v: 0, but got {code_generator._normalize_time_cost}"
 
 
-@patch("src.imgdataconvertcodegen.code_generator.time_cost_in_kg")
+@patch("src.im2im.code_generator.time_cost_in_kg")
 def test_config_astar_goal_with_time_cost_when_max_is_nonzero(mock_time_cost_in_kg, code_generator):
     test_img_size = (512, 512)
     time_costs = {
@@ -155,7 +155,7 @@ def test_config_astar_goal_with_time_cost_when_max_is_nonzero(mock_time_cost_in_
     mock_time_cost_in_kg.assert_called_once_with(code_generator.knowledge_graph, test_img_size)
 
 
-@patch("src.imgdataconvertcodegen.code_generator.time_cost_in_kg")
+@patch("src.im2im.code_generator.time_cost_in_kg")
 def test_config_astar_goal_include_time_cost_with_max_is_zero(mock_time_cost_in_kg, code_generator):
     time_costs = {
         ("encoded_node1", "encoded_node2"): 0,

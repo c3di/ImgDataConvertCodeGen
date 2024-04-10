@@ -1,4 +1,4 @@
-from src.imgdataconvertcodegen import are_both_same_data_repr, is_differ_value_for_key
+from src.im2im import are_both_same_data_repr, is_differ_value_for_key
 
 
 def test_both_metadata_match_data_repr():

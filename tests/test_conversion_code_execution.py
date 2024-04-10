@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 import torch
 
-from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from src.im2im.code_generator import ConvertCodeGenerator
+from src.im2im.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import new_node, test_nodes
 
 

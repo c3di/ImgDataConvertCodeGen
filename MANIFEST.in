@@ -1,1 +1,1 @@
-include src/imgdataconvertcodegen/knowledge_graph_construction/*.json
+include src/im2im/knowledge_graph_construction/*.json

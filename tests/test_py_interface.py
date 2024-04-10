@@ -1,10 +1,10 @@
 import os
 import pytest
 
-from src.imgdataconvertcodegen import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
+from src.im2im import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
     get_conversion_code
-from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
-from src.imgdataconvertcodegen.knowledge_graph_construction import KnowledgeGraph
+from src.im2im.code_generator import ConvertCodeGenerator
+from src.im2im.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import all_nodes
 
 
@@ -81,7 +81,7 @@ def mock_code_generator(monkeypatch):
     kg = KnowledgeGraph()
     kg.load_from_file(os.path.join(os.path.dirname(__file__), 'data_for_tests/kg_5nodes_4edges.json'))
     mock = ConvertCodeGenerator(kg)
-    monkeypatch.setattr('src.imgdataconvertcodegen.interface_py_api._code_generator', mock)
+    monkeypatch.setattr('src.im2im.interface_py_api._code_generator', mock)
     return mock
 
 
