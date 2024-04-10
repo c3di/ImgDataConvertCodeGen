@@ -1,4 +1,3 @@
-import math
 from typing import Union, List
 
 import networkx as nx
@@ -37,14 +36,12 @@ class KnowledgeGraph:
         source: Metadata,
         target: Metadata,
         conversion,
-        time_cost=math.inf,
         factory=None,
     ):
         self._graph.add_edge(
             encode_metadata(source),
             encode_metadata(target),
             conversion=conversion,
-            time_cost=time_cost,
             factory=factory,
         )
 
@@ -62,18 +59,6 @@ class KnowledgeGraph:
     def load_from_file(self, path):
         self._graph = load_graph(path)
 
-    def cost_function_in_AStar(self, u, v, edge_attributes):
-        if "normalized_time_cost" not in edge_attributes:
-            return 1
-        time_cost = edge_attributes["normalized_time_cost"]
-        step_cost = 1
-
-        v_metadata = decode_metadata(v)
-        gpu_penalty = 0.2 if v_metadata["device"] == "gpu" else 0
-
-        total_cost = time_cost + step_cost + gpu_penalty
-        return total_cost
-
     def heuristic_in_AStar(self, u, v):
         u_metadata = u.split(decode_separator())
         v_metadata = v.split(decode_separator())
@@ -83,7 +68,7 @@ class KnowledgeGraph:
         return L1_loss
 
     def get_shortest_path(
-        self, source_metadata, target_metadata
+        self, source_metadata, target_metadata, cost_function='weight'
     ) -> Union[List[str], None]:
         try:
             path = nx.astar_path(
@@ -91,7 +76,7 @@ class KnowledgeGraph:
                 encode_metadata(source_metadata),
                 encode_metadata(target_metadata),
                 heuristic=self.heuristic_in_AStar,
-                weight=self.cost_function_in_AStar,
+                weight=cost_function,
             )
             return [decode_metadata(node) for node in path]
         except nx.NetworkXNoPath:

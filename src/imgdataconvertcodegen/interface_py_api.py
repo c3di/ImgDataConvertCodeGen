@@ -14,6 +14,11 @@ _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
+def config_astar_goal_function(cpu_penalty: float, gpu_penalty: float,
+                               include_time_cost: bool = False, test_img_size=(256, 256)):
+    _code_generator.config_astar_goal_function(cpu_penalty, gpu_penalty, include_time_cost, test_img_size)
+
+
 def get_conversion_code(
     source_var_name: str,
     source_image_desc: ImageDesc,

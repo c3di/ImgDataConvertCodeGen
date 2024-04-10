@@ -6,26 +6,18 @@ from PIL import Image
 from torchvision.transforms import functional as V1F
 from torchvision.transforms.v2 import functional as V2F
 
-h, w = 20, 20
 
+def random_test_image_and_expected(source_metadata, target_metadata, size=(256, 256)):
+    def get_r_g_b(h, w):
+        r = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+        g = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+        b = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
+        return r, g, b
 
-def set_image_dim(new_w, new_h):
-    global w, h
-    w = new_w
-    h = new_h
-
-
-def get_r_g_b():
-    r = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
-    g = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
-    b = np.random.randint(0, 256, size=(h, w), dtype=np.uint8)
-    return r, g, b
-
-def get_input_image_and_expected_output(source_metadata, target_metadata):
     if source_metadata["data_representation"] == target_metadata["data_representation"]:
-        return get_test_images(source_metadata, target_metadata)
+        return get_test_images(get_r_g_b(*size), source_metadata, target_metadata)
     else:
-        src_img = get_test_images(source_metadata)[0]
+        src_img = get_test_images(get_r_g_b(*size), source_metadata)[0]
         return src_img, convert_to_another_repr(source_metadata, src_img, target_metadata)
 
 
@@ -57,15 +49,15 @@ def convert_to_another_repr(source_metadata, src_img, target_metadata):
     return mapping[source_metadata["data_representation"]][target_metadata["data_representation"]](src_img)
 
 
-def get_test_images(source_metadata, target_metadata_same_data_repr_as_source=None):
+def get_test_images(r_g_b, source_metadata, target_metadata_same_data_repr_as_source=None):
     if source_metadata["data_representation"] == "numpy.ndarray":
-        return get_numpy_image(source_metadata, target_metadata_same_data_repr_as_source)
+        return get_numpy_image(r_g_b, source_metadata, target_metadata_same_data_repr_as_source)
     elif source_metadata["data_representation"] == "torch.tensor":
-        return get_torch_image(source_metadata, target_metadata_same_data_repr_as_source)
+        return get_torch_image(r_g_b, source_metadata, target_metadata_same_data_repr_as_source)
     elif source_metadata["data_representation"] == "tf.tensor":
-        return get_tensorflow_image(source_metadata, target_metadata_same_data_repr_as_source)
+        return get_tensorflow_image(r_g_b, source_metadata, target_metadata_same_data_repr_as_source)
     elif source_metadata["data_representation"] == "PIL.Image":
-        return get_pil_image(source_metadata, target_metadata_same_data_repr_as_source)
+        return get_pil_image(r_g_b, source_metadata, target_metadata_same_data_repr_as_source)
     else:
         raise ValueError(
             f"Unsupported data representation: {source_metadata['data_representation']}"
@@ -90,7 +82,7 @@ def image_data_convert_with_scaled(source_np_type, target_np_type, img):
     return scaled_img.astype(target_np_type)
 
 
-def get_numpy_image(source_metadata, target_metadata=None):
+def get_numpy_image(r_g_b, source_metadata, target_metadata=None):
     def is_invalid_numpy_metadata(metadata):
         return metadata["color_channel"] == "rgba" or metadata["color_channel"] == "graya" or metadata[
             "device"] == "gpu"
@@ -98,7 +90,7 @@ def get_numpy_image(source_metadata, target_metadata=None):
     if is_invalid_numpy_metadata(source_metadata) or (
             target_metadata is not None and is_invalid_numpy_metadata(target_metadata)):
         raise ValueError(f"Unsupported metadata for numpy.ndarray: {source_metadata} or {target_metadata}")
-    r, g, b = get_r_g_b()
+    r, g, b = r_g_b
     img = np.stack([r, g, b], axis=0)  # [3, H, W] uint8 rgb channel first
 
     def convert_numpy_uint8_to_dtype(img, img_dtype, dtype):
@@ -193,9 +185,9 @@ def get_numpy_image(source_metadata, target_metadata=None):
     if target_metadata is not None:
         if source_metadata["color_channel"] != "gray" and target_metadata["color_channel"] == "gray":
             if source_metadata['color_channel'] == 'bgr':
-                target_img = color_to_grayscale(source_img, 'bgr')   # [1, H, W]
+                target_img = color_to_grayscale(source_img, 'bgr')  # [1, H, W]
             else:
-                target_img = color_to_grayscale(source_img, 'rgb')   # [1, H, W]
+                target_img = color_to_grayscale(source_img, 'rgb')  # [1, H, W]
         elif source_metadata["color_channel"] == "gray" and target_metadata["color_channel"] != "gray":
             target_img = grayscale_to_rgb_or_bgr(source_img)
         elif source_metadata["color_channel"] == "rgb" and target_metadata["color_channel"] == "bgr":
@@ -206,7 +198,8 @@ def get_numpy_image(source_metadata, target_metadata=None):
             target_img = source_img
 
         if target_metadata['image_data_type'] != source_metadata['image_data_type']:
-            target_img = convert_numpy_uint8_to_dtype(target_img, source_metadata["image_data_type"], target_metadata["image_data_type"])
+            target_img = convert_numpy_uint8_to_dtype(target_img, source_metadata["image_data_type"],
+                                                      target_metadata["image_data_type"])
 
     def convert_other_attributes(img, metadata):
         if metadata is None:
@@ -224,8 +217,8 @@ def get_numpy_image(source_metadata, target_metadata=None):
     return convert_other_attributes(source_img, source_metadata), convert_other_attributes(target_img, target_metadata)
 
 
-def get_torch_image(source_metadata, target_metadata=None):
-    r, g, b = get_r_g_b()
+def get_torch_image(r_g_b, source_metadata, target_metadata=None):
+    r, g, b = r_g_b
     source_img = torch.stack([torch.from_numpy(r), torch.from_numpy(g), torch.from_numpy(b)], dim=0)  # [3, H, W] uint8
     source_img = torch_to_dtype(source_img, source_metadata)
     if source_metadata["color_channel"] == "gray":
@@ -283,8 +276,8 @@ def torch_to_dtype(source_img, metadata):
         return V2F.to_dtype(source_img, dtype_mapping[metadata["image_data_type"]], scale=True)
 
 
-def get_tensorflow_image(source_metadata, target_metadata=None):
-    r, g, b = get_r_g_b()
+def get_tensorflow_image(r_g_b, source_metadata, target_metadata=None):
+    r, g, b = r_g_b
     source_img = tf.stack([tf.convert_to_tensor(r / 255.0, dtype=tf.float32),
                            tf.convert_to_tensor(g / 255.0, dtype=tf.float32),
                            tf.convert_to_tensor(b / 255.0, dtype=tf.float32), ],
@@ -343,7 +336,7 @@ def get_tensorflow_image(source_metadata, target_metadata=None):
     return convert_other_attributes(source_img, source_metadata), convert_other_attributes(target_img, target_metadata)
 
 
-def get_pil_image(source_metadata, target_metadata=None):
+def get_pil_image(r_g_b, source_metadata, target_metadata=None):
     def is_invalid_pil_metadata(metadata):
         return metadata["minibatch_input"] or metadata["image_data_type"] != 'uint8' or metadata["device"] == 'gpu' or \
             metadata["channel_order"] == 'channel first'
@@ -353,7 +346,7 @@ def get_pil_image(source_metadata, target_metadata=None):
         raise ValueError(
             f"Unsupported metadata for PIL.Image: {source_metadata} or {target_metadata}"
         )
-    r, g, b = get_r_g_b()
+    r, g, b = r_g_b
     img_array = np.stack([r, g, b], axis=-1)
     base_img = Image.fromarray(img_array, mode='RGB')  # [H, W, 3] uint8 rgb channel last
 

@@ -4,7 +4,7 @@ import pytest
 import tensorflow as tf
 import torch
 
-from src.imgdataconvertcodegen.image_data import is_image_equal, get_input_image_and_expected_output
+from src.imgdataconvertcodegen import is_image_equal, random_test_image_and_expected
 from src.imgdataconvertcodegen.code_generator import ConvertCodeGenerator
 from src.imgdataconvertcodegen.knowledge_graph_construction import get_knowledge_graph_constructor
 
@@ -31,7 +31,7 @@ def assert_exec_of_conversion_code_in_edge(source_metadata, target_metadata, kg)
                      f"imports: {conversion[0]}\nconversion function: \n {conversion[1]}\nfrom {edge_data.get('factory')}")
 
     try:
-        source_image, target_image = get_input_image_and_expected_output(source_metadata, target_metadata)
+        source_image, target_image = random_test_image_and_expected(source_metadata, target_metadata)
         func_name = re.search(r'(?<=def )\w+', conversion[1]).group(0)
 
         scope = {}
