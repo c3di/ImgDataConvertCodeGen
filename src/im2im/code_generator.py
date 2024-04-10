@@ -2,7 +2,7 @@ import math
 from typing import Union
 from .util import extract_func_body
 from .knowledge_graph_construction import encode_metadata, Metadata
-from .time_cost import time_cost_in_kg
+from .time_cost_measure import time_cost_in_kg
 
 
 class ConvertCodeGenerator:

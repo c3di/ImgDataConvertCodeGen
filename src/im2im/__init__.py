@@ -5,7 +5,8 @@ from .interface_py_api import (im2im, im2im_code, im2im_path, add_edge_factory_c
                                add_meta_values_for_image, add_conversion_for_metadata_pairs,
                                config_astar_goal_function)
 from .knowledge_graph_construction import find_closest_metadata
-from .time_cost import is_image_equal, random_test_image_and_expected, time_cost, time_cost_in_kg
+from .test_image_util import is_image_equal, random_test_image_and_expected
+from .time_cost_measure import time_cost, time_cost_in_kg
 from .metadata_differ import *
 
 try:

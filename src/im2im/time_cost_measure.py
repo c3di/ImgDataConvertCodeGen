@@ -2,8 +2,8 @@ import re
 import timeit
 import math
 
-from .test_image_util import random_test_image_and_expected
-from ..knowledge_graph_construction import encode_metadata
+from src.im2im.test_image_util import random_test_image_and_expected
+from src.im2im.knowledge_graph_construction import encode_metadata
 
 
 def time_cost(source, target, conversion, test_img_size=(256, 256), repeat_count=10):
