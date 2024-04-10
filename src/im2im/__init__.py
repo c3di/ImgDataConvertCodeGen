@@ -1,7 +1,7 @@
 from importlib.metadata import PackageNotFoundError, version
 
 from .interface_py_api import _code_generator, _constructor
-from .interface_py_api import (im2im, get_conversion_code, get_convert_path, add_edge_factory_cluster,
+from .interface_py_api import (im2im, im2im_code, im2im_path, add_edge_factory_cluster,
                                add_meta_values_for_image, add_conversion_for_metadata_pairs,
                                config_astar_goal_function)
 from .knowledge_graph_construction import find_closest_metadata

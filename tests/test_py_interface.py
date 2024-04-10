@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 import torch
 
-from src.im2im import add_conversion_for_metadata_pairs, get_convert_path, _code_generator, _constructor, \
-    get_conversion_code, im2im
+from src.im2im import add_conversion_for_metadata_pairs, im2im_path, _code_generator, _constructor, \
+    im2im_code, im2im
 from src.im2im.code_generator import ConvertCodeGenerator
 from src.im2im.knowledge_graph_construction import KnowledgeGraph
 from .data_for_tests.nodes_edges import all_nodes
@@ -106,7 +106,7 @@ def mock_code_generator(monkeypatch):
 def test_get_convert_path(mock_code_generator):
     source_image_desc = {"lib": "numpy"}
     target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
-    path = get_convert_path(source_image_desc, target_image_desc)
+    path = im2im_path(source_image_desc, target_image_desc)
     assert path == [all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]], f'{path}'
 
 
@@ -114,7 +114,7 @@ def test_get_conversion_code(mock_code_generator):
     source_image_desc = {"lib": "numpy"}
     target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
 
-    actual_code = get_conversion_code("source_image", source_image_desc, "target_image", target_image_desc)
+    actual_code = im2im_code("source_image", source_image_desc, "target_image", target_image_desc)
     expected_code = ('import torch\n'
                      'image = torch.from_numpy(source_image)\n'
                      'image = image.permute(2, 0, 1)\n'
