@@ -2,7 +2,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/im2im.svg)](https://pypi.org/project/im2im/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/im2im)](https://pypi.org/project/im2im/)
-[![Documentation](https://img.shields.io/badge/Doc-ReadMe-blue)](https://github.com/c3di/im2im/blob/main/README.md)
+[![Documentation](https://img.shields.io/badge/Doc-tutorial-blue)](https://github.com/c3di/im2im/blob/main/tutorial.ipynb)
 [![Tests](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml/badge.svg)](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml)
 [![codecov](https://codecov.io/github/c3di/im2im/graph/badge.svg?token=BWBXANX8W7)](https://codecov.io/github/c3di/im2im)
 
