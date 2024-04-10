@@ -1,6 +1,7 @@
 import re
 import inspect
 
+
 def extract_func_body(code_str, argument, return_var_name):
     """
     Replaces a function call in the given code string with direct code execution using the specified argument,

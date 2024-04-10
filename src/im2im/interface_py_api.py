@@ -14,9 +14,11 @@ _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
-def config_astar_goal_function(cpu_penalty: float, gpu_penalty: float,
-                               include_time_cost: bool = False, test_img_size=(256, 256)):
-    _code_generator.config_astar_goal_function(cpu_penalty, gpu_penalty, include_time_cost, test_img_size)
+def im2im(source_image, src_im_desc: ImageDesc, tgt_im_desc: ImageDesc):
+    target_image_name = "target_image"
+    code_str = get_conversion_code("source_image", src_im_desc, target_image_name, tgt_im_desc)
+    exec(code_str)
+    return locals()[target_image_name]
 
 
 def get_conversion_code(
@@ -80,6 +82,11 @@ def get_convert_path(source_image_desc: ImageDesc, target_image_desc: ImageDesc)
 
 def get_convert_path_by_metadata(source_metadata: Metadata, target_metadata: Metadata):
     return _code_generator.get_convert_path(source_metadata, target_metadata)
+
+
+def config_astar_goal_function(cpu_penalty: float, gpu_penalty: float,
+                               include_time_cost: bool = False, test_img_size=(256, 256)):
+    _code_generator.config_astar_goal_function(cpu_penalty, gpu_penalty, include_time_cost, test_img_size)
 
 
 def add_meta_values_for_image(new_metadata: MetadataValues):
