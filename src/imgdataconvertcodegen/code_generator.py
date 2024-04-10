@@ -26,7 +26,7 @@ class ConvertCodeGenerator:
             else:
                 self._normalize_time_cost = lambda u, v: round(all_time_cost.get((u, v), math.inf) / max_time_cost, 3)
         else:
-            self._normalize_time_cost = lambda: 0
+            self._normalize_time_cost = lambda u, v: 0
 
     @property
     def knowledge_graph(self):

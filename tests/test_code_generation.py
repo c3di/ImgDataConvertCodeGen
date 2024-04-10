@@ -1,4 +1,7 @@
+import inspect
+import math
 import os.path
+import re
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -116,81 +119,52 @@ def test_generate_conversion_using_cache(code_generator):
     ), f"Expected {expected_code}, but got {str(code_from_cache)}"
 
 
-@patch("src.imgdataconvertcodegen.code_generator.time_cost_in_kg")
-def test_config_astar_goal_include_time_cost_max_nonzero(
-    mock_time_cost_in_kg, code_generator
-):
+def test_config_astar_goal_function_without_time_cost(code_generator):
     cpu_penalty = 1.0
     gpu_penalty = 2.0
-    include_time_cost = True
-    test_img_size = (256, 256)
 
-    mock_time_cost_in_kg.return_value = {
+    code_generator.config_astar_goal_function(cpu_penalty, gpu_penalty, False)
+
+    assert cpu_penalty == code_generator._cpu_penalty, f'Expected {cpu_penalty}, but got {code_generator._cpu_penalty}'
+    assert gpu_penalty == code_generator._gpu_penalty, f'Expected {gpu_penalty}, but got {code_generator._gpu_penalty}'
+
+    actual_source = inspect.getsource(code_generator._normalize_time_cost).strip()
+    lambda_match = re.search(r'lambda\s*[^\:]+:\s*0', actual_source)
+    actual_lambda_expr = lambda_match.group()
+    assert actual_lambda_expr == "lambda u, v: 0", f"Expected lambda u, v: 0, but got {code_generator._normalize_time_cost}"
+
+
+@patch("src.imgdataconvertcodegen.code_generator.time_cost_in_kg")
+def test_config_astar_goal_with_time_cost_when_max_is_nonzero(mock_time_cost_in_kg, code_generator):
+    test_img_size = (512, 512)
+    time_costs = {
         ("encoded_node1", "encoded_node2"): 0.5,
         ("encoded_node2", "encoded_node3"): 0.3,
+        ("encoded_node2", "encoded_node3"): math.inf,
     }
     max_time_cost = 0.5
+    mock_time_cost_in_kg.return_value = time_costs
+    expected = lambda u, v: round(time_costs[(u, v)] / max_time_cost, 3)
 
-    code_generator.config_astar_goal_function(
-        cpu_penalty, gpu_penalty, include_time_cost
-    )
-    normalized_cost = code_generator._normalize_time_cost(
-        "encoded_node1", "encoded_node2"
-    )
-    expected_normalized_cost = round(0.5 / max_time_cost, 3)
+    code_generator.config_astar_goal_function(1, 1, True, test_img_size)
 
-    assert (
-        normalized_cost == expected_normalized_cost
-    ), f"Expected normalized cost to be {expected_normalized_cost}, got {normalized_cost}"
+    for key, cost in time_costs.items():
+        actual = code_generator._normalize_time_cost(*key)
+        assert actual == expected(key[0], key[1]), f"Expected {expected(key[0], key[1])}, but got {actual}"
 
-    mock_time_cost_in_kg.assert_called_once_with(
-        code_generator.knowledge_graph, test_img_size
-    )
+    mock_time_cost_in_kg.assert_called_once_with(code_generator.knowledge_graph, test_img_size)
 
 
 @patch("src.imgdataconvertcodegen.code_generator.time_cost_in_kg")
-def test_config_astar_goal_include_time_cost_max_zero(
-    mock_time_cost_in_kg, code_generator
-):
-    cpu_penalty = 1.0
-    gpu_penalty = 2.0
-    include_time_cost = True
-    test_img_size = (256, 256)
-
-    mock_time_cost_in_kg.return_value = {
-        ("encoded_node1", "encoded_node2"): 0.0,
-        ("encoded_node2", "encoded_node3"): 0.0,
+def test_config_astar_goal_include_time_cost_with_max_is_zero(mock_time_cost_in_kg, code_generator):
+    time_costs = {
+        ("encoded_node1", "encoded_node2"): 0,
+        ("encoded_node2", "encoded_node3"): 0,
     }
+    mock_time_cost_in_kg.return_value = time_costs
 
-    code_generator.config_astar_goal_function(
-        cpu_penalty, gpu_penalty, include_time_cost
-    )
-    normalized_cost = code_generator._normalize_time_cost(
-        "encoded_node1", "encoded_node2"
-    )
+    code_generator.config_astar_goal_function(1, 1, True)
 
-    assert (
-        normalized_cost == 0
-    ), f"Expected normalized cost to be 0, got {normalized_cost}"
-
-    mock_time_cost_in_kg.assert_called_once_with(
-        code_generator.knowledge_graph, test_img_size
-    )
-
-
-def test_config_astar_goal_function_no_time_cost(code_generator):
-    cpu_penalty = 1.0
-    gpu_penalty = 2.0
-    include_time_cost = False
-
-    code_generator.config_astar_goal_function(
-        cpu_penalty, gpu_penalty, include_time_cost
-    )
-
-    arbitrary_source = "any_source_node"
-    arbitrary_target = "any_target_node"
-    normalized_cost = code_generator._normalize_time_cost()
-
-    assert (
-        normalized_cost == 0
-    ), "Expected normalized cost to be 0 when include_time_cost is False"
+    for key, cost in time_costs.items():
+        actual = code_generator._normalize_time_cost(*key)
+        assert actual == 0, f"Expected normalized cost to be 0, got {cost}"
