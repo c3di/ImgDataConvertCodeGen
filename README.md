@@ -2,11 +2,12 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/im2im.svg)](https://pypi.org/project/im2im/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/im2im)](https://pypi.org/project/im2im/)
+[![Downloads](https://static.pepy.tech/badge/im2im)](https://pepy.tech/project/im2im)
 [![Documentation](https://img.shields.io/badge/Doc-tutorial-blue)](https://github.com/c3di/im2im/blob/main/tutorial.ipynb)
 [![Tests](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml/badge.svg)](https://github.com/c3di/im2im/actions/workflows/python%20tests%20with%20coverage.yml)
 [![codecov](https://codecov.io/github/c3di/im2im/graph/badge.svg?token=BWBXANX8W7)](https://codecov.io/github/c3di/im2im)
 
-The `im2im` package provides an automated approach for converting in-memory image representations across a variety of image processing libraries, including `numpy`, `opencv-python`, `torch`, `PIL`, `Matplotlib.plt.imshow`, and `Tensorflow`. It handles the nuances inherent to each library's image representation, such as data formats (numpy arrays, PIL images, torch tensors, and so on), color channel (RGB or grayscale), channel order (channel first or last or none), device (CPU/GPU), and pixel intensity ranges.
+The `im2im` package provides an automated approach for converting in-memory image representations across a variety of image processing libraries, including `scikit-image`, `opencv-python`, `scipy`, `PIL`, `Matplotlib.plt.imshow`, `PyTorch`, `Kornia` and `Tensorflow`. It handles the nuances inherent to each library's image representation, such as data formats (numpy arrays, PIL images, torch tensors, and so on), color channel (RGB or grayscale), channel order (channel first or last or none), device (CPU/GPU), and pixel intensity ranges.
 
 
 At the core of the package is a knowledge graph, where each node encapsulates metadata detailing an image representation, and the edges between nodes represent code snippets for converting images from one representation to another. When converting from the source to the target, the `im2im` package identifies the shortest path within the graph,  it gathers all relevant conversion snippets encountered along the path. These snippets are then combined to formulate the final conversion code, which is subsequently employed to transform the source images into the desired target format.
