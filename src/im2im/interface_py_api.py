@@ -14,13 +14,14 @@ _constructor = get_knowledge_graph_constructor()
 _code_generator = ConvertCodeGenerator(_constructor.knowledge_graph)
 
 
-def im2im(source_image, src_im_desc: ImageDesc, tgt_im_desc: ImageDesc):
+def im2im(source_image, source_image_lib:str, tgt_im_desc: ImageDesc):
     """
     To convert an image from one type to another.
 
     Args:
-        source_image: the image you intend to convert.
-        src_im_desc: provides a detailed description of the input image's current format and characteristics. This description is broken down into four key attributes:
+        source_image: the image to convert.
+        source_image_lib (str):  The library the image data comes from. Supported libraries are "numpy", "scikit-image", "opencv", "scipy", "matplotlib", "PIL", "torch", "kornia", "tensorflow".
+        tgt_im_desc: provides a detailed description of the desired image's format and characteristics. This description is broken down into four key attributes:
             - **lib**: A string indicating the library associated with the image (e.g., 'numpy', 'PIL', 'torch').
             - **color_channel**: An optional attribute that specifies the color channel format of the image, such as 'gray', 'rgb', 'bgr', 'rgba', or 'graya'.
             - **image_dtype**: An optional attribute that defines the data type of the image pixels. including 'uint8', 'uint16', 'uint32', 'uint64',
@@ -29,19 +30,19 @@ def im2im(source_image, src_im_desc: ImageDesc, tgt_im_desc: ImageDesc):
                     'float64(0to1)', 'float64(-1to1)',
                     'double(0to1)', 'double(-1to1)'.
             - **device**: An optional attribute that indicates the computing device ('cpu' or 'gpu') on which the image is stored or processed.
-        tgt_im_desc: The same structure as the second parameter to specify the target image type.
 
     Returns: target image in the target format.
     """
     target_image_name = "target_image"
-    code_str = im2im_code("source_image", src_im_desc, target_image_name, tgt_im_desc)
+    code_str = im2im_code(source_image, "source_image", source_image_lib, target_image_name, tgt_im_desc)
     exec(code_str)
     return locals()[target_image_name]
 
 
 def im2im_code(
+        source_image,
         source_var_name: str,
-        source_image_desc: ImageDesc,
+        source_image_lib: str,
         target_var_name: str,
         target_image_desc: ImageDesc,
 ) -> Union[str, None]:
@@ -50,21 +51,16 @@ def im2im_code(
 
     Args:
         source_var_name (str): The name of the variable holding the source data.
-        source_image_desc (ImageDesc): A dictionary containing description about the source image data.
-            - `lib` (str): the library the image data comes from. Supported libraries are "numpy", "scikit-image", "opencv", "scipy", "matplotlib", "PIL", "torch", "kornia", "tensorflow".
-            - `color_channel` (Optional[Literal['gray', 'rgb', 'bgr', 'rgba', 'graya']]): Description of color channels.
-            - `image_dtype` (Optional[Literal['uint8', 'uint16', 'uint32', 'uint64', 'int8', 'int16', 'int32', 'int64', 'float32(0to1)', 'float32(-1to1)', 'float64(0to1)', 'float64(-1to1)', 'double(0to1)', 'double(-1to1)']])
-            - `device` (Optional[Literal['cpu', 'gpu']]): Device where the data is processed or stored.
+        source_image_lib (str):  The library the image data comes from. Supported libraries are "numpy", "scikit-image", "opencv", "scipy", "matplotlib", "PIL", "torch", "kornia", "tensorflow".
         target_var_name (str): The name of the variable that will store the result of the conversion.
         target_image_desc (ImageDesc): Metadata about the target data, structured similarly to source_metadata.
-
     Returns:
         str | None: A string containing the Python code necessary to perform the conversion, or None if conversion is not possible.
 
     Examples:
-        >>> source_image_desc = {"lib": "numpy"}
+        >>> source_image_lib = "numpy"
         >>> target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
-        >>> conversion_code = im2im_code("source_image", source_image_desc, "target_image", target_image_desc)
+        >>> conversion_code = im2im_code(source_image, "source_image", source_image_lib, "target_image", target_image_desc)
         >>> print(conversion_code)
         #  import torch
         #  image = torch.from_numpy(source_image)
@@ -72,9 +68,7 @@ def im2im_code(
         #  target_image = torch.unsqueeze(image, 0)
     """
 
-    source_metadata, target_metadata = end_metadata_mapper(
-        source_image_desc, target_image_desc
-    )
+    source_metadata, target_metadata = end_metadata_mapper(source_image, source_image_lib, target_image_desc)
     return im2im_code_by_metadata(
         source_var_name, source_metadata, target_var_name, target_metadata
     )
@@ -91,9 +85,9 @@ def im2im_code_by_metadata(
     )
 
 
-def im2im_path(source_image_desc: ImageDesc, target_image_desc: ImageDesc):
+def im2im_path(source_image, source_image_lib: str, target_image_desc: ImageDesc):
     source_metadata, target_metadata = end_metadata_mapper(
-        source_image_desc, target_image_desc
+        source_image, source_image_lib, target_image_desc
     )
     return im2im_path_by_metadata(source_metadata, target_metadata)
 
