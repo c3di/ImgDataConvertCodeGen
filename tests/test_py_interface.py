@@ -104,17 +104,19 @@ def mock_code_generator(monkeypatch):
 
 
 def test_get_convert_path(mock_code_generator):
+    source_image = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
     source_image_desc = {"lib": "numpy"}
     target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
-    path = im2im_path(source_image_desc, target_image_desc)
+    path = im2im_path(source_image, source_image_desc, target_image_desc)
     assert path == [all_nodes[0], all_nodes[2], all_nodes[3], all_nodes[4]], f'{path}'
 
 
 def test_get_conversion_code(mock_code_generator):
+    source_image = np.random.randint(0, 256, (20, 20, 3), dtype=np.uint8)
     source_image_desc = {"lib": "numpy"}
     target_image_desc = {"lib": "torch", "image_dtype": 'uint8'}
 
-    actual_code = im2im_code("source_image", source_image_desc, "target_image", target_image_desc)
+    actual_code = im2im_code(source_image, "source_image", source_image_desc, "target_image", target_image_desc)
     expected_code = ('import torch\n'
                      'image = torch.from_numpy(source_image)\n'
                      'image = image.permute(2, 0, 1)\n'
