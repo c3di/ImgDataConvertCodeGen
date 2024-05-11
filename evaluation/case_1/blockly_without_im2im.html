@@ -100,13 +100,12 @@
       function loadWorkspace(state) {
         var workspace = Blockly.getMainWorkspace();
         var savedState =
-          '{"blocks":{"languageVersion":0,"blocks":[{"type":"display_image","id":"d}Mn:{Kk)rDbB}s_8IAK","x":-178,"y":219,"fields":{"CMAP":"viridis"},"inputs":{"IMAGE":{"block":{"type":"draw_circle","id":"A|oIA558`/fHi.*thPwf","fields":{"radius":300,"width":30,"X":1500,"Y":1500,"COLOR":"#ff0000"},"inputs":{"IMAGE":{"block":{"type":"numpy_to_pil","id":"q3/EHo%5{BhAecNV}]fU","inputs":{"ARRAY":{"block":{"type":"float_to_uint8","id":"=:,@sW_hfu-]*%q%6Jxd","fields":{"normolized?":true},"inputs":{"IMAGE":{"block":{"type":"gray_to_rgb","id":"bF,.d=#7n.{Tu|[07mZ`","inputs":{"IMAGE":{"block":{"type":"sato_filter","id":":-[qs,1H%_9Iy2P%myLr","fields":{"SIGMAS":"range(1, 10, 2)","BLACK_RIDGES":true},"inputs":{"IMAGE":{"block":{"type":"bgr_to_gray","id":"Uo+ZQo!ve0w~O_v~Ly4z","inputs":{"IMAGE":{"block":{"type":"fastNlMeansDenoisingColored","id":"Y5RjfY=G^p0@?NgNT;Ye","fields":{"H":10,"HCOLOR":10,"TEMPLATEWINDOWSIZE":7,"SEARCHWINDOWSIZE":21},"inputs":{"SRC":{"block":{"type":"read_image","id":"2xdHv+uHTIakl9OIrQI?","fields":{"IMAGE_PATH":"retinal.jpg","AS_GRAY":false}}}}}}}}}}}}}}}}}}}}}}}}}}]}}';
+          '{"blocks":{"languageVersion":0,"blocks":[{"type":"display_image","id":"d}Mn:{Kk)rDbB}s_8IAK","x":-847,"y":219,"fields":{"CMAP":"viridis"},"inputs":{"IMAGE":{"block":{"type":"draw_circle","id":"A|oIA558`/fHi.*thPwf","fields":{"radius":160,"width":10,"Y":650,"X":210,"COLOR":"#ff0000"},"inputs":{"IMAGE":{"block":{"type":"numpy_to_pil","id":"q3/EHo%5{BhAecNV}]fU","inputs":{"ARRAY":{"block":{"type":"float_to_uint8","id":"=:,@sW_hfu-]*%q%6Jxd","fields":{"normolized?":true},"inputs":{"IMAGE":{"block":{"type":"gray_to_rgb","id":"bF,.d=#7n.{Tu|[07mZ`","inputs":{"IMAGE":{"block":{"type":"sato_filter","id":":-[qs,1H%_9Iy2P%myLr","fields":{"SIGMAS":"range(1, 10, 2)","BLACK_RIDGES":true},"inputs":{"IMAGE":{"block":{"type":"bgr_to_gray","id":"Uo+ZQo!ve0w~O_v~Ly4z","inputs":{"IMAGE":{"block":{"type":"fastNlMeansDenoisingColored","id":"Y5RjfY=G^p0@?NgNT;Ye","fields":{"H":10,"HCOLOR":10,"TEMPLATEWINDOWSIZE":7,"SEARCHWINDOWSIZE":21},"inputs":{"SRC":{"block":{"type":"read_image","id":"2xdHv+uHTIakl9OIrQI?","fields":{"IMAGE_PATH":"retinal.jpg","AS_GRAY":false}}}}}}}}}}}}}}}}}}}}}}}}}}]}}';
         Blockly.serialization.workspaces.load(
           JSON.parse(savedState),
           workspace
         );
-        window.scrollTo(0, 0);
-        setTimeout(() => workspace.zoomToFit(), 5);
+        workspace.zoomToFit();
       }
 
       function logWorkspace() {
@@ -523,7 +522,8 @@
         var searchWindowSize = block.getFieldValue("SEARCHWINDOWSIZE") || "21";
         var h = block.getFieldValue("H") || "10";
         var hColor = block.getFieldValue("HCOLOR") || "10";
-        var code =
+
+        var denoise_code =
           "cv2.fastNlMeansDenoisingColored(" +
           src +
           ", None, " +
@@ -535,7 +535,14 @@
           ", " +
           searchWindowSize +
           ")";
-        return [code, Blockly.Python.ORDER_NONE];
+        var resultVar = Blockly.Python.nameDB_.getDistinctName(
+          "denoised_image",
+          Blockly.VARIABLE_CATEGORY_NAME
+        );
+        var code = `${resultVar} = ${denoise_code}\n`;
+        Blockly.Python.definitions_["define_" + resultVar] = code;
+
+        return [`${resultVar}`, Blockly.Python.ORDER_NONE];
       };
 
       Blockly.Python["bgr_to_gray"] = function (block) {
@@ -559,8 +566,14 @@
         var sigmas = block.getFieldValue("SIGMAS") || "range(1, 10, 2)";
         var blackRidges =
           block.getFieldValue("BLACK_RIDGES") == "TRUE" ? "True" : "False";
-        var code = `sato(${image}, sigmas=${sigmas}, black_ridges=${blackRidges})`;
-        return [code, Blockly.Python.ORDER_NONE];
+        var sato_code = `sato(${image}, sigmas=${sigmas}, black_ridges=${blackRidges})`;
+        var resultVar = Blockly.Python.nameDB_.getDistinctName(
+          "sato_filtered_image",
+          Blockly.VARIABLE_CATEGORY_NAME
+        );
+        var code = `${resultVar} = ${sato_code}\n`;
+        Blockly.Python.definitions_["define_" + resultVar] = code;
+        return [`${resultVar}`, Blockly.Python.ORDER_NONE];
       };
 
       Blockly.Python["gray_to_rgb"] = function (block) {
