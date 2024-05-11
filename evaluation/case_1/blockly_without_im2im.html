@@ -92,8 +92,6 @@
       <button onclick="setScale()">Set Scale</button>
       <span class="separator"></span>
       <button onclick="downloadWorkspaceSVG()">download workspace</button>
-      <span class="separator"></span>
-      <button onclick="openColab()">code On CoLab</button>
     </div>
     <div id="blocklyDiv"></div>
     <pre id="codeArea"></pre>
@@ -107,6 +105,8 @@
           JSON.parse(savedState),
           workspace
         );
+        window.scrollTo(0, 0);
+        setTimeout(() => workspace.zoomToFit(), 5);
       }
 
       function logWorkspace() {
@@ -130,10 +130,6 @@
           }
         });
       }
-
-      window.onload = function () {
-        initScale();
-      };
 
       function setScale() {
         var scaleValue = parseFloat(
@@ -200,11 +196,10 @@
         document.body.removeChild(link);
       }
 
-      function openColab() {
-        window.open(
-          "https://colab.research.google.com/drive/1FzqMtBZxqll1EmQ6gox_UbXkyx6-O7F-?usp=sharing"
-        );
-      }
+      window.onload = function () {
+        initScale();
+        loadWorkspace();
+      };
     </script>
     <script>
       Blockly.defineBlocksWithJsonArray([
